@@ -1,7 +1,10 @@
 [project]
-name = "spasc"
+name = "spacells"
 version = "0.0.1"
 dependencies = [
     "requests",
+    "numpy",
+    "scipy",
+    "scikit-learn",
     'importlib-metadata; python_version<"3.8"',
 ]

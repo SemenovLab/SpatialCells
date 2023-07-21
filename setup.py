@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='spacells',
     version='0.0.1',
-    packages=['spacells'],
+    package_dir={"": "spacells"},
     install_requires=[
         'requests',
         'numpy',

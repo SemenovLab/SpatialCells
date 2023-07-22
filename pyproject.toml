@@ -1,0 +1,19 @@
+[tool.poetry]
+
+name = "SpaCells"
+version = "0.0.1"
+description = "Spatial Analysis for Single-Cell Data"
+
+license = "MIT"
+
+authors = ["Guihong Wan <gwan@mgh.harvard.edu>", "Boshen Yan <byan3@mgh.harvard.edu>"]
+
+readme = "README.md"
+
+classifiers = [
+    "Development Status :: Beta",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+

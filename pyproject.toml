@@ -1,10 +1,24 @@
-[project]
-name = "spacells"
+[tool.poetry]
+
+name = "SpaCells"
 version = "0.0.1"
-dependencies = [
-    "requests",
-    "numpy",
-    "scipy",
-    "scikit-learn",
-    'importlib-metadata; python_version<"3.8"',
+description = "Spatial Analysis for Single-Cell Data"
+
+license = "MIT"
+
+authors = ["Guihong Wan <gwan@mgh.harvard.edu>"]
+
+readme = "README.md"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
 ]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+

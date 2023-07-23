@@ -6,14 +6,19 @@ description = "Spatial Analysis for Single-Cell Data"
 
 license = "MIT"
 
-authors = ["Guihong Wan <gwan@mgh.harvard.edu>", "Boshen Yan <byan3@mgh.harvard.edu>"]
+authors = ["Guihong Wan <gwan@mgh.harvard.edu>"]
 
 readme = "README.md"
 
 classifiers = [
-    "Development Status :: Beta",
+    "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
 ]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 

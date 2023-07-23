@@ -10,5 +10,15 @@ spacells/preprocessing/__init__.py
 spacells/preprocessing/_setGate.py
 spacells/preprocessing/_setGates.py
 spacells/spatial/__init__.py
+spacells/spatial/_assignPointsToRegion.py
 spacells/spatial/_estimateInitialDistance.py
+spacells/spatial/_getBoundary.py
 spacells/spatial/_getCommunities.py
+spacells/spatial/_getExtendedBoundary.py
+spacells/spatial/_getShrunkenBoundary.py
+spacells/spatial/_utils.py
+spacells/tests/_assignPointsToRegion.py
+spacells/tests/_getBoundary.py
+spacells/tests/_getExtendedBoundary.py
+spacells/tests/_getShrunkenBoundary.py
+spacells/tests/_utils.py

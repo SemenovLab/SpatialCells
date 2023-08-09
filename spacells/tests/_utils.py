@@ -1,3 +1,4 @@
+from copy import deepcopy
 import numpy as np
 import math
 from scipy.spatial import Delaunay
@@ -94,6 +95,41 @@ def isInRegion(point, boundary, debug = False):
 
     return (count % 2) != 0
 
+def _bfsGetShortestRing(edge_dict, start_point):
+    bfs_queue = [(start_point, [start_point])]
+    while len(bfs_queue) > 0:
+        cur_point, path = bfs_queue.pop(0)
+        for neighbor in edge_dict[cur_point]:
+            if neighbor not in path or (neighbor == start_point and len(path) > 2):
+                bfs_queue.append((neighbor, path + [neighbor]))
+        if cur_point == start_point: # found ring
+            return cur_point[1]
+    raise Exception("Open ring found")
+
+def _pruneTouchingComponents(edge_dict):
+    """
+    Given ring components, separate touching rings by extracting the smallest rings. 
+    Helper function for getOrderedEdgeComponents
+    :param edge_dict: a dict of edges. key is a point; value = set(its neighbors)
+    :return: tuple of (edge_dict with touching components pruned, list of touching components)
+    """
+    edge_dict = deepcopy(edge_dict)
+    components = []
+    touching_points = set()
+    for point in edge_dict:
+        if len(edge_dict[point]) > 2:
+            touching_points.add(point)
+    while len(touching_points) > 0:
+        cur_point = next(iter(touching_points))
+        component = _bfsGetShortestRing(edge_dict, cur_point)
+        for i in range(len(component)):
+            j = (i+1) % len(component)
+            edge_dict[component[i]].remove(component[j])
+            edge_dict[component[j]].remove(component[i])
+            if component[i] in touching_points and len(edge_dict[component[i]]) <= 2:
+                touching_points.remove(component[i])
+        components.append(component)
+    return edge_dict, components
 
 def getOrderedEdgeComponents(edges):
     """
@@ -185,7 +221,7 @@ def getAlphaShapes(points, alpha, debug = False):
     area = np.sqrt(s * (s - a) * (s - b) * (s - c))
     # Computing radius of triangle circumcircle
     # www.mathalino.com/reviewer/derivation-of-formulas/derivation-of-formula-for-radius-of-circumcircle
-    circum_r = a * b * c / (4.0 * area)
+    circum_r = a * b * c / (4.0 * area + 1e-10)
     
     verts = tri.vertices[circum_r < alpha]
 
@@ -229,6 +265,7 @@ def bufferPoints (inPoints, stretchCoef, n = 100):
     newPoints = []
     for eachPoint in inPoints:
         newPoints += PointsInCircum(eachPoint, stretchCoef, n)
+        # newPoints.append(np.array(PointsInCircum(eachPoint, stretchCoef, n)))
     newPoints = np.array(newPoints)
 
     return newPoints

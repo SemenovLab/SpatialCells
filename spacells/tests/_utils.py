@@ -99,11 +99,11 @@ def _bfsGetShortestRing(edge_dict, start_point):
     bfs_queue = [(start_point, [start_point])]
     while len(bfs_queue) > 0:
         cur_point, path = bfs_queue.pop(0)
+        if cur_point == start_point and len(path) > 2: # found ring
+            return path[:-1]
         for neighbor in edge_dict[cur_point]:
             if neighbor not in path or (neighbor == start_point and len(path) > 2):
                 bfs_queue.append((neighbor, path + [neighbor]))
-        if cur_point == start_point: # found ring
-            return cur_point[1]
     raise Exception("Open ring found")
 
 def _pruneTouchingComponents(edge_dict):
@@ -128,8 +128,12 @@ def _pruneTouchingComponents(edge_dict):
             edge_dict[component[j]].remove(component[i])
             if component[i] in touching_points and len(edge_dict[component[i]]) <= 2:
                 touching_points.remove(component[i])
-        components.append(component)
-    return edge_dict, components
+        components.append(np.array(component))
+    new_edge_dict = {}
+    for point in edge_dict:
+        if len(edge_dict[point]) > 0:
+            new_edge_dict[point] = edge_dict[point]
+    return new_edge_dict, components
 
 def getOrderedEdgeComponents(edges):
     """
@@ -144,15 +148,13 @@ def getOrderedEdgeComponents(edges):
     for i in range(edges.shape[0]):
         edge_dict[edges[i,0]].add(edges[i,1])
         edge_dict[edges[i,1]].add(edges[i,0])
-
-    cur_point = edges[0,0]
+    edge_dict, components = _pruneTouchingComponents(edge_dict)
+    cur_point = next(iter(edge_dict))
     ordered_edges = []
-    components = []
-    not_visited = set(edges.flatten())
+    not_visited = set(edge_dict.keys())
     while len(not_visited) > 0:
         next_point = None
         for point in edge_dict[cur_point]:
-            # print("point:", point, "cur_point:", cur_point, "edge_dict[cur_point]:", edge_dict[cur_point])
             if point in not_visited:
                 edge_dict[cur_point].remove(point)
                 edge_dict[point].remove(cur_point)

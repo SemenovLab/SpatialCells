@@ -1,4 +1,4 @@
-# SpaCells: Spatial Analysis for Single-Cell Data
+# SpatialCells: Spatial Analysis for Single-Cell Data
 
 This package aims to develop computational methods for region-based analyses of multiplexed single-cell data.
 

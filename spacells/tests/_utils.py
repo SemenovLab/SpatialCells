@@ -1,6 +1,7 @@
 from copy import deepcopy
 import numpy as np
 import math
+from shapely.geometry import Polygon
 from scipy.spatial import Delaunay
 from collections import defaultdict
 
@@ -13,6 +14,19 @@ from collections import defaultdict
 #     line2 = LineString([p3, p4])
 
 #     return line1.intersects(line2)
+
+def getPolygons(boundaries):
+    polygons = []
+    for boundary_set in boundaries:
+        rings = []
+        for i, boundary in enumerate(boundary_set):
+            rings.append(boundary[:, 0, :])
+            if i > 0 and not Polygon(rings[0]).contains(Polygon(rings[-1])):
+                # print(Polygon(rings[-1]).wkt)
+                polygons.append(Polygon(rings.pop()))
+        polygons.append(Polygon(rings[0], rings[1:]))
+    return polygons
+        
 
 def isCounterClockwise(A, B, C):
     # if ABC is counterclockwise, then slope of AB less than AC

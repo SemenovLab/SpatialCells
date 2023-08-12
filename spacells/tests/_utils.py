@@ -288,7 +288,7 @@ def bufferPoints (inPoints, stretchCoef, n = 100):
 
 def hasEdge(point, step, edges):
     grid_edges = [
-        point,
+        (point[0], point[1]),
         (point[0] + step, point[1]),
         (point[0], point[1] + step),
         (point[0] + step, point[1] + step),

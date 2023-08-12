@@ -31,7 +31,7 @@ def getBoundary(anndata,
     # print("edge_components:", len(edge_components), [len(i) for i in edge_components], edge_components[0].shape)
     
     grouped_components = groupRemoveEdgeComponents(edge_components, nedges_min, nedges_out_min)
-
+    return grouped_components
     boundary_edges = getEdgesOnBoundary(grouped_components)
     
     return boundary_edges

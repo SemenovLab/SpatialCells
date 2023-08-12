@@ -17,9 +17,9 @@ def getBufferedBoundary(boundaries, offset=200, minsize=30):
             boundary_points = boundary[:, 0, :]
             boundary_polygon = Polygon(boundary_points)
             if i == 0:
-                outer_multipolygon = outer_multipolygon | boundary_polygon.buffer(-offset)
+                outer_multipolygon = outer_multipolygon | boundary_polygon.buffer(offset)
             else:
-                inner_multipolygon = inner_multipolygon | boundary_polygon.buffer(offset)
+                inner_multipolygon = inner_multipolygon | boundary_polygon.buffer(-offset)
     s_boundary_polygons = outer_multipolygon - inner_multipolygon
     if isinstance(s_boundary_polygons, MultiPolygon):
         s_boundary_polygons = s_boundary_polygons.geoms

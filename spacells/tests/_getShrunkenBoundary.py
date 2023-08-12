@@ -32,4 +32,6 @@ def getBufferedBoundary(boundaries, offset=200, minsize=30):
                 continue
             buffered_edges = np.stack([np.roll(buffered_points, -1, axis=0), buffered_points], axis=1)
             buffered_boundaries.append(buffered_edges)
-    return [buffered_boundaries]
+
+    comp_polygons = getPolygons([buffered_boundaries])
+    return [buffered_boundaries], comp_polygons

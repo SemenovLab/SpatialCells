@@ -95,7 +95,7 @@ def getGrid(x_min, x_max, y_min, y_max, nGrids, edges, polygons):
     for i in range(xv.shape[0]):
         for j in range(xv.shape[1]):
             point = [xv[i, j], yv[i, j]]
-            if hasEdge(point, step, edges):
+            if hasEdge(point, step, polygons):
                 grid_label[i, j] = 0.5
             # elif isInRegion(point, edges):
             elif isInPolygon(polygons, point):

@@ -286,16 +286,15 @@ def bufferPoints (inPoints, stretchCoef, n = 100):
 
     return newPoints
 
-def hasEdge(point, step, edges):
-    grid_edges = [
+def hasEdge(point, step, polygons):
+    grid_edges = Polygon([
         (point[0], point[1]),
         (point[0] + step, point[1]),
         (point[0], point[1] + step),
         (point[0] + step, point[1] + step),
-    ]
-    for i in range(4):
-        for edge in edges:
-            if isIntersect(grid_edges[i], grid_edges[(i + 1) % 4], edge[0], edge[1]):
-                return True
+    ]).boundary
+    for polygon in polygons:
+        if polygon.boundary.intersects(grid_edges):
+            return True
     return False
 

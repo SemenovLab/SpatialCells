@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from shapely.geometry import Polygon, MultiPolygon
 from _utils import *
 
 def getBoundary(anndata, 
@@ -31,7 +32,8 @@ def getBoundary(anndata,
     # print("edge_components:", len(edge_components), [len(i) for i in edge_components], edge_components[0].shape)
     
     grouped_components = groupRemoveEdgeComponents(edge_components, nedges_min, nedges_out_min)
-    return grouped_components
+    comp_polygons = getPolygons(grouped_components)
+    return grouped_components, comp_polygons
     boundary_edges = getEdgesOnBoundary(grouped_components)
     
     return boundary_edges

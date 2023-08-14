@@ -1,6 +1,7 @@
 from copy import deepcopy
 import numpy as np
 import math
+from shapely.geometry import Polygon
 from scipy.spatial import Delaunay
 from collections import defaultdict
 
@@ -13,6 +14,31 @@ from collections import defaultdict
 #     line2 = LineString([p3, p4])
 
 #     return line1.intersects(line2)
+
+def getPolygons(boundaries):
+    polygons = []
+    for boundary_set in boundaries:
+        external_boundaries = set(np.arange(len(boundary_set)))
+        internal_boundaries = defaultdict(list)
+        for i in range(len(boundary_set)):
+            for j in range(i+1, len(boundary_set)):
+                pointi = boundary_set[i][:, 0, :]
+                pointj = boundary_set[j][:, 0, :]
+                polygoni = Polygon(pointi)
+                polygonj = Polygon(pointj)
+                if polygoni.contains(polygonj):
+                    internal_boundaries[i].append(pointj)
+                    external_boundaries.remove(j)
+                elif polygonj.contains(polygoni):
+                    internal_boundaries[j].append(pointi)
+                    external_boundaries.remove(i)
+        for external_boundary_idx in external_boundaries:
+            outer_points = boundary_set[external_boundary_idx][:, 0, :]
+            inner_points = internal_boundaries[external_boundary_idx]
+            polygon = Polygon(outer_points, inner_points)
+            polygons.append(polygon)
+    return polygons
+        
 
 def isCounterClockwise(A, B, C):
     # if ABC is counterclockwise, then slope of AB less than AC
@@ -272,16 +298,15 @@ def bufferPoints (inPoints, stretchCoef, n = 100):
 
     return newPoints
 
-def hasEdge(point, step, edges):
-    grid_edges = [
-        point,
+def hasEdge(point, step, polygons):
+    grid_edges = Polygon([
+        (point[0], point[1]),
         (point[0] + step, point[1]),
         (point[0], point[1] + step),
         (point[0] + step, point[1] + step),
-    ]
-    for i in range(4):
-        for edge in edges:
-            if isIntersect(grid_edges[i], grid_edges[(i + 1) % 4], edge[0], edge[1]):
-                return True
+    ]).boundary
+    for polygon in polygons:
+        if polygon.boundary.intersects(grid_edges):
+            return True
     return False
 

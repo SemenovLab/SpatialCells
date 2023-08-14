@@ -18,13 +18,25 @@ from collections import defaultdict
 def getPolygons(boundaries):
     polygons = []
     for boundary_set in boundaries:
-        rings = []
-        for i, boundary in enumerate(boundary_set):
-            rings.append(boundary[:, 0, :])
-            if i > 0 and not Polygon(rings[0]).contains(Polygon(rings[-1])):
-                # print(Polygon(rings[-1]).wkt)
-                polygons.append(Polygon(rings.pop()))
-        polygons.append(Polygon(rings[0], rings[1:]))
+        external_boundaries = set(np.arange(len(boundary_set)))
+        internal_boundaries = defaultdict(list)
+        for i in range(len(boundary_set)):
+            for j in range(i+1, len(boundary_set)):
+                pointi = boundary_set[i][:, 0, :]
+                pointj = boundary_set[j][:, 0, :]
+                polygoni = Polygon(pointi)
+                polygonj = Polygon(pointj)
+                if polygoni.contains(polygonj):
+                    internal_boundaries[i].append(pointj)
+                    external_boundaries.remove(j)
+                elif polygonj.contains(polygoni):
+                    internal_boundaries[j].append(pointi)
+                    external_boundaries.remove(i)
+        for external_boundary_idx in external_boundaries:
+            outer_points = boundary_set[external_boundary_idx][:, 0, :]
+            inner_points = internal_boundaries[external_boundary_idx]
+            polygon = Polygon(outer_points, inner_points)
+            polygons.append(polygon)
     return polygons
         
 

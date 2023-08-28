@@ -21,7 +21,6 @@ def getBoundary(
     :param nedges_out_min: the minimum number of edges for a component to be
         considered as an "out" region
     :return: the boundaries of components.
-    :param anndata: the anndata object
     """
 
     xy = anndata.obs[anndata.obs[communitycolumn].isin(communityIndexList)][

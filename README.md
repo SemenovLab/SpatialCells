@@ -2,7 +2,7 @@
 
 This package aims to develop computational methods for region-based analyses of multiplexed single-cell data.
 
-<img width="90%" alt="regions" align="middle" src="./materials/regions.png" >
+<img width="90%" alt="regions" align="middle" src="./materials/0_regions.png" >
 
 ## Installation
 Clone the repository and run `pip install .`      

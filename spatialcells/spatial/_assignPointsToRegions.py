@@ -1,45 +1,37 @@
-import numpy as np
 import pandas as pd
-from shapely.geometry import Polygon, Point
+from shapely.geometry import MultiPoint
+from tqdm import tqdm
 from ._utils import *
 
 
-def isInPolygon(polygons, point):
-    """
-    Check if a point is in any of the polygons
-    :param polygons: List of Polygon objects
-    :param point: iterable in the form of (x, y)
-    :return: True if the point is in any of the polygons, False otherwise
-    """
-    for polygon in polygons:
-        if polygon.contains(Point(point)):
-            return True
-    return False
-
-
 def assignPointsToRegion(
-    anndata, boundaries_component, assigncolumn="region", target="target", donelist=[]
+    anndata, multi_polygon, assigncolumn="region", target="target", donelist=[]
 ):
     """
     Assign points to a region based on the boundaries. Points that are already assigned
     to a region in donelist will not be reassigned.
     :param anndata: Anndata object
-    :param boundaries_component: Boundaries of the region
+    :param multi_polygon: MultiPolygon object of the region boundary
     :param assigncolumn: Column name for the region assignment
-    :param target: Region name to assign to the points
+    :param target: Region name to assign to the points in the region
+    :param donelist: List of region names that are already assigned and should not be reassigned
     """
-    assign_subset = anndata.obs[~anndata.obs[assigncolumn].isin(donelist)][
-        ["X_centroid", "Y_centroid", assigncolumn]
-    ]
+    minx, miny, maxx, maxy = multi_polygon.bounds
+    condition = (
+        ~anndata.obs[assigncolumn].isin(donelist)
+        & (anndata.obs["X_centroid"] >= minx)
+        & (anndata.obs["X_centroid"] <= maxx)
+        & (anndata.obs["Y_centroid"] >= miny)
+        & (anndata.obs["Y_centroid"] <= maxy)
+    )
+    assign_subset = anndata.obs[condition][["X_centroid", "Y_centroid", assigncolumn]]
     assign_coords = assign_subset[["X_centroid", "Y_centroid"]].to_numpy()
+    assign_points = MultiPoint(assign_coords)
     assign_region = assign_subset[assigncolumn].to_list()
-    polygons = getPolygons(boundaries_component)
-    for idx in range(len(assign_coords)):
-        if isInPolygon(polygons, assign_coords[idx, :]):
-            assign_region[idx] = target
-    anndata.obs.loc[
-        ~anndata.obs[assigncolumn].isin(donelist), assigncolumn
-    ] = assign_region
+    for i, point in tqdm(enumerate(assign_points.geoms)):
+        if multi_polygon.contains(point):
+            assign_region[i] = target
+    anndata.obs.loc[condition, assigncolumn] = assign_region
 
 
 def assignPointsToRegions(

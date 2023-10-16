@@ -1,35 +1,56 @@
+import shapely
+from shapely.geometry import Polygon, MultiPolygon
+from shapely.validation import make_valid
+
 from ._utils import *
 
 
-def getBoundary(
-    anndata,
-    communitycolumn,
-    communityIndexList,
-    alpha=100,
-    nedges_min=20,
-    nedges_out_min=20,
-):
+def getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=False):
     """
-    Get the boundary of the communities of interest
+    Get a boundary for the communities of interest as a Shapely MultiPolygon.
+
+    The boundary is defined based on the alpha shape of points in the
+    communities. The alpha shape is the generalization of the convex hull,
+    and is generated via Delaunay triangulation of all the points of interest.
+    The alpha parameter controls the longest edge that can appear in the alpha
+    shape. Smaller alpha gives more detailed boundary, but may appear more
+    jagged and may leave out some points that are too far away from the rest
+    of the points.
+
     :param anndata: the anndata object
     :param communitycolumn: the column name of the community
     :param communityIndexList: the list of community indexes
     :param alpha: the alpha parameter for alpha shape. Smaller alpha gives
         more detailed boundary, but may appear more jagged.
-    :param nedges_min: the minimum number of edges to keep a hole inside a
-        component's boundary
-    :param nedges_out_min: the minimum number of edges for a component to be
-        considered as an "out" region
-    :return: the boundaries of components.
+    :param debug: whether to return the polygons and edge components
+    :return: the boundaries of components as a MultiPolygon object
     """
 
     xy = anndata.obs[anndata.obs[communitycolumn].isin(communityIndexList)][
         ["X_centroid", "Y_centroid"]
     ].to_numpy()
     edge_components = getAlphaShapes(xy, alpha)
-    grouped_components = groupRemoveEdgeComponents(
-        edge_components, nedges_min, nedges_out_min
-    )
+    polygons = [Polygon(edge[:, 0, :]).buffer(0) for edge in edge_components]
+    boundary = MultiPolygon(polygons)
+    # make sure the boundary is valid and points of interest are inside
+    boundary = make_valid(boundary).buffer(1)
+    if boundary.geom_type == "Polygon":
+        boundary = MultiPolygon([boundary])
+    new_boundary = []
+    for poly in boundary.geoms:
+        holes = poly.interiors
+        hole_polygons = [Polygon(hole) for hole in holes]
+        # prevent holes from touching the boundary
+        hole_limit = Polygon(poly.exterior).buffer(-1)
+        hole_multipoly = shapely.unary_union(hole_polygons) & hole_limit
+        if hole_multipoly.geom_type == "Polygon":
+            hole_multipoly = MultiPolygon([hole_multipoly])
+        new_holes_polygons = [p.exterior.coords for p in hole_multipoly.geoms]
+        new_poly = Polygon(poly.exterior, new_holes_polygons)
+        new_boundary.append(new_poly)
+    boundary = make_valid(MultiPolygon(new_boundary))
 
-    boundary_edges = getEdgesOnBoundaries(grouped_components)
-    return boundary_edges, grouped_components
+    if debug:
+        return boundary, polygons, edge_components
+
+    return boundary

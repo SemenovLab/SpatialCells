@@ -1,10 +1,14 @@
 import numpy as np
-import math
 from sklearn.cluster import DBSCAN
 
 
 def getCommunities(
-    adata, markers_of_interest, eps, min_samples=20, newcolumn="COI_community"
+    adata,
+    markers_of_interest,
+    eps,
+    min_samples=20,
+    newcolumn="COI_community",
+    core_only=False,
 ):
     """
     Get the communities of interest (COI) using DBSCAN
@@ -33,11 +37,17 @@ def getCommunities(
     # assign labels
     labels = db.labels_
     adata.obs[newcolumn] = -2
+    if core_only:
+        core_samples_mask = np.zeros_like(labels, dtype=bool)
+        core_samples_mask[db.core_sample_indices_] = True
+        labels[~core_samples_mask] = -3
     adata.obs.loc[condition, newcolumn] = labels
 
     labels_sorted = []  # a list of (number of cells, cluster index)
     new_n_clusters_ = 0
-    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    # only count clusters of interest, i.e.,
+    # excluding noise (-1), not assigned (-2), and non-core (-3)
+    n_clusters_ = len(set(labels) - {-1, -2, -3})
     for i in range(n_clusters_):
         idx = labels == i
         npoints = sum(idx)
@@ -45,4 +55,5 @@ def getCommunities(
             labels_sorted.append((npoints, i))
             new_n_clusters_ = new_n_clusters_ + 1
     labels_sorted = sorted(labels_sorted, reverse=True)
+
     return labels_sorted, db

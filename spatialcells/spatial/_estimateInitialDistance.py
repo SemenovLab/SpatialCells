@@ -3,12 +3,11 @@
 @date: July 22, 2023
 """
 
-import numpy as np
 import scanpy as sc
 from sklearn.cluster import AgglomerativeClustering
 
 
-def estimateInitialDistance(adata, markers_of_interest, sampling_ratio=1.0):
+def estimateInitialDistance(adata, markers_of_interest, sampling_ratio=0.1):
     """
     Use hierarchical clustering to get the checkpoints to estimate the distance parameter
     for density-based clustering algorithms, e.g., DBSCAN.

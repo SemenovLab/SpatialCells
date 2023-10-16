@@ -1,12 +1,12 @@
-from ._utils import *
+from ._bufferBoundary import bufferBoundary
 
 
-def getShrunkenBoundary(boundaries, offset=200, minsize=30):
+def getShrunkenBoundary(boundaries, offset=200):
     """
-    Get the shrunken boundary of the communities of interest
+    Shrink the boundary of the communities of interest.
+    Wrapper of bufferBoundary with negative offset.
     :param boundaries: the boundaries of components
     :param offset: the offset to shrink the boundary
-    :param minsize: Components with size less than minsize will be removed
     :return: the shrunken boundaries of components.
     """
-    return getBufferedBoundary(boundaries, -offset, minsize)
+    return bufferBoundary(boundaries, -offset)

@@ -102,6 +102,8 @@ def _pruneTouchingComponents(edge_dict):
             j = (i + 1) % len(component)
             edge_dict[component[i]].remove(component[j])
             edge_dict[component[j]].remove(component[i])
+        # separate loop to ensure all components are checked AFTER updating edge_dict
+        for i in range(len(component)):
             if component[i] in touching_points and len(edge_dict[component[i]]) <= 2:
                 touching_points.remove(component[i])
         components.append(np.array(component))

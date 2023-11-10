@@ -13,10 +13,13 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-    - uses: ammaraskar/sphinx-action@master
-      with:
-        pre-build-command: "pip install . sphinx sphinx-tabs sphinx_rtd_theme sphinx-panels"
-        docs-folder: "docs/"
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        python -m pip install --upgrade pip
+        pip install . sphinx sphinx-tabs sphinx_rtd_theme sphinx-panels
+        cd docs
+        make html
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:

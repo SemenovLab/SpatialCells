@@ -22,7 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install . sphinx sphinx-tabs sphinx_rtd_theme pandoc nbsphinx
-        pip install --upgrade --force-reinstall Jinja2<3.1
+        pip install --upgrade --force-reinstall Jinja2==3.1
         cd docs
         make html
     - name: Deploy

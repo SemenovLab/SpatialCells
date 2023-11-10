@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spatialcells.spatial._getBoundary &mdash; spatialcells  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            spatialcells
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatialcells.html">spatialcells module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">spatialcells</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spatialcells.spatial._getBoundary</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spatialcells.spatial._getBoundary</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">shapely</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">MultiPolygon</span>
+<span class="kn">from</span> <span class="nn">shapely.validation</span> <span class="kn">import</span> <span class="n">make_valid</span>
+
+<span class="kn">from</span> <span class="nn">._utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="getBoundary"><a class="viewcode-back" href="../../../spatialcells.spatial.html#spatialcells.spatial.getBoundary">[docs]</a><span class="k">def</span> <span class="nf">getBoundary</span><span class="p">(</span><span class="n">anndata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a boundary for the communities of interest as a Shapely MultiPolygon.</span>
+
+<span class="sd">    The boundary is defined based on the alpha shape of points in the</span>
+<span class="sd">    communities. The alpha shape is the generalization of the convex hull,</span>
+<span class="sd">    and is generated via Delaunay triangulation of all the points of interest.</span>
+<span class="sd">    The alpha parameter controls the longest edge that can appear in the alpha</span>
+<span class="sd">    shape. Smaller alpha gives more detailed boundary, but may appear more</span>
+<span class="sd">    jagged and may leave out some points that are too far away from the rest</span>
+<span class="sd">    of the points.</span>
+
+<span class="sd">    :param anndata: the anndata object</span>
+<span class="sd">    :param communitycolumn: the column name of the community</span>
+<span class="sd">    :param communityIndexList: the list of community indexes</span>
+<span class="sd">    :param alpha: the alpha parameter for alpha shape. Smaller alpha gives</span>
+<span class="sd">        more detailed boundary, but may appear more jagged.</span>
+<span class="sd">    :param debug: whether to return the polygons and edge components</span>
+<span class="sd">    :returns: the boundaries of components as a MultiPolygon object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">anndata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">anndata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)][</span>
+        <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">edge_components</span> <span class="o">=</span> <span class="n">getAlphaShapes</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+    <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">Polygon</span><span class="p">(</span><span class="n">edge</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_components</span><span class="p">]</span>
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">MultiPolygon</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+    <span class="c1"># make sure the boundary is valid and points of interest are inside</span>
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">make_valid</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">boundary</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Polygon&quot;</span><span class="p">:</span>
+        <span class="n">boundary</span> <span class="o">=</span> <span class="n">MultiPolygon</span><span class="p">([</span><span class="n">boundary</span><span class="p">])</span>
+    <span class="n">new_boundary</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">boundary</span><span class="o">.</span><span class="n">geoms</span><span class="p">:</span>
+        <span class="n">holes</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">interiors</span>
+        <span class="n">hole_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">Polygon</span><span class="p">(</span><span class="n">hole</span><span class="p">)</span> <span class="k">for</span> <span class="n">hole</span> <span class="ow">in</span> <span class="n">holes</span><span class="p">]</span>
+        <span class="c1"># prevent holes from touching the boundary</span>
+        <span class="n">hole_limit</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">hole_multipoly</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">unary_union</span><span class="p">(</span><span class="n">hole_polygons</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">hole_limit</span>
+        <span class="k">if</span> <span class="n">hole_multipoly</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Polygon&quot;</span><span class="p">:</span>
+            <span class="n">hole_multipoly</span> <span class="o">=</span> <span class="n">MultiPolygon</span><span class="p">([</span><span class="n">hole_multipoly</span><span class="p">])</span>
+        <span class="n">new_holes_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">coords</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">hole_multipoly</span><span class="o">.</span><span class="n">geoms</span><span class="p">]</span>
+        <span class="n">new_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">exterior</span><span class="p">,</span> <span class="n">new_holes_polygons</span><span class="p">)</span>
+        <span class="n">new_boundary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_poly</span><span class="p">)</span>
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">make_valid</span><span class="p">(</span><span class="n">MultiPolygon</span><span class="p">(</span><span class="n">new_boundary</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">boundary</span><span class="p">,</span> <span class="n">polygons</span><span class="p">,</span> <span class="n">edge_components</span>
+
+    <span class="k">return</span> <span class="n">boundary</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guihong Wan; Zoltan Maliga &amp; Boshen Yan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

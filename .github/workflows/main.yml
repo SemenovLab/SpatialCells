@@ -18,7 +18,7 @@ jobs:
     - name: build-sphinx
       uses: ammaraskar/sphinx-action@master
       with:
-        pre-build-command: "pip install -r requirements.txt && pip install . && pip install sphinx sphinx_rtd_theme"
+        pre-build-command: "pip install . sphinx sphinx_rtd_theme"
         docs-folder: "docs/"
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3

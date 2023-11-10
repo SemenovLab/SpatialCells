@@ -16,6 +16,6 @@ jobs:
     steps:
     - id: install-self
       run: |
-        pip install -e '.[all]'
+        pip install https://github.com/bscrow/SpatialCells.git.zip
     - id: deployment
       uses: sphinx-notes/pages@v3

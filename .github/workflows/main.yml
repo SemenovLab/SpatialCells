@@ -1,0 +1,38 @@
+name: Deploy Sphinx documentation to Pages
+
+on:
+  push:
+    branches: [main] # branch to trigger deployment
+
+jobs:
+  pages:
+    runs-on: ubuntu-20.04
+    permissions:
+      pages: write
+      id-token: write
+      contents: write
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-activate-base: true
+        activate-environment: ""
+    - name: Build
+      run: |
+        sudo apt-get update && sudo apt-get install -y pandoc
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install . sphinx sphinx-tabs sphinx_rtd_theme nbsphinx
+        pip install --upgrade --force-reinstall Jinja2==3.1
+        conda install -y -c conda-forge pandoc
+        cd docs
+        make html
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/_build/html/

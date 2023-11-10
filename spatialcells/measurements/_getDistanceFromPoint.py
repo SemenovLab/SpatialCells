@@ -15,21 +15,21 @@ def getDistanceFromPoint(
     binned=False,
     binsize=10,
 ):
-    """
-    Get the distance of each cell from a point.
+    """Get the distance of each cell from a point.
+
     :param adata: Anndata object
     :param point: iterable coordinate of a point in (x, y) to calculate distance from
     :param x: Name of the column containing the x coordinate. Default is "X_centroid".
     :param y: Name of the column containing the y coordinate. Default is "Y_centroid".
     :param region_col: Name of the column containing the region. Default is "region".
     :param region_subset: List of regions to consider. If None, consider all cells.
-    :param metric: metric to use for distance calculation.
+    :param metric: metric to use for distance calculation. 
         Metric can be "angular" or "euclidean". Default is "angular".
     :param name: Name of the column to store the distance in. Default is "distance".
     :param inplace: If True, add the distance column to adata.obs. If False, return a copy
     :param binned: If True, bin the distances into bins of size binsize.
     :param binsize: Size of the bins to use for binning. Default is 10.
-    :return: If inplace is False, return a copy of adata with the distance column added
+    :returns: If inplace is False, return a copy of adata with the distance column added
     """
     if not inplace:
         adata = adata.copy()

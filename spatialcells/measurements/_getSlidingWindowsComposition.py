@@ -13,8 +13,8 @@ def getSlidingWindowsComposition(
     region_subset=None,
     min_cells=0,
 ):
-    """
-    Get Sliding window cell composition for cells in region subset.
+    """Get Sliding window cell composition for cells in region subset.
+
     :param adata: Anndata object
     :param window_size: Size of the sliding window
     :param step_size: Size of the step
@@ -23,7 +23,7 @@ def getSlidingWindowsComposition(
     :param region_col: Column containing the region information
     :param region_subset: List of regions to consider. If None, consider all cells.
     :param min_cells: Minimum number of cells in a window to consider it
-    :return: A dataframe containing the cell type composition of the region in each window
+    :returns: A dataframe containing the cell type composition of the region in each window
     """
     if region_subset is None:
         cells_roi = adata

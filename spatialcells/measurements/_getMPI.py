@@ -12,13 +12,11 @@ def getMPI(
     col_name="MPI",
     inplace=True,
 ):
-    """
-    Get MPI from a list of markers and thresholds, adapted from Gaglia et al. 2022
-    https://doi.org/10.1038/s41556-022-00860-9
-    MPI = :
-     -1 if max(arrest_markers) > thresh_arrest
-      1 else if max(prolif_markers) > thresh_prolif
-      0 otherwise
+    """Get MPI from a list of markers and thresholds, adapted from Gaglia et al. 2022
+    https://doi.org/10.1038/s41556-022-00860-9. The MPI is defined as follows:
+    -1 if max(arrest_markers) > thresh_arrest
+    1 else if max(prolif_markers) > thresh_prolif
+    0 otherwise
 
     :param adata: AnnData object
     :param prolif_marker: List of proliferation markers

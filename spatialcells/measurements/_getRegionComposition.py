@@ -1,11 +1,11 @@
 def getRegionComposition(adata, phenotype_col, regions=None, regioncol="region"):
-    """
-    Get the cell type composition of a region.
+    """Get the cell type composition of a region.
+
     :param adata: Anndata object
     :param phenotype_col: list of columns containing the cell type markers
     :param regions: List of regions to consider. If None, consider all cells.
     :param regioncol: Column containing the region information
-    :return: A dataframe containing the cell type composition of the region
+    :returns: A dataframe containing the cell type composition of the region
     """
     if regions is None:
         regions = adata.obs[regioncol].unique().tolist()

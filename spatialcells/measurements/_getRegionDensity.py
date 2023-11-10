@@ -9,11 +9,11 @@ def getRegionDensity(
     phenotype_col=[],
     exclude_holes=True,
 ):
-    """
-    Get the density of cells in a region defined by a list of Polygon objects.
+    """Get the density of cells in a region defined by a list of Polygon objects.
     If phenotype_col is empty, return the total density.
     If exclude_holes is True, the area of the holes in the region is
     subtracted from the overall area of the region for density calculation.
+
     :param adata: Anndata object
     :param boundary: A multiPolygon object defining the boundary of the region
     :param region_col: Name of the column containing the region. Default is "region".
@@ -21,7 +21,7 @@ def getRegionDensity(
     :param phenotype_col: A list of columns to stratify the density by.
         If empty, return the total density.
     :param exclude_holes: whether to exclude the holes in the region
-    :return: density of cells in the region as a pandas Series
+    :returns: density of cells in the region as a pandas Series
         stratified by phenotype_col
     """
     area = getRegionArea(boundary, exclude_holes)

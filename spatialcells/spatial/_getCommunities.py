@@ -12,12 +12,13 @@ def getCommunities(
 ):
     """
     Get the communities of interest (COI) using DBSCAN
+
     :param adata: the anndata object
     :param markers_of_interest: the list of marker names to subset the data
     :param eps: the eps parameter for DBSCAN
     :param min_samples: Minimum number of samples in each community
     :param newcolumn: the column name of the community
-    :return: the communities of interest (COI)
+    :returns: the communities of interest (COI)
     """
     # get cells of interest (COI)
     assert len(markers_of_interest) > 0, "markers_of_interest is empty?"

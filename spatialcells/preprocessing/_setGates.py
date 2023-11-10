@@ -5,6 +5,7 @@ def setGates(adata, gate_file, marker_suffix="_positive", debug=True):
     """
     A new column will be added for a marker.
     E.g., for SOX10, SOX10_positive will be added, which has two values: True or False.
+    
     :param adata: AnnData object
     :param gate_file: the file containing the gate values for each marker
     :param marker_suffix: the suffix of the new column name

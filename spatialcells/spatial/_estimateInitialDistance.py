@@ -11,10 +11,11 @@ def estimateInitialDistance(adata, markers_of_interest, sampling_ratio=0.1):
     """
     Use hierarchical clustering to get the checkpoints to estimate the distance parameter
     for density-based clustering algorithms, e.g., DBSCAN.
+
     :param adata: the anndata object
     :param markers_of_interest: the list of marker names to subset the data
     :param sampling_ratio: the sampling ratio to subsample the data
-    :return: the list of distances
+    :returns: the list of distances
 
     """
 

@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 
 def plotBoundary(boundary, ax=None, **kwargs):
     """
-    Plot the boundary
-    :param boundary: the MultiPolygon boundary
-    :param ax: the matplotlib ax object.
+    Plot the boundary. 
+     
+    :param boundary: the MultiPolygon boundary of the region
+    :param ax: the matplotlib ax object. If None (default), use plt.
     :param kwargs: kwargs for matplotlib.pyplot.plot
     """
     if ax is None:

@@ -2,11 +2,11 @@ name: Deploy Sphinx documentation to Pages
 
 on:
   push:
-    branches: [main] # branch to trigger deployment
+    branches: [master] # branch to trigger deployment
 
 jobs:
   pages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -14,8 +14,8 @@ jobs:
       pages: write
       id-token: write
     steps:
-    - name: Install dependencies
-    run: |
-      pip install sphinx sphinx_rtd_theme
-    - name: deployment
+    - id: install-theme
+      run: |
+        pip install sphinx-rtd-theme
+    - id: deployment
       uses: sphinx-notes/pages@v3

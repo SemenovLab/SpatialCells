@@ -10,6 +10,8 @@ jobs:
     permissions:
       pages: write
       id-token: write
+      contents: write
+      pull-requests: write
     steps:
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3

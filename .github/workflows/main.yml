@@ -23,6 +23,7 @@ jobs:
         activate-environment: ""
     - name: Build
       run: |
+        apt install -y pandoc
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install . sphinx sphinx-tabs sphinx_rtd_theme nbsphinx

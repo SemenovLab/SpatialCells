@@ -16,6 +16,6 @@ jobs:
     steps:
     - id: install-theme
       run: |
-        pip install sphinx-rtd-theme
+        pip install sphinx-rtd-theme .
     - id: deployment
       uses: sphinx-notes/pages@v3

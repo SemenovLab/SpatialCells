@@ -12,14 +12,17 @@
 #
 import os
 import sys
-sys.path.insert(0, '../spatialcells')
+sys.path.insert(0, os.path.abspath('../spatialcells'))
+sys.path.insert(0, os.path.abspath('../tutorials'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'spatialcells'
+project = 'SpatialCells'
 copyright = '2023, Guihong Wan; Zoltan Maliga & Boshen Yan'
 author = 'Guihong Wan; Zoltan Maliga & Boshen Yan'
+version = '0.9.5'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -55,7 +58,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'alabaster'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

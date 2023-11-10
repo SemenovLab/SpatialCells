@@ -1,5 +1,5 @@
-SpatialCells Functions
-======================
+Functions Reference
+===================
 
 Functions in SpatialCells are divided into 5 modules:
 

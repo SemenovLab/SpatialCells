@@ -2,12 +2,11 @@ Tutorials
 =========
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
-    tutorials/0_tutorial_spatial_functions.ipynb
-    ../tutorials/1_measurements
-    tutorials/2_tumor_proliferation
-    tutorials/3_immune_infiltration_overlap
-    tutorials/4_macro_micro_regions
-    tutorials/5_import_export_omero
+   tutorial/0_tutorial_spatial_functions
+   tutorial/1_tutorial_measurements
+   tutorial/2_tutorial_tumor_proliferation
+   tutorial/3_tutorial_immune_infiltration_overlap
+   tutorial/4_tutorial_macro_micro_regions
+   tutorial/5_tutorial_import_export_omero

@@ -14,8 +14,9 @@ jobs:
       pages: write
       id-token: write
     steps:
-    - id: install-self
-      run: |
-        pip install https://github.com/bscrow/SpatialCells.git.zip
+    - uses: actions/checkout@v4
+    # - id: install-self
+    #   run: |
+    #     pip install .
     - id: deployment
       uses: sphinx-notes/pages@v3

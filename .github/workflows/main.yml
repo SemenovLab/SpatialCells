@@ -20,3 +20,5 @@ jobs:
         pip install .
     - id: deployment
       uses: sphinx-notes/pages@v3
+      with:
+        checkout: false

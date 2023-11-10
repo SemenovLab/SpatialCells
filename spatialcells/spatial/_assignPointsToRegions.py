@@ -10,6 +10,7 @@ def assignPointsToRegion(
     """
     Assign points to a region based on the boundaries. Points that are already assigned
     to a region in donelist will not be reassigned.
+
     :param anndata: Anndata object
     :param multi_polygon: MultiPolygon object of the region boundary
     :param assigncolumn: Column name for the region assignment
@@ -41,6 +42,7 @@ def assignPointsToRegions(
     Assign points to regions based on the boundaries. The region assignment is
     based on the order of the boundaries, so the innermost region should be the
     first element of boundaries_list.
+    
     :param anndata: Anndata object
     :param boundaries_list: List of boundaries
     :param region_names: List of region names. The order and length should match boundaries_list

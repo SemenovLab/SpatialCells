@@ -17,8 +17,8 @@ def getDistanceFromObject(
     binned=False,
     binsize=10,
 ):
-    """
-    Get the minimum euclidean distance between each cell and a shapely object.
+    """Get the minimum euclidean distance between each cell and a shapely object.
+
     :param adata: Anndata object
     :param object: Shapely object to measure distance from
     :param x: Name of the column containing the x coordinate. Default is "X_centroid".
@@ -29,7 +29,7 @@ def getDistanceFromObject(
     :param inplace: If True, add the distance column to adata.obs. If False, return a copy
     :param binned: If True, bin the distances into bins of size binsize.
     :param binsize: Size of the bins to use for binning. Default is 10.
-    :return: If inplace is False, return a copy of adata with the distance column added
+    :returns: If inplace is False, return a copy of adata with the distance column added
     """
     if not inplace:
         adata = adata.copy()

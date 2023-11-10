@@ -10,10 +10,10 @@ def getCellKDE(
     bandwidth=1,
     name="kde_likelihood",
 ):
-    """
-    Get per cell log likelihood based on a kernel density estimate.
+    """Get per cell log likelihood based on a kernel density estimate.
     This can be normalized by the area of the region to be comparable across regions.
     Likelihoods will be stored in adata.obs[name].
+
     :param adata: Anndata object
     :param regions: A list of regions to compute the density in
     :param phenotype_col: A list of columns to stratify the density by.

@@ -9,10 +9,11 @@ from collections import defaultdict
 def _bfsGetShortestRing(edge_dict, start_point):
     """
     Given a set of edges, return the shortest ring starting from start_point.
-    Helper function for _getOrderedEdgeComponents
+    Helper function for `_getOrderedEdgeComponents`
+
     :param edge_dict: a dict of edges. key is a point; value = set(its neighbors)
     :param start_point: the starting point of the ring
-    :return: a list of points representing the shortest ring
+    :returns: a list of points representing the shortest ring
     """
     bfs_queue = [(start_point, [start_point])]
     while len(bfs_queue) > 0:
@@ -28,10 +29,11 @@ def _bfsGetShortestRing(edge_dict, start_point):
 def _getOrderedEdgeComponents(edges):
     """
     Given a set of edges, return a list of ordered edge components
-    Helper function for getAlphaShapes
+    Helper function for `getAlphaShapes`
+
     :param edges: np.array of shape (n,2) for n edges.
-    :return: a list of ordered edge components. Each component
-    is a np.array of shape (m,2) for m edges.
+    :returns: a list of ordered edge components. Each component 
+        is a np.array of shape (m,2) for m edges.
     """
 
     # key is a point; value = set(its neighbors)
@@ -73,9 +75,10 @@ def _getOrderedEdgeComponents(edges):
 def _getUniqueEdges(all_edges):
     """
     Return the boundary of Delaunay represented by all_edges.
-    Helper function for getAlphaShapes
+    Helper function for `getAlphaShapes`
+
     :param all_edges: np.array of shape (n,2) for n edges.
-    :return: np.array of shape (m,2) for m edges, where m <= n.
+    :returns: np.array of shape (m,2) for m edges, where m <= n.
     """
     all_edges = np.sort(all_edges, axis=1)
     unique_edges, counts = np.unique(all_edges, axis=0, return_counts=True)
@@ -85,9 +88,10 @@ def _getUniqueEdges(all_edges):
 def _pruneTouchingComponents(edge_dict):
     """
     Given ring components, separate touching rings by extracting the smallest rings.
-    Helper function for _getOrderedEdgeComponents
+    Helper function for `_getOrderedEdgeComponents`
+
     :param edge_dict: a dict of edges. key is a point; value = set(its neighbors)
-    :return: tuple of (edge_dict with touching components pruned, list of touching components)
+    :returns: tuple of (edge_dict with touching components pruned, list of touching components)
     """
     edge_dict = deepcopy(edge_dict)
     components = []
@@ -117,9 +121,10 @@ def _pruneTouchingComponents(edge_dict):
 def getAlphaShapes(points, alpha, debug=False):
     """
     Compute the alpha shape of a set of points.
+
     :param points: np.array of shape (n,2) points.
     :param alpha: alpha value.
-    :return: set of (i,j) point pairs representing edges of the alpha-shape.
+    :returns: set of (i,j) point pairs representing edges of the alpha-shape.
     """
     assert points.shape[0] > 3, "Need at least four points"
 
@@ -160,9 +165,10 @@ def getAlphaShapes(points, alpha, debug=False):
 def getComponents(boundary, keep_holes=True):
     """
     Get the components of a boundary defined by a MultiPolygon.
+
     :param boundary: the boundary to get components from
     :param keep_holes: whether to keep holes
-    :return: a list of components, where each component is a MultiPolygon
+    :returns: a list of components, where each component is a MultiPolygon
     """
     components = []
     for geom in boundary.geoms:
@@ -179,8 +185,9 @@ def getComponents(boundary, keep_holes=True):
 def getHoles(boundary):
     """
     Get the holes within boundary components.
+
     :param boundary: the boundary to get holes from
-    :return: a list of holes, where each hole is a MultiPolygon
+    :returns: a list of holes, where each hole is a MultiPolygon
     """
     external_components = getComponents(boundary, keep_holes=False)
     external_boundary = shapely.unary_union(external_components)
@@ -196,12 +203,13 @@ def pruneSmallComponents(
 ):
     """
     Prune small components from a boundary defined by a MultiPolygon.
+
     :param boundary: the boundary to prune
     :param min_area: the minimum area of a polygon component to keep
     :param min_edges: the minimum number of edges of a polygon component to keep
     :param holes_min_area: the minimum area of a hole to keep the hole
     :param holes_min_edges: the minimum number of edges of a hole to keep the hole
-    :return: the pruned boundary
+    :returns: the pruned boundary
     """
     polygons = []
     for geom in boundary.geoms:

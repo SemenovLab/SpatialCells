@@ -21,9 +21,9 @@ def plotRegions(
     """
     Plot the regions in the regions_list and label them with their index in
     the list.
-
     labels are placed at the lower left corner of each region. Their position
     can be adjusted by x_offset and y_offset, and the overall label_bounds.
+    
     :param regions_list: a list of MultiPolygon regions
     :param add_label: whether to label the regions
     :param ax: the matplotlib ax object.

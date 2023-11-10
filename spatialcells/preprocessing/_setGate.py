@@ -2,12 +2,13 @@ def setGate(adata, target_marker, gate, marker_suffix="_positive", debug=True):
     """
     A new column will be added for the marker.
     E.g., for a marker named by SOX10, SOX10_positive will be added, which has two values: True or False.
+
     :param adata: AnnData object
     :param target_marker: the marker to be gated
     :param gate: the gate value
     :param marker_suffix: the suffix of the new column name
     :param debug: if True, print the value counts of the new column
-    :return: None
+    :returns: None
     """
 
     newkey = target_marker + marker_suffix

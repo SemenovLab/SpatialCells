@@ -23,7 +23,7 @@ def getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=F
     :param alpha: the alpha parameter for alpha shape. Smaller alpha gives
         more detailed boundary, but may appear more jagged.
     :param debug: whether to return the polygons and edge components
-    :return: the boundaries of components as a MultiPolygon object
+    :returns: the boundaries of components as a MultiPolygon object
     """
 
     xy = anndata.obs[anndata.obs[communitycolumn].isin(communityIndexList)][

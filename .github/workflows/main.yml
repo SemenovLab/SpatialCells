@@ -16,6 +16,6 @@ jobs:
     steps:
     - id: install-self
       run: |
-        pip install -e ../.
+        pip install ../.
     - id: deployment
       uses: sphinx-notes/pages@v3

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Functions Reference &#8212; SpatialCells 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=61b282d3"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spatialcells.preprocessing" href="spatialcells.preprocessing.html" />
+    <link rel="prev" title="5: Loading and Saving Regions" href="tutorial/5_tutorial_import_export_omero.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="functions-reference">
+<h1>Functions Reference<a class="headerlink" href="#functions-reference" title="Link to this heading">¶</a></h1>
+<p>Functions in SpatialCells are divided into 5 modules:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spatialcells.preprocessing.html">spatialcells.preprocessing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.preprocessing.html#setgate">setGate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.preprocessing.html#spatialcells.prep.setGate"><code class="docutils literal notranslate"><span class="pre">setGate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.preprocessing.html#setgates">setGates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.preprocessing.html#spatialcells.prep.setGates"><code class="docutils literal notranslate"><span class="pre">setGates()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spatialcells.spatial.html">spatialcells.spatial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#assignpointstoregions">assignPointsToRegions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.assignPointsToRegions"><code class="docutils literal notranslate"><span class="pre">assignPointsToRegions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#bufferboundary">bufferBoundary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.bufferBoundary"><code class="docutils literal notranslate"><span class="pre">bufferBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#estimateinitialdistance">estimateInitialDistance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.estimateInitialDistance"><code class="docutils literal notranslate"><span class="pre">estimateInitialDistance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#getboundary">getBoundary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.getBoundary"><code class="docutils literal notranslate"><span class="pre">getBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#getcommunities">getCommunities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.getCommunities"><code class="docutils literal notranslate"><span class="pre">getCommunities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#getextendedboundary">getExtendedBoundary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.getExtendedBoundary"><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#getshrunkenboundary">getShrunkenBoundary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial.getShrunkenBoundary"><code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html#module-spatialcells.spatial._utils">Utility functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial._utils.getAlphaShapes"><code class="docutils literal notranslate"><span class="pre">getAlphaShapes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial._utils.getComponents"><code class="docutils literal notranslate"><span class="pre">getComponents()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial._utils.getHoles"><code class="docutils literal notranslate"><span class="pre">getHoles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.spatial.html#spatialcells.spatial._utils.pruneSmallComponents"><code class="docutils literal notranslate"><span class="pre">pruneSmallComponents()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spatialcells.measurements.html">spatialcells.measurements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getcellkde">getCellKDE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getCellKDE"><code class="docutils literal notranslate"><span class="pre">getCellKDE()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getdistancefromobject">getDistanceFromObject</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getDistanceFromObject"><code class="docutils literal notranslate"><span class="pre">getDistanceFromObject()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getdistancefrompoint">getDistanceFromPoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getDistanceFromPoint"><code class="docutils literal notranslate"><span class="pre">getDistanceFromPoint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getmpi">getMPI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getMPI"><code class="docutils literal notranslate"><span class="pre">getMPI()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getmincelltypesdistance">getMinCellTypesDistance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getMinCellTypesDistance"><code class="docutils literal notranslate"><span class="pre">getMinCellTypesDistance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getregionarea">getRegionArea</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getRegionArea"><code class="docutils literal notranslate"><span class="pre">getRegionArea()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getregioncentroid">getRegionCentroid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getRegionCentroid"><code class="docutils literal notranslate"><span class="pre">getRegionCentroid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getregioncomposition">getRegionComposition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getRegionComposition"><code class="docutils literal notranslate"><span class="pre">getRegionComposition()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getregiondensity">getRegionDensity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getRegionDensity"><code class="docutils literal notranslate"><span class="pre">getRegionDensity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#getslidingwindowscomposition">getSlidingWindowsComposition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.getSlidingWindowsComposition"><code class="docutils literal notranslate"><span class="pre">getSlidingWindowsComposition()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html#get-comp-mask">get_comp_mask</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.measurements.html#spatialcells.msmt.get_comp_mask"><code class="docutils literal notranslate"><span class="pre">get_comp_mask()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spatialcells.plotting.html">spatialcells.plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html#plotboundary">plotBoundary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.plotting.html#spatialcells.plt.plotBoundary"><code class="docutils literal notranslate"><span class="pre">plotBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html#plotcommunities">plotCommunities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.plotting.html#spatialcells.plt.plotCommunities"><code class="docutils literal notranslate"><span class="pre">plotCommunities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html#plotregions">plotRegions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.plotting.html#spatialcells.plt.plotRegions"><code class="docutils literal notranslate"><span class="pre">plotRegions()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spatialcells.utils.html">spatialcells.utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html#exportregion">exportRegion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.utils.html#spatialcells.utils.exportRegion"><code class="docutils literal notranslate"><span class="pre">exportRegion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html#importregion">importRegion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spatialcells.utils.html#spatialcells.utils.importRegion"><code class="docutils literal notranslate"><span class="pre">importRegion()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SpatialCells</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functions Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.preprocessing.html">spatialcells.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html">spatialcells.spatial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html">spatialcells.measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html">spatialcells.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html">spatialcells.utils</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tutorial/5_tutorial_import_export_omero.html" title="previous chapter">5: Loading and Saving Regions</a></li>
+      <li>Next: <a href="spatialcells.preprocessing.html" title="next chapter">spatialcells.preprocessing</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Guihong Wan; Zoltan Maliga & Boshen Yan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/spatialcells.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

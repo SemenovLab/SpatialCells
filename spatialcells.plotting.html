@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>spatialcells.plotting &#8212; SpatialCells 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=61b282d3"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spatialcells.utils" href="spatialcells.utils.html" />
+    <link rel="prev" title="spatialcells.measurements" href="spatialcells.measurements.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="spatialcells-plotting">
+<h1>spatialcells.plotting<a class="headerlink" href="#spatialcells-plotting" title="Link to this heading">¶</a></h1>
+<p>Module for plotting spatial cells regions.</p>
+<p>Access via either <code class="docutils literal notranslate"><span class="pre">spatialcells.plotting</span></code> or <code class="docutils literal notranslate"><span class="pre">spatialcells.plt</span></code>.</p>
+<section id="plotboundary">
+<h2>plotBoundary<a class="headerlink" href="#plotboundary" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialcells.plt.plotBoundary">
+<span class="sig-prename descclassname"><span class="pre">spatialcells.plt.</span></span><span class="sig-name descname"><span class="pre">plotBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialcells.plt.plotBoundary" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the boundary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary</strong> – the MultiPolygon boundary of the region</p></li>
+<li><p><strong>ax</strong> – the matplotlib ax object. If None (default), use plt.</p></li>
+<li><p><strong>kwargs</strong> – kwargs for matplotlib.pyplot.plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="plotcommunities">
+<h2>plotCommunities<a class="headerlink" href="#plotcommunities" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialcells.plt.plotCommunities">
+<span class="sig-prename descclassname"><span class="pre">spatialcells.plt.</span></span><span class="sig-name descname"><span class="pre">plotCommunities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communitycolumn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_first_n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialcells.plt.plotCommunities" title="Link to this definition">¶</a></dt>
+<dd><p>Plot largest communities on a scatter plot. Each community is labelled as:
+(rank in descending number of cells : index of community)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> – AnnData object</p></li>
+<li><p><strong>ret</strong> – return value of spc.spa.getCommunities</p></li>
+<li><p><strong>communitycolumn</strong> – column name of the community column in adata.obs</p></li>
+<li><p><strong>plot_first_n_clusters</strong> – plot and number the largest n communities</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments for matplotlib.pyplot.plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="plotregions">
+<h2>plotRegions<a class="headerlink" href="#plotregions" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialcells.plt.plotRegions">
+<span class="sig-prename descclassname"><span class="pre">spatialcells.plt.</span></span><span class="sig-name descname"><span class="pre">plotRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['k',</span> <span class="pre">'r',</span> <span class="pre">'b',</span> <span class="pre">'g']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">foreground_linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialcells.plt.plotRegions" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the regions in the regions_list and label them with their index in
+the list.
+labels are placed at the lower left corner of each region. Their position
+can be adjusted by x_offset and y_offset, and the overall label_bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions_list</strong> – a list of MultiPolygon regions</p></li>
+<li><p><strong>add_label</strong> – whether to label the regions</p></li>
+<li><p><strong>ax</strong> – the matplotlib ax object.</p></li>
+<li><p><strong>label_prefix</strong> – a prefix to the label of each region</p></li>
+<li><p><strong>x_offset</strong> – the x offset of each label</p></li>
+<li><p><strong>y_offset</strong> – the y offset of the label</p></li>
+<li><p><strong>fontsize</strong> – the fontsize of the label</p></li>
+<li><p><strong>label_bounds</strong> – the bounds of all the label (minx, miny, maxx, maxy).
+If None, the bounds of the regions_list will be used.</p></li>
+<li><p><strong>colors_list</strong> – a list of colors that will be cycled through for each
+region.</p></li>
+<li><p><strong>fontcolor</strong> – the fontcolor of the label</p></li>
+<li><p><strong>foreground_linewidth</strong> – the foreground linewidth of the label. Adjusts
+the thickness of the white border around each label.</p></li>
+<li><p><strong>kwargs</strong> – kwargs for matplotlib.pyplot.plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SpatialCells</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="spatialcells.html">Functions Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.preprocessing.html">spatialcells.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html">spatialcells.spatial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html">spatialcells.measurements</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">spatialcells.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html">spatialcells.utils</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="spatialcells.html">Functions Reference</a><ul>
+      <li>Previous: <a href="spatialcells.measurements.html" title="previous chapter">spatialcells.measurements</a></li>
+      <li>Next: <a href="spatialcells.utils.html" title="next chapter">spatialcells.utils</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Guihong Wan; Zoltan Maliga & Boshen Yan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/spatialcells.plotting.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

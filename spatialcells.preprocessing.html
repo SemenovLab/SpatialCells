@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>spatialcells.preprocessing &#8212; SpatialCells 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=61b282d3"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spatialcells.spatial" href="spatialcells.spatial.html" />
+    <link rel="prev" title="Functions Reference" href="spatialcells.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="spatialcells-preprocessing">
+<h1>spatialcells.preprocessing<a class="headerlink" href="#spatialcells-preprocessing" title="Link to this heading">¶</a></h1>
+<p>Access via either <code class="docutils literal notranslate"><span class="pre">spatialcells.preprocessing</span></code> or <code class="docutils literal notranslate"><span class="pre">spatialcells.prep</span></code>.</p>
+<section id="setgate">
+<h2>setGate<a class="headerlink" href="#setgate" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialcells.prep.setGate">
+<span class="sig-prename descclassname"><span class="pre">spatialcells.prep.</span></span><span class="sig-name descname"><span class="pre">setGate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_marker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_positive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialcells.prep.setGate" title="Link to this definition">¶</a></dt>
+<dd><p>A new column will be added for the marker.
+E.g., for a marker named by SOX10, SOX10_positive will be added, which has two values: True or False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> – AnnData object</p></li>
+<li><p><strong>target_marker</strong> – the marker to be gated</p></li>
+<li><p><strong>gate</strong> – the gate value</p></li>
+<li><p><strong>marker_suffix</strong> – the suffix of the new column name</p></li>
+<li><p><strong>debug</strong> – if True, print the value counts of the new column</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="setgates">
+<h2>setGates<a class="headerlink" href="#setgates" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialcells.prep.setGates">
+<span class="sig-prename descclassname"><span class="pre">spatialcells.prep.</span></span><span class="sig-name descname"><span class="pre">setGates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_positive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialcells.prep.setGates" title="Link to this definition">¶</a></dt>
+<dd><p>A new column will be added for a marker.
+E.g., for SOX10, SOX10_positive will be added, which has two values: True or False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> – AnnData object</p></li>
+<li><p><strong>gate_file</strong> – the file containing the gate values for each marker</p></li>
+<li><p><strong>marker_suffix</strong> – the suffix of the new column name</p></li>
+<li><p><strong>debug</strong> – if True, print the value counts of the new column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SpatialCells</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="spatialcells.html">Functions Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">spatialcells.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.spatial.html">spatialcells.spatial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html">spatialcells.measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html">spatialcells.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html">spatialcells.utils</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="spatialcells.html">Functions Reference</a><ul>
+      <li>Previous: <a href="spatialcells.html" title="previous chapter">Functions Reference</a></li>
+      <li>Next: <a href="spatialcells.spatial.html" title="next chapter">spatialcells.spatial</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Guihong Wan; Zoltan Maliga & Boshen Yan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/spatialcells.preprocessing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

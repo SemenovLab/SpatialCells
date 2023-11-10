@@ -1,0 +1,3727 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>4: Macro and Micro Regions Analysis &#8212; SpatialCells 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=61b282d3"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5: Loading and Saving Regions" href="5_tutorial_import_export_omero.html" />
+    <link rel="prev" title="3: Immune Infiltration Overlap Analysis" href="3_tutorial_immune_infiltration_overlap.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="4:-Macro-and-Micro-Regions-Analysis">
+<h1>4: Macro and Micro Regions Analysis<a class="headerlink" href="#4:-Macro-and-Micro-Regions-Analysis" title="Link to this heading">¶</a></h1>
+<p>Demonstrate the usage of SpatialCells to extract region components or holes for fine-grained analysis into cell types</p>
+<div class="line-block">
+<div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
+<div class="line">&#64;date: Aug 20, 2023</div>
+<div class="line">&#64;last updated: Oct 6, 2023</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">anndata</span> <span class="k">as</span> <span class="nn">ad</span>
+<span class="kn">import</span> <span class="nn">statistics</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
+</pre></div>
+</div>
+</div>
+<section id="Read-data">
+<h2>Read data<a class="headerlink" href="#Read-data" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;../../../Cycif/unmicst-1_750_PCA_Mel1.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Index([&#39;HHLA2_cellRingMask&#39;, &#39;CMA1_cellRingMask&#39;, &#39;SOX10_cellRingMask&#39;,
+       &#39;S100B_cellRingMask&#39;, &#39;KERATIN_cellRingMask&#39;, &#39;CD1A_cellRingMask&#39;,
+       &#39;CD163_cellRingMask&#39;, &#39;CD3D_cellRingMask&#39;, &#39;C8A_cellRingMask&#39;,
+       &#39;MITF_cellRingMask&#39;, &#39;FOXP3_cellRingMask&#39;, &#39;PDL1_cellRingMask&#39;,
+       &#39;KI67_cellRingMask&#39;, &#39;LAG3_cellRingMask&#39;, &#39;TIM3_cellRingMask&#39;,
+       &#39;PCNA_cellRingMask&#39;, &#39;pSTAT1_cellRingMask&#39;, &#39;cPARP_cellRingMask&#39;,
+       &#39;SNAIL_cellRingMask&#39;, &#39;aSMA_cellRingMask&#39;, &#39;HLADPB1_cellRingMask&#39;,
+       &#39;S100A_cellRingMask&#39;, &#39;CD11C_cellRingMask&#39;, &#39;PD1_cellRingMask&#39;,
+       &#39;LDH_cellRingMask&#39;, &#39;PANCK_cellRingMask&#39;, &#39;CCNA2_cellRingMask&#39;,
+       &#39;CCND1_cellRingMask&#39;, &#39;CD63_cellRingMask&#39;, &#39;CD31_cellRingMask&#39;],
+      dtype=&#39;object&#39;)
+</pre></div></div>
+</div>
+</section>
+<section id="setGate-or-setGates">
+<h2>setGate or setGates<a class="headerlink" href="#setGate-or-setGates" title="Link to this heading">¶</a></h2>
+<p>This package relies on gated biomarkers in adata.obs</p>
+<p>If gating has not yet been performed, <code class="docutils literal notranslate"><span class="pre">setGate</span></code> and <code class="docutils literal notranslate"><span class="pre">setGates</span></code> are convenience functions to gate the dataset manually or via a csv file</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># New columns, SOX10_positive and CD45_positive, will be added</span>
+<span class="c1"># spc.prep.setGate(adata, &quot;SOX10&quot;, 7.5, debug = True)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;CCND1_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_negative&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_cellRingMask_positive&quot;</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_negative&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CCND1_cellRingMask_positive
+False    827121
+True     283464
+Name: count, dtype: int64
+</pre></div></div>
+</div>
+<p>Visualizing cells with markers of interest</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+<span class="c1">## SOX10+CCND1- cells</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_9_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_9_0.png" />
+</div>
+</div>
+<p>The following steps compute the communities based on SOX10+ or CD45+ cells.</p>
+</section>
+<section id="getCommunities">
+<h2>getCommunities<a class="headerlink" href="#getCommunities" title="Link to this heading">¶</a></h2>
+<p>We first use DBSCAN via <code class="docutils literal notranslate"><span class="pre">getCommunities</span></code> to identify regions with high densities of markers of interest.</p>
+<div class="line-block">
+<div class="line">Optionally, <code class="docutils literal notranslate"><span class="pre">estimateInitialDistance</span></code> can be run first to estimate the eps parameter for DBSCAN.</div>
+<div class="line">In this tutorial, we used a threshold between the first quartile and median.</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span>
+<span class="n">eps_estims</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">estimateInitialDistance</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">sampling_ratio</span><span class="o">=</span><span class="mf">0.01</span>
+<span class="p">)</span>
+<span class="n">eps_estims</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Computing distances...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[38.0266446350757,
+ 83.31972051088243,
+ 152.74027929906723,
+ 247.1479778340266,
+ 434.05637411112275,
+ 889.9071638862762,
+ 1618.9907606280917,
+ 2525.6415331917565,
+ 6121.660491248601,
+ 12414.412212745556,
+ 33084.107551174115,
+ 132872.67781583336]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># markers_of_interest = [&quot;SOX10_positive&quot;, &quot;CCND1_negative&quot;]</span>
+
+<span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;COI_community&quot;</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span>
+    <span class="n">markers_of_interest</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span>  <span class="c1"># smaller --&gt; more cells are considered as outliers.</span>
+    <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span><span class="p">,</span>
+    <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">core_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of communities:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+number of communities: 149
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function plotCommunities in module spatialcells.plotting._plotCommunities:
+
+plotCommunities(adata, ret, communitycolumn, plot_first_n_clusters=10, **kwargs)
+    Plot largest communities on a scatter plot. Each community is labelled as:
+    (rank in descending number of cells : index of community)
+
+    :param adata: AnnData object
+    :param ret: return value of spc.spa.getCommunities
+    :param communitycolumn: column name of the community column in adata.obs
+    :param plot_first_n_clusters: plot and number the largest n communities
+    :param kwargs: keyword arguments for matplotlib.pyplot.plot
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">plot_first_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_15_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_15_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_first_n_clusters</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">clusters_idx_sorted</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">npoints</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Indexes of the&quot;</span><span class="p">,</span>
+    <span class="n">plot_first_n_clusters</span><span class="p">,</span>
+    <span class="s2">&quot;largest clusters:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">clusters_idx_sorted</span><span class="p">[:</span><span class="n">plot_first_n_clusters</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster size and index:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="n">plot_first_n_clusters</span><span class="p">])</span>
+
+<span class="c1"># Here we choose the three largest ones of interest based on their index:</span>
+<span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">39</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Indexes of the 10 largest clusters:
+ [8, 39, 46, 37, 2, 25, 28, 58, 76, 63]
+Cluster size and index:
+ [(165231, 8), (41772, 39), (29115, 46), (11021, 37), (7557, 2), (4439, 25), (3337, 28), (2560, 58), (1844, 76), (1778, 63)]
+</pre></div></div>
+</div>
+</section>
+<section id="getBoundary">
+<h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function getBoundary in module spatialcells.spatial._getBoundary:
+
+getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=False)
+    Get a boundary for the communities of interest as a Shapely MultiPolygon.
+
+    The boundary is defined based on the alpha shape of points in the
+    communities. The alpha shape is the generalization of the convex hull,
+    and is generated via Delaunay triangulation of all the points of interest.
+    The alpha parameter controls the longest edge that can appear in the alpha
+    shape. Smaller alpha gives more detailed boundary, but may appear more
+    jagged and may leave out some points that are too far away from the rest
+    of the points.
+
+    :param anndata: the anndata object
+    :param communitycolumn: the column name of the community
+    :param communityIndexList: the list of community indexes
+    :param alpha: the alpha parameter for alpha shape. Smaller alpha gives
+        more detailed boundary, but may appear more jagged.
+    :param debug: whether to return the polygons and edge components
+    :return: the boundaries of components as a MultiPolygon object
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># smaller alpha results in more detailed boundaries</span>
+<span class="n">boundaries</span><span class="p">,</span> <span class="n">polygons</span><span class="p">,</span> <span class="n">edge_components</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">27</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">boundaries1</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">boundaries</span><span class="p">,</span> <span class="n">min_area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_edges</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Before pruning&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;After pruning&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_19_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_19_0.png" />
+</div>
+</div>
+<section id="isolate-and-plot-each-boundary-component-(for-demo)">
+<h3>isolate and plot each boundary component (for demo)<a class="headerlink" href="#isolate-and-plot-each-boundary-component-(for-demo)" title="Link to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getComponents</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function getComponents in module spatialcells.spatial._utils:
+
+getComponents(boundary, keep_holes=True)
+    Get the components of a boundary defined by a MultiPolygon.
+    :param boundary: the boundary to get components from
+    :param keep_holes: whether to keep holes
+    :return: a list of components, where each component is a MultiPolygon
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boundary_component_list</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getComponents</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of components:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">boundary_component_list</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span>
+    <span class="n">boundary_component_list</span><span class="p">,</span>
+    <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">],</span>
+    <span class="n">x_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">y_offset</span><span class="o">=-</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Number of components: 24
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_22_1.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_22_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># larger alpha results in more rough boundaries with less jagged exterior</span>
+<span class="n">boundaries_rough</span><span class="p">,</span> <span class="n">polygons_rough</span><span class="p">,</span> <span class="n">edge_components_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">boundaries_rough1</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">boundaries_rough</span><span class="p">,</span>
+    <span class="n">min_area</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
+    <span class="n">min_edges</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span>
+    <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries_rough</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries_rough1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Before pruning&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;After pruning&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" />
+</div>
+</div>
+<p>Visualization of regions of interest and boundary</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;All cells&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span>
+<span class="p">][</span>  <span class="c1"># [adata.obs[communitycolumn].isin(communityIndexList)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SOX10+CCND1- cells&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">6300</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">9050</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="c1"># plt.legend(loc=&quot;lower left&quot;, markerscale=5)</span>
+<span class="c1"># plt.savefig(&quot;5_micro_region_zoom.png&quot;, dpi=300)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_25_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_25_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;All cells&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)</span>
+<span class="p">][</span>  <span class="c1"># adata.obs[adata.obs[&quot;SOX10+CCND1-&quot;]][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SOX10+CCND1- cells&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">14000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18000</span><span class="p">)</span>
+<span class="c1"># plt.legend(loc=&quot;lower left&quot;, markerscale=5)</span>
+<span class="c1"># plt.savefig(&quot;5_micro_region.png&quot;, dpi=300)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="getExtendedBoundary-&amp;-getShrunkenBoundary">
+<h2>getExtendedBoundary &amp; getShrunkenBoundary<a class="headerlink" href="#getExtendedBoundary-&-getShrunkenBoundary" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary</span></code> and <code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary</span></code> can be used to expand or shrink the current boundary, which is useful to generate regions of interest</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrunken_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getShrunkenBoundary</span><span class="p">(</span><span class="n">boundaries_rough1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">shrunken_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">shrunken_boundaries_rough</span><span class="p">,</span>
+    <span class="n">min_area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">min_edges</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">extended_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getExtendedBoundary</span><span class="p">(</span><span class="n">boundaries_rough1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">extended_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">extended_boundaries_rough</span><span class="p">,</span>
+    <span class="n">min_area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">min_edges</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ROI_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getExtendedBoundary</span><span class="p">(</span><span class="n">boundaries_rough1</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+<span class="n">ROI_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">ROI_boundaries_rough</span><span class="p">,</span>
+    <span class="n">min_area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">min_edges</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">boundaries_rough1</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tumor boundary&quot;</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">ROI_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI boundary&quot;</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">shrunken_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Shrunken boundary&quot;</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">extended_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Extended boundary&quot;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">14000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">markerscale</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_28_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_28_0.png" />
+</div>
+</div>
+</section>
+<section id="assignPointsToRegion">
+<h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading">¶</a></h2>
+<p>Using 1 or more generated boundaries, cells can be assigned to different regions for downstream analysis</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function assignPointsToRegions in module spatialcells.spatial._assignPointsToRegions:
+
+assignPointsToRegions(anndata, boundaries_list, region_names, assigncolumn=&#39;region&#39;, default=&#39;BG&#39;)
+    Assign points to regions based on the boundaries. The region assignment is
+    based on the order of the boundaries, so the innermost region should be the
+    first element of boundaries_list.
+    :param anndata: Anndata object
+    :param boundaries_list: List of boundaries
+    :param region_names: List of region names. The order and length should match boundaries_list
+    :param assigncolumn: Column name for the region assignment
+    :param default: Default region name for points that are not assigned to any region
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma&quot;</span><span class="p">]</span>
+<span class="n">boundaries_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">shrunken_boundaries_rough</span><span class="p">,</span>
+    <span class="n">boundaries_rough1</span><span class="p">,</span>
+    <span class="n">extended_boundaries_rough</span><span class="p">,</span>
+    <span class="n">ROI_boundaries_rough</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region_rough&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;BG&quot;</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">boundaries_list</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">assigncolumn</span><span class="o">=</span><span class="s2">&quot;region_rough&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;BG&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+701940it [00:28, 24872.67it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Tumor
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+184786it [00:08, 22456.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Tumor Border
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+172844it [00:10, 17030.99it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Stroma Border
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+227665it [00:07, 31317.39it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Stroma
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Regions:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region_rough&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of points in each region:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region_rough&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Regions:
+Index([&#39;Tumor&#39;, &#39;Tumor Border&#39;, &#39;Stroma Border&#39;, &#39;Stroma&#39;, &#39;BG&#39;], dtype=&#39;object&#39;)
+
+Number of points in each region:
+region_rough
+Tumor            532328
+BG               454981
+Stroma            62020
+Tumor Border      41576
+Stroma Border     19680
+Name: count, dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:gray&quot;</span><span class="p">]</span>
+
+<span class="n">point_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region_rough&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region_rough</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">point_size</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">boundaries_rough1</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tumor&quot;</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">ROI_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">shrunken_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Shrunken tumor&quot;</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">extended_boundaries_rough</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Extended tumor&quot;</span>
+<span class="p">)</span>
+<span class="c1"># plt.legend(loc=&quot;lower right&quot;, markerscale=5)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">14000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18000</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&quot;5_macro_regions.png&quot;, dpi=300)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_33_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_33_0.png" />
+</div>
+</div>
+<p>Isolate non-tumor cell holes within the tumor region:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
+
+<span class="n">holes</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getHoles</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">)</span>
+<span class="n">final_holes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">roi_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">9050</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">9050</span><span class="p">,</span> <span class="mi">6300</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">6300</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">hole</span> <span class="ow">in</span> <span class="n">holes</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">hole</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">roi_poly</span><span class="p">):</span>
+        <span class="n">final_holes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hole</span><span class="p">)</span>
+<span class="n">shrunken_holes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">extended_holes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_holes</span><span class="p">):</span>
+    <span class="n">shrunken_holes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">bufferBoundary</span><span class="p">(</span><span class="n">hole</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">))</span>
+    <span class="n">extended_holes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">bufferBoundary</span><span class="p">(</span><span class="n">hole</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function plotRegions in module spatialcells.plotting._plotRegions:
+
+plotRegions(regions_list, ax=None, add_label=True, label_prefix=&#39;&#39;, x_offset=0, y_offset=0, fontsize=12, label_bounds=None, colors_list=[&#39;k&#39;, &#39;r&#39;, &#39;b&#39;, &#39;g&#39;], fontcolor=&#39;black&#39;, foreground_linewidth=5, **kwargs)
+    Plot the regions in the regions_list and label them with their index in
+    the list.
+
+    labels are placed at the lower left corner of each region. Their position
+    can be adjusted by x_offset and y_offset, and the overall label_bounds.
+    :param regions_list: a list of MultiPolygon regions
+    :param add_label: whether to label the regions
+    :param ax: the matplotlib ax object.
+    :param label_prefix: a prefix to the label of each region
+    :param x_offset: the x offset of each label
+    :param y_offset: the y offset of the label
+    :param fontsize: the fontsize of the label
+    :param label_bounds: the bounds of all the label (minx, miny, maxx, maxy).
+        If None, the bounds of the regions_list will be used.
+    :param colors_list: a list of colors that will be cycled through for each
+        region.
+    :param fontcolor: the fontcolor of the label
+    :param foreground_linewidth: the foreground linewidth of the label. Adjusts
+        the thickness of the white border around each label.
+    :param kwargs: kwargs for matplotlib.pyplot.plot
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;All cells&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span>
+<span class="p">][</span>  <span class="c1"># [adata.obs[communitycolumn].isin(communityIndexList)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SOX10+CCND1- cells&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span>
+    <span class="n">final_holes</span><span class="p">,</span>
+    <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;black&quot;</span><span class="p">],</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">label_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">6300</span><span class="p">,</span> <span class="mi">9050</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+    <span class="n">x_offset</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">y_offset</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">add_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span><span class="n">shrunken_holes</span><span class="p">,</span> <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">add_label</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span>
+    <span class="n">extended_holes</span><span class="p">,</span> <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">add_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">6300</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">9050</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_holes</span><span class="p">):</span>
+    <span class="n">boundaries_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">shrunken_holes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hole</span><span class="p">,</span> <span class="n">extended_holes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0In&quot;</span><span class="p">,</span> <span class="s2">&quot;1Bi&quot;</span><span class="p">,</span> <span class="s2">&quot;2Bo&quot;</span><span class="p">]</span>
+    <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
+        <span class="n">adata</span><span class="p">,</span> <span class="n">boundaries_list</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">assigncolumn</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;hole_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;BG&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+159it [00:00, 29057.31it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+389it [00:00, 38279.43it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+545it [00:00, 61256.15it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+79it [00:00, 44381.20it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+298it [00:00, 64308.63it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+514it [00:00, 68036.49it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+7it [00:00, 7831.46it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+111it [00:00, 48011.52it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+318it [00:00, 23622.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+45it [00:00, 42692.53it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+241it [00:00, 73901.69it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+439it [00:00, 64152.30it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+8569it [00:00, 22600.13it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+9184it [00:00, 29848.93it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+9428it [00:00, 32988.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+165it [00:00, 56777.44it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+305it [00:00, 65900.61it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+454it [00:00, 67638.05it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+113it [00:00, 55504.90it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+241it [00:00, 67600.30it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+382it [00:00, 68336.78it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+34it [00:00, 29610.95it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+166it [00:00, 65174.06it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+308it [00:00, 70094.72it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+293it [00:00, 59405.96it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+437it [00:00, 67178.96it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+578it [00:00, 65348.74it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2313it [00:00, 34923.22it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2914it [00:00, 43759.65it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3325it [00:00, 46577.85it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+69it [00:00, 50331.65it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+193it [00:00, 63485.27it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+343it [00:00, 57909.52it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1396it [00:00, 43888.47it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1806it [00:00, 53897.48it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2085it [00:00, 56205.49it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+128it [00:00, 60153.60it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+252it [00:00, 68332.34it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+367it [00:00, 71876.61it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+295it [00:00, 69008.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+508it [00:00, 75527.50it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+596it [00:00, 69262.03it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1344it [00:00, 46875.03it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1589it [00:00, 53714.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1807it [00:00, 53851.84it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+184it [00:00, 51051.92it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+455it [00:00, 61997.54it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+662it [00:00, 62352.73it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+28it [00:00, 34189.38it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+179it [00:00, 63814.74it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+421it [00:00, 66593.83it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+92it [00:00, 47058.04it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+302it [00:00, 65242.33it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+454it [00:00, 67862.22it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+572it [00:00, 48367.85it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1461it [00:00, 61432.36it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1759it [00:00, 59696.10it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+186it [00:00, 55624.99it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+402it [00:00, 44891.11it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+588it [00:00, 68196.29it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+19991it [00:01, 10351.90it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+19075it [00:01, 14605.40it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+18563it [00:01, 18559.03it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1it [00:00, 8192.00it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+85it [00:00, 48518.76it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+313it [00:00, 64750.54it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+591it [00:00, 57210.90it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+652it [00:00, 63839.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+737it [00:00, 62548.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+4it [00:00, 10894.30it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+105it [00:00, 57568.88it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+274it [00:00, 66215.68it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2798it [00:00, 45847.09it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3021it [00:00, 53894.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3172it [00:00, 53603.49it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+219it [00:00, 61763.89it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+437it [00:00, 65832.59it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+578it [00:00, 67627.42it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1522it [00:00, 43851.83it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2359it [00:00, 55895.30it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+2422it [00:00, 57934.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2186it [00:00, 44904.56it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2900it [00:00, 52363.57it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3060it [00:00, 52302.32it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1279it [00:00, 57144.08it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1063it [00:00, 62873.45it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1115it [00:00, 62728.34it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+111it [00:00, 60660.29it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+478it [00:00, 73743.97it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+632it [00:00, 68390.10it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+72it [00:00, 47215.43it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+250it [00:00, 61145.02it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+353it [00:00, 69954.61it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2498it [00:00, 31415.84it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3291it [00:00, 40620.98it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3796it [00:00, 43412.15it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+879it [00:00, 48111.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+969it [00:00, 55851.05it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1080it [00:00, 56896.21it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+70it [00:00, 43781.88it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+187it [00:00, 56852.34it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+342it [00:00, 20752.17it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+286it [00:00, 48401.02it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+753it [00:00, 57057.63it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+1177it [00:00, 59420.27it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+153it [00:00, 59161.84it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+383it [00:00, 66992.72it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+456it [00:00, 61772.58it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2496it [00:00, 49034.36it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3029it [00:00, 58814.35it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+3292it [00:00, 57468.89it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+180it [00:00, 57255.78it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+346it [00:00, 69743.81it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+440it [00:00, 70909.62it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+351it [00:00, 60907.73it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+529it [00:00, 67610.90it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+647it [00:00, 68336.60it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+7351it [00:00, 31607.66it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+7765it [00:00, 41852.17it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+7833it [00:00, 42714.11it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+343it [00:00, 64438.16it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+415it [00:00, 68639.78it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+444it [00:00, 64885.23it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+35it [00:00, 29196.63it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 0In
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+205it [00:00, 63353.40it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 1Bi
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+303it [00:00, 66274.20it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: 2Bo
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="k">as</span> <span class="nn">PathEffects</span>
+
+<span class="n">markersize</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;All cells&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span>
+<span class="p">][</span>  <span class="c1"># [adata.obs[communitycolumn].isin(communityIndexList)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SOX10+CCND1- cells&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span>
+    <span class="n">final_holes</span><span class="p">,</span>
+    <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;black&quot;</span><span class="p">],</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">label_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">6000</span><span class="p">,</span> <span class="mi">6300</span><span class="p">,</span> <span class="mi">9050</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+    <span class="n">x_offset</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">y_offset</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">add_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span><span class="n">shrunken_holes</span><span class="p">,</span> <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">add_label</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">(</span>
+    <span class="n">extended_holes</span><span class="p">,</span> <span class="n">colors_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">add_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">txt</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">7400</span><span class="p">,</span> <span class="mi">8600</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+<span class="n">txt</span><span class="o">.</span><span class="n">set_path_effects</span><span class="p">([</span><span class="n">PathEffects</span><span class="o">.</span><span class="n">withStroke</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">foreground</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">8500</span><span class="p">,</span> <span class="mi">9000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">7250</span><span class="p">,</span> <span class="mi">7750</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_39_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_39_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">merge_pheno</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;phenotype_large_cohort&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;T cells&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Cytotoxic T cells&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Exhausted T cells&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="s2">&quot;T cells&quot;</span>
+    <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;phenotype_large_cohort&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Melanocytes&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="s2">&quot;Tumor cells&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Other cells&quot;</span>
+
+
+<span class="c1"># Applying the function to create the new column</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pheno&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">merge_pheno</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X_centroid</th>
+      <th>Y_centroid</th>
+      <th>column_centroid</th>
+      <th>row_centroid</th>
+      <th>Area</th>
+      <th>MajorAxisLength</th>
+      <th>MinorAxisLength</th>
+      <th>Eccentricity</th>
+      <th>Solidity</th>
+      <th>Extent</th>
+      <th>...</th>
+      <th>hole_33</th>
+      <th>hole_34</th>
+      <th>hole_35</th>
+      <th>hole_36</th>
+      <th>hole_37</th>
+      <th>hole_38</th>
+      <th>hole_39</th>
+      <th>hole_40</th>
+      <th>hole_41</th>
+      <th>pheno</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>21807.565909</td>
+      <td>9.997727</td>
+      <td>36345.943182</td>
+      <td>16.662879</td>
+      <td>792</td>
+      <td>40.112476</td>
+      <td>25.480990</td>
+      <td>0.772316</td>
+      <td>0.938389</td>
+      <td>0.673469</td>
+      <td>...</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>Other cells</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>21896.527273</td>
+      <td>28.150000</td>
+      <td>36494.212121</td>
+      <td>46.916667</td>
+      <td>132</td>
+      <td>14.340782</td>
+      <td>12.703926</td>
+      <td>0.463953</td>
+      <td>0.929577</td>
+      <td>0.628571</td>
+      <td>...</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>Other cells</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>21891.008824</td>
+      <td>31.755882</td>
+      <td>36485.014706</td>
+      <td>52.926471</td>
+      <td>68</td>
+      <td>10.909423</td>
+      <td>9.252049</td>
+      <td>0.529870</td>
+      <td>0.829268</td>
+      <td>0.472222</td>
+      <td>...</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>Other cells</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>21893.457692</td>
+      <td>37.430769</td>
+      <td>36489.096154</td>
+      <td>62.384615</td>
+      <td>104</td>
+      <td>12.931909</td>
+      <td>10.616614</td>
+      <td>0.570982</td>
+      <td>0.981132</td>
+      <td>0.533333</td>
+      <td>...</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>Other cells</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>21888.600000</td>
+      <td>35.496000</td>
+      <td>36481.000000</td>
+      <td>59.160000</td>
+      <td>25</td>
+      <td>5.959514</td>
+      <td>5.534852</td>
+      <td>0.370726</td>
+      <td>1.000000</td>
+      <td>0.694444</td>
+      <td>...</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>BG</td>
+      <td>Other cells</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 69 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma&quot;</span><span class="p">]</span>
+<span class="n">macro_df</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
+        <span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">regioncol</span><span class="o">=</span><span class="s2">&quot;region_rough&quot;</span>
+    <span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+    <span class="n">macro_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="n">regions</span><span class="p">,</span> <span class="n">regioncol</span><span class="o">=</span><span class="s2">&quot;region_rough&quot;</span>
+<span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Overall&quot;</span>
+<span class="n">macro_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">macro_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">macro_df</span><span class="p">)</span>
+<span class="n">macro_df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pheno</th>
+      <th>cell_count</th>
+      <th>composition</th>
+      <th>region</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Tumor cells</td>
+      <td>398217</td>
+      <td>0.748067</td>
+      <td>Tumor</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Other cells</td>
+      <td>113177</td>
+      <td>0.212608</td>
+      <td>Tumor</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>20934</td>
+      <td>0.039325</td>
+      <td>Tumor</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Tumor cells</td>
+      <td>33720</td>
+      <td>0.811045</td>
+      <td>Tumor Border</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Other cells</td>
+      <td>6551</td>
+      <td>0.157567</td>
+      <td>Tumor Border</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>1305</td>
+      <td>0.031388</td>
+      <td>Tumor Border</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Other cells</td>
+      <td>15152</td>
+      <td>0.769919</td>
+      <td>Stroma Border</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Tumor cells</td>
+      <td>3160</td>
+      <td>0.160569</td>
+      <td>Stroma Border</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>1368</td>
+      <td>0.069512</td>
+      <td>Stroma Border</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Other cells</td>
+      <td>47571</td>
+      <td>0.767027</td>
+      <td>Stroma</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Tumor cells</td>
+      <td>10199</td>
+      <td>0.164447</td>
+      <td>Stroma</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>4250</td>
+      <td>0.068526</td>
+      <td>Stroma</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Tumor cells</td>
+      <td>445296</td>
+      <td>0.679215</td>
+      <td>Overall</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Other cells</td>
+      <td>182451</td>
+      <td>0.278295</td>
+      <td>Overall</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>27857</td>
+      <td>0.042491</td>
+      <td>Overall</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">macro_plot_df</span> <span class="o">=</span> <span class="n">macro_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;composition&quot;</span><span class="p">])</span>
+<span class="n">macro_plot_df</span> <span class="o">=</span> <span class="n">macro_plot_df</span><span class="p">[</span><span class="n">macro_plot_df</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;Overall&quot;</span><span class="p">]</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">macro_plot_df</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;cell_count&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;tab10&quot;</span>
+<span class="p">)</span>
+<span class="n">macro_plot_df</span> <span class="o">=</span> <span class="n">macro_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_count&quot;</span><span class="p">])</span>
+<span class="n">macro_plot_df2</span> <span class="o">=</span> <span class="n">macro_plot_df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;composition&quot;</span>
+<span class="p">)</span>
+<span class="n">macro_plot_df2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+    <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">get_legend</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="c1"># ax2.legend(loc=&quot;lower left&quot;, markerscale=5, bbox_to_anchor=(1, 0.5))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&quot;5_macro_region_composition_vert.png&quot;, dpi=300, bbox_inches=&#39;tight&#39;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">micro_df</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0In&quot;</span><span class="p">,</span> <span class="s2">&quot;1Bi&quot;</span><span class="p">,</span> <span class="s2">&quot;2Bo&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">final_holes</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
+            <span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">regioncol</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;hole_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;hole_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">micro_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">micro_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">micro_df</span><span class="p">)</span>
+<span class="n">micro_df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pheno</th>
+      <th>cell_count</th>
+      <th>composition</th>
+      <th>region</th>
+      <th>hole_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Other cells</td>
+      <td>9</td>
+      <td>1.000000</td>
+      <td>0In</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>T cells</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0In</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Tumor cells</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0In</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Other cells</td>
+      <td>86</td>
+      <td>0.530864</td>
+      <td>1Bi</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Tumor cells</td>
+      <td>67</td>
+      <td>0.413580</td>
+      <td>1Bi</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Tumor cells</td>
+      <td>36</td>
+      <td>0.327273</td>
+      <td>1Bi</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>10</td>
+      <td>0.090909</td>
+      <td>1Bi</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Tumor cells</td>
+      <td>162</td>
+      <td>0.875676</td>
+      <td>2Bo</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Other cells</td>
+      <td>14</td>
+      <td>0.075676</td>
+      <td>2Bo</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>T cells</td>
+      <td>9</td>
+      <td>0.048649</td>
+      <td>2Bo</td>
+      <td>41</td>
+    </tr>
+  </tbody>
+</table>
+<p>378 rows × 5 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">micro_plot_df</span> <span class="o">=</span> <span class="n">micro_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_count&quot;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">micro_plot_df</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">micro_plot_df</span><span class="p">[</span><span class="n">micro_plot_df</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="n">r</span><span class="p">]</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;hole_id&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;composition&quot;</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+        <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Composition&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Hole ID&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="c1"># plt.legend(loc=&quot;lower left&quot;, markerscale=5, bbox_to_anchor=(1, 0.5))</span>
+<span class="c1"># micro_plot_df = micro_plot_df.pivot(index=&quot;region&quot;, columns=&quot;pheno&quot;, values=&quot;composition&quot;)</span>
+<span class="c1"># micro_plot_df.plot(kind=&quot;bar&quot;, stacked=True, figsize=(6,6), legend=True, ax=ax1)</span>
+<span class="c1"># plt.savefig(&quot;5_micro_region_composition.png&quot;, dpi=300)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_45_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_45_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">SpatialCells</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4: Macro and Micro Regions Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../tutorials.html">Tutorials</a><ul>
+      <li>Previous: <a href="3_tutorial_immune_infiltration_overlap.html" title="previous chapter">3: Immune Infiltration Overlap Analysis</a></li>
+      <li>Next: <a href="5_tutorial_import_export_omero.html" title="next chapter">5: Loading and Saving Regions</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Guihong Wan; Zoltan Maliga & Boshen Yan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../_sources/tutorial/4_tutorial_macro_micro_regions.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

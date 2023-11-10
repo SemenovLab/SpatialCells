@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>0: Basic Functions &#8212; SpatialCells 0.9.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=61b282d3"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1: Spatial and Measurement Functions" href="1_tutorial_measurements.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="0:-Basic-Functions">
+<h1>0: Basic Functions<a class="headerlink" href="#0:-Basic-Functions" title="Link to this heading">¶</a></h1>
+<p>Demonstrate the usage of the basic functions.</p>
+<div class="line-block">
+<div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
+<div class="line">&#64;date: July 20, 2023</div>
+<div class="line">&#64;last updated: Oct 6, 2023</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">anndata</span> <span class="k">as</span> <span class="nn">ad</span>
+<span class="kn">import</span> <span class="nn">statistics</span>
+
+<span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
+</pre></div>
+</div>
+</div>
+<section id="Read-data">
+<h2>Read data<a class="headerlink" href="#Read-data" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;../data/tutorial_adata.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="setGate-or-setGates">
+<h2>setGate or setGates<a class="headerlink" href="#setGate-or-setGates" title="Link to this heading">¶</a></h2>
+<p>This package relies on gated biomarkers in adata.obs</p>
+<p>If gating has not yet been performed, <code class="docutils literal notranslate"><span class="pre">setGate</span></code> and <code class="docutils literal notranslate"><span class="pre">setGates</span></code> are convenience functions to gate the dataset manually or via a csv file</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># New columns, SOX10_positive and CD45_positive, will be added</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;SOX10&quot;</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="n">marker_suffix</span><span class="o">=</span><span class="s2">&quot;_positive&quot;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;CD45&quot;</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="n">marker_suffix</span><span class="o">=</span><span class="s2">&quot;_positive&quot;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SOX10_positive
+False    91523
+True     46293
+Name: count, dtype: int64
+CD45_positive
+False    98518
+True     39298
+Name: count, dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># A column ending with &quot;_positive&quot; for each marker will be added</span>
+<span class="n">gate_file</span> <span class="o">=</span> <span class="s2">&quot;../data/tutorial_gates.csv&quot;</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGates</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">gate_file</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">marker_suffix</span><span class="o">=</span><span class="s2">&quot;_positive&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+gate: 7.5 SOX10_positive
+False    91523
+True     46293
+Name: count, dtype: int64
+gate: 7.0 CD8A_positive
+False    116836
+True      20980
+Name: count, dtype: int64
+gate: 7.2 CD3E_positive
+False    111855
+True      25961
+Name: count, dtype: int64
+gate: 8.0 CD45_positive
+False    98518
+True     39298
+Name: count, dtype: int64
+gate: 6.5 panCK_positive
+False    129174
+True       8642
+Name: count, dtype: int64
+gate: 7.4 CD4_positive
+False    113595
+True      24221
+Name: count, dtype: int64
+gate: 5.7 aSMA_positive
+False    129847
+True       7969
+Name: count, dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 137816 × 7
+    obs: &#39;X_centroid&#39;, &#39;Y_centroid&#39;, &#39;id&#39;, &#39;SOX10_positive&#39;, &#39;CD45_positive&#39;, &#39;CD8A_positive&#39;, &#39;CD3E_positive&#39;, &#39;panCK_positive&#39;, &#39;CD4_positive&#39;, &#39;aSMA_positive&#39;
+    uns: &#39;all_markers&#39;
+</pre></div></div>
+</div>
+<p>Visualizing cells with markers of interest</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+
+<span class="c1">## SOX10+ cells</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span>
+<span class="p">)</span>
+
+<span class="c1">## CD45+ cells</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">CD45_positive</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_10_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_10_0.png" />
+</div>
+</div>
+<p>The following steps compute the communities based on SOX10+ or CD45+ cells.</p>
+</section>
+<section id="getCommunities">
+<h2>getCommunities<a class="headerlink" href="#getCommunities" title="Link to this heading">¶</a></h2>
+<p>We first use DBSCAN via <code class="docutils literal notranslate"><span class="pre">getCommunities</span></code> to identify regions with high densities of markers of interest.</p>
+<div class="line-block">
+<div class="line">Optionally, <code class="docutils literal notranslate"><span class="pre">estimateInitialDistance</span></code> can be run first to estimate the eps parameter for DBSCAN.</div>
+<div class="line">In this tutorial, we used a threshold between the first quartile and median.</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;CD45_positive&quot;</span><span class="p">]</span>
+<span class="n">eps_estims</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">estimateInitialDistance</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">sampling_ratio</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="p">)</span>
+<span class="n">eps_estims</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Computing distances...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[16.953524326607617,
+ 31.130626822363674,
+ 52.40063779123195,
+ 82.41078276475527,
+ 158.91378568067233,
+ 258.05023430098896,
+ 436.44338139746947,
+ 794.2173284357773,
+ 1509.7633490222295,
+ 2539.5002631784005,
+ 4622.377206584879,
+ 9193.812141019682,
+ 25326.076069722287,
+ 48604.744886592984,
+ 170424.39109471775]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">quantiles</span><span class="p">(</span><span class="n">eps_estims</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[82.41078276475527, 794.2173284357773, 9193.812141019682]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function getCommunities in module spatialcells.spatial._getCommunities:
+
+getCommunities(adata, markers_of_interest, eps, min_samples=20, newcolumn=&#39;COI_community&#39;, core_only=False)
+    Get the communities of interest (COI) using DBSCAN
+    :param adata: the anndata object
+    :param markers_of_interest: the list of marker names to subset the data
+    :param eps: the eps parameter for DBSCAN
+    :param min_samples: Minimum number of samples in each community
+    :param newcolumn: the column name of the community
+    :return: the communities of interest (COI)
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;CD45_positive&quot;</span><span class="p">]</span>
+
+<span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;COI_community&quot;</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span>
+    <span class="n">markers_of_interest</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>  <span class="c1"># smaller --&gt; more cells are considered as outliers.</span>
+    <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of communities:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+number of communities: 26
+</pre></div></div>
+</div>
+<p>Visualize the communities identified</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function plotCommunities in module spatialcells.plotting._plotCommunities:
+
+plotCommunities(adata, ret, communitycolumn, plot_first_n_clusters=10, **kwargs)
+    Plot largest communities on a scatter plot. Each community is labelled as:
+    (rank in descending number of cells : index of community)
+
+    :param adata: AnnData object
+    :param ret: return value of spc.spa.getCommunities
+    :param communitycolumn: column name of the community column in adata.obs
+    :param plot_first_n_clusters: plot and number the largest n communities
+    :param kwargs: keyword arguments for matplotlib.pyplot.plot
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">plot_first_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_19_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_19_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusters_idx_sorted</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">npoints</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="n">plot_first_n_clusters</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Indexes of the&quot;</span><span class="p">,</span>
+    <span class="n">plot_first_n_clusters</span><span class="p">,</span>
+    <span class="s2">&quot;largest clusters:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">clusters_idx_sorted</span><span class="p">[:</span><span class="n">plot_first_n_clusters</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster size and index:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="n">plot_first_n_clusters</span><span class="p">])</span>
+
+<span class="c1"># Here we choose the three largest ones of interest based on their index:</span>
+<span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Indexes of the 10 largest clusters:
+ [0, 17, 12, 23, 20, 10, 13, 24, 16, 22]
+Cluster size and index:
+ [(68681, 0), (7543, 17), (1218, 12), (600, 23), (234, 20), (167, 10), (161, 13), (82, 24), (75, 16), (67, 22)]
+</pre></div></div>
+</div>
+</section>
+<section id="getBoundary">
+<h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function getBoundary in module spatialcells.spatial._getBoundary:
+
+getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=False)
+    Get a boundary for the communities of interest as a Shapely MultiPolygon.
+
+    The boundary is defined based on the alpha shape of points in the
+    communities. The alpha shape is the generalization of the convex hull,
+    and is generated via Delaunay triangulation of all the points of interest.
+    The alpha parameter controls the longest edge that can appear in the alpha
+    shape. Smaller alpha gives more detailed boundary, but may appear more
+    jagged and may leave out some points that are too far away from the rest
+    of the points.
+
+    :param anndata: the anndata object
+    :param communitycolumn: the column name of the community
+    :param communityIndexList: the list of community indexes
+    :param alpha: the alpha parameter for alpha shape. Smaller alpha gives
+        more detailed boundary, but may appear more jagged.
+    :param debug: whether to return the polygons and edge components
+    :return: the boundaries of components as a MultiPolygon object
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function pruneSmallComponents in module spatialcells.spatial._utils:
+
+pruneSmallComponents(boundary, min_area=0, min_edges=0, holes_min_area=0, holes_min_edges=0)
+    Prune small components from a boundary defined by a MultiPolygon.
+    :param boundary: the boundary to prune
+    :param min_area: the minimum area of a polygon component to keep
+    :param min_edges: the minimum number of edges of a polygon component to keep
+    :param holes_min_area: the minimum area of a hole to keep the hole
+    :param holes_min_edges: the minimum number of edges of a hole to keep the hole
+    :return: the pruned boundary
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<span class="c1"># filter out small regions or holes based on the number of edges</span>
+<span class="c1"># or the area of the region</span>
+<span class="n">boundary_pruned</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
+    <span class="n">boundary</span><span class="p">,</span> <span class="n">min_edges</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">holes_min_area</span><span class="o">=</span><span class="mi">50000</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boundary&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Pruned Boundary&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_24_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_24_0.png" />
+</div>
+</div>
+<p>Visualization of regions of interest and boundary</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<span class="c1"># Boundary of selected communities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">44000</span><span class="p">,</span> <span class="mi">55000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_26_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_26_0.png" />
+</div>
+</div>
+</section>
+<section id="getExtendedBoundary-&amp;-getShrunkenBoundary">
+<h2>getExtendedBoundary &amp; getShrunkenBoundary<a class="headerlink" href="#getExtendedBoundary-&-getShrunkenBoundary" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary</span></code> and <code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary</span></code> can be used to expand or shrink the current boundary, which is useful to generate regions of interest</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># note: In this dataset, 1px = 0.6um</span>
+<span class="c1"># For this example, the offset is converted from um to px</span>
+
+<span class="c1"># Remove background. Anything beyond this will not be considered</span>
+<span class="n">ROI_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getExtendedBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">800</span> <span class="o">/</span> <span class="mf">0.6</span><span class="p">)</span>
+
+<span class="n">shrunken_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getShrunkenBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">100</span> <span class="o">/</span> <span class="mf">0.6</span><span class="p">)</span>
+
+<span class="n">extended_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getExtendedBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">200</span> <span class="o">/</span> <span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pointsize</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="p">)</span>
+
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tumor Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">ROI_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">shrunken_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Shrunken TumorBoundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">extended_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Extended Tumor Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">44000</span><span class="p">,</span> <span class="mi">55000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_29_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_29_0.png" />
+</div>
+</div>
+</section>
+<section id="assignPointsToRegion">
+<h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading">¶</a></h2>
+<p>Using 1 or more generated boundaries, cells can be assigned to different regions for downstream analysis</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function assignPointsToRegions in module spatialcells.spatial._assignPointsToRegions:
+
+assignPointsToRegions(anndata, boundaries_list, region_names, assigncolumn=&#39;region&#39;, default=&#39;BG&#39;)
+    Assign points to regions based on the boundaries. The region assignment is
+    based on the order of the boundaries, so the innermost region should be the
+    first element of boundaries_list.
+    :param anndata: Anndata object
+    :param boundaries_list: List of boundaries
+    :param region_names: List of region names. The order and length should match boundaries_list
+    :param assigncolumn: Column name for the region assignment
+    :param default: Default region name for points that are not assigned to any region
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma&quot;</span><span class="p">]</span>
+<span class="n">boundaries_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">shrunken_boundary</span><span class="p">,</span> <span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">extended_boundary</span><span class="p">,</span> <span class="n">ROI_boundary</span><span class="p">]</span>
+
+<span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">boundaries_list</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">assigncolumn</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;BG&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+101863it [00:05, 18030.37it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Tumor
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+40094it [00:03, 13306.75it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Tumor Border
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+21464it [00:01, 21126.40it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Stroma Border
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+14412it [00:00, 42888.78it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Stroma
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Regions:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of points in each region:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Regions:
+Index([&#39;Tumor&#39;, &#39;Tumor Border&#39;, &#39;Stroma Border&#39;, &#39;Stroma&#39;, &#39;BG&#39;], dtype=&#39;object&#39;)
+
+Number of points in each region:
+region
+Tumor            68712
+Tumor Border     23921
+BG               19368
+Stroma Border    14502
+Stroma           11313
+Name: count, dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:gray&quot;</span><span class="p">]</span>
+
+<span class="n">point_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># get points in each region in order</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">point_size</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tumor Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">ROI_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">shrunken_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Shrunken Tumor Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
+    <span class="n">extended_boundary</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Extended Tumor Boundary&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span> <span class="n">markerscale</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">44000</span><span class="p">,</span> <span class="mi">55000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_0_tutorial_spatial_functions_34_0.png" src="../_images/tutorial_0_tutorial_spatial_functions_34_0.png" />
+</div>
+</div>
+<p>Save adata object with cells assigned to each region for downstream analysis:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># adata.save(&quot;../data/tutorial_adata_regions.h5ad&quot;)</span>
+</pre></div>
+</div>
+</div>
+<p>Save the boundary objects generated as geojson type files</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exportRegion</span><span class="p">(</span><span class="n">boundary_pruned</span><span class="p">,</span> <span class="s2">&quot;../data/tutorial_boundary.json&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exportRegion</span><span class="p">(</span><span class="n">ROI_boundary</span><span class="p">,</span> <span class="s2">&quot;../data/tutorial_ROI_boundary.json&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exportRegion</span><span class="p">(</span><span class="n">shrunken_boundary</span><span class="p">,</span> <span class="s2">&quot;../data/tutorial_shrunken_boundary.json&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exportRegion</span><span class="p">(</span><span class="n">extended_boundary</span><span class="p">,</span> <span class="s2">&quot;../data/tutorial_extended_boundary.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;{&#34;type&#34;:&#34;MultiPolygon&#34;,&#34;coordinates&#34;:[[[[22169.31133706403,50446.56500486768],[22167.6743962764,50461.659103059006],[22166.42609038452,50476.087650966896],[22166.420484286034,50476.174344068095],[22165.80878046444,50505.125940644786],[22165.81071980408,50505.212793169776],[22167.714096442618,50534.10823023869],[22167.723566583958,50534.19458670086],[22169.614660491174,50548.553034600984],[22172.350929342756,50566.33542811828],[22168.56523828346,50602.38075822068],[22167.389064211515,50616.43682294047],[22167.383794297722,50616.521270853445],[22166.819616175904,50644.7196894959],[22166.82150405163,50644.8042806179],[22167.43451022294,50658.89614224832],[22170.161617781083,50701.03131666692],[22171.631043678746,50717.43519126532],[22171.64228559223,50717.533336704146],[22177.000934688163,50750.02345777162],[22177.021805424378,50750.12001511287],[22185.559997139317,50781.9228824129],[22185.59029302267,50782.0169093624],[22197.224703937824,50812.82216167089],[22197.26412931359,50812.91274062831],[22211.88122027696,50842.41975230513],[22211.929390396523,50842.50599931877],[22229.38651457364,50870.426814176244],[22229.442959349257,50870.50788756945],[22249.56975427829,50896.57002895037],[22249.633922870595,50896.64513753538],[22260.638033943254,50908.89894729282],[22268.9808867718,50917.739815546855],[22270.909108409083,50920.60563522141],[22270.96266332056,50920.6779751712],[22289.88139326964,50943.96347802481],[22289.94123573137,50944.030709540144],[22310.87706015083,50965.52080591275],[22310.942705367248,50965.582384337875],[22322.114627977622,50975.599142671825],[22359.051980687756,51007.24682531126],[22371.730021656702,51017.580852727784],[22371.807564884322,51017.64095385218],[22398.606919643124,51036.38261443832],[22398.689978967654,51036.43482790317],[22427.19684592276,51052.46023868588],[22427.284621890114,51052.50406193152],[22457.22461972755,51065.65897680617],[22457.316267485505,51065.69398802958],[22488.401220798994,51075.85178964973],[22488.495858228962,51075.87765186449],[22520.42657131882,51082.940570399485],[22520.52328752633,51082.95703467925],[22552.992424131626,51086.85708884627],[22553.090288213767,51086.863996720764],[22585.78532980141,51087.56364812724],[22585.883399806866,51087.56093310748],[22616.915814207492,51085.174478889756],[22615.86473263799,51087.238290112335],[22615.824074642896,51087.32901164691],[22603.791353279623,51118.20581336122],[22603.759904195504,51118.30012361787],[22594.852487666813,51150.21910225569],[22594.830558319725,51150.316069121865],[22589.136482797992,51182.96175444896],[22589.124289925967,51183.06041955562],[22586.699832632326,51216.11015894623],[22586.697496743243,51216.209547139806],[22587.566619728288,51249.3366944951],[22587.574163908834,51249.43582347542],[22591.728277222483,51282.31296765766],[22591.745626909982,51282.41085768649],[22596.288782494452,51302.24770542253],[22591.42331835596,51314.10917963558],[22591.38944870616,51314.205479750206],[22581.752709634206,51346.839927464476],[22581.728834216072,51346.93917881038],[22578.17203314754,51363.58268875493],[22560.110886650724,51460.090834916504],[22557.588298672585,51475.57769386815],[22557.57535795667,51475.67091968466],[22554.72896251746,51506.914758698695],[22554.724843782347,51507.00878822072],[22554.407343524137,51522.69653643265],[22554.649259251724,51595.94552589859],[22554.834199524405,51606.001286729865],[22554.83621902874,51606.06159082474],[22555.324446868013,51616.107194952776],[22556.116091430347,51628.52791776446],[22556.363648770912,51631.434132717935],[22556.285228233595,51631.74136393151],[22552.52235179117,51648.21517414155],[22552.502293617235,51648.31452558368],[22548.530026258457,51674.86442301327],[22544.293983982116,51681.03136612234],[22544.23885997745,51681.11613297767],[22527.31621149863,51710.26458705389],[22527.269929459304,51710.35448726796],[22513.377342866603,51741.062864696076],[22513.34037598369,51741.156979122294],[22502.619890136473,51773.11131511649],[22502.59261636218,51773.208681521835],[22495.15383831407,51806.08227253791],[22495.136536497525,51806.18189544089],[22491.05552087305,51839.63863943662],[22491.048367909345,51839.73950028514],[22490.36683932876,51873.43733291328],[22490.369908350323,51873.53840049839],[22493.09483481062,51907.132792625445],[22493.108094439554,51907.233033624514],[22499.21161608441,51940.38051360501],[22499.234930753257,51940.478903146475],[22508.65464472284,51972.840568672815],[22508.68777606067,51972.936100814564],[22521.32737447272,52004.18108372535],[22521.36998374222,52004.27278173954],[22537.10023840033,52034.0816310049],[22537.15188996111,52034.16855736409],[22537.72659715467,52035.033014983695],[22537.811604140963,52044.292839677204],[22537.81686813039,52044.38653889871],[22541.03516315174,52075.50287416988],[22541.049187662476,52075.59566730969],[22543.749654194733,52091.006320488996],[22553.409542462887,52139.419728310226],[22556.959508911663,52155.20475066412],[22556.98309400126,52155.29888824484],[22566.35815970131,52186.259640891505],[22566.390758745136,52186.351049003286],[22578.72278865584,52216.25725406406],[22578.764094631515,52216.34507181244],[22593.936943942485,52244.91506839869],[22593.986567824522,52244.99846870377],[22611.85733652487,52271.96318060732],[22611.914810948576,52272.041377993315],[22632.31518962173,52297.146847756165],[22632.379973284904,52297.21910574909],[22641.79321593361,52307.21910340297],[22644.794210449763,52359.18463086888],[22646.118232000474,52375.304924235315],[22646.12851741291,52375.40139637879],[22651.112888613352,52407.35460622055],[22651.132474220227,52407.449627629605],[22659.18980249143,52438.76944620685],[22659.218503939996,52438.862122476865],[22670.272948359456,52469.25374687172],[22670.31049549262,52469.34320567211],[22684.25800429301,52498.52056973901],[22684.304043692217,52498.60596902411],[22701.013333646526,52526.29443601101],[22701.067431958374,52526.37497194604],[22720.381224131583,52552.31391961695],[22720.442872146825,52552.38883414419],[22742.179372322713,52576.33410792211],[22742.24798976929,52576.40269589628],[22766.202599528362,52598.12890691472],[22766.277540533287,52598.190522740246],[22780.05262258158,52608.438067969895],[22781.56747924022,52611.13533758202],[22801.532861345793,52656.061390103576],[22808.624542004673,52671.00814533283],[22808.669290685702,52671.09671505204],[22825.03197505876,52699.843507433296],[22825.08528156653,52699.9272060345],[22844.21649947816,52726.91075684416],[22844.27783890138,52726.98876014392],[22856.539865806204,52741.08248397323],[22857.901762599777,52755.74938909029],[22857.915420187164,52755.84550534502],[22864.017771648763,52787.62550583518],[22864.040685009324,52787.71984480923],[22873.195900362738,52818.758355649064],[22873.227853541157,52818.85002821042],[22885.34964613628,52848.854515688494],[22885.390337978202,52848.94265783573],[22900.36446155943,52877.630333711015],[22900.413508549766,52877.71411471636],[22918.098834046912,52904.81460155842],[22918.155773924445,52904.89323179728],[22938.385619518016,52930.15111116055],[22938.449915632136,52930.22384955362],[22949.46034025299,52942.08667924716],[23022.985228745405,53017.54386033547],[23035.627017753537,53029.848935912676],[23035.70476843013,53029.92070816375],[23062.851104530913,53052.440111305295],[23062.936003754778,53052.503266237974],[23077.364512130665,53062.65451543672],[23083.436029286517,53066.69027401464],[23096.63005067626,53075.021813273794],[23096.71034118932,53075.06992266856],[23124.19503155468,53089.8362752707],[23124.279468488025,53089.876666911405],[23153.024386671645,53102.008569084115],[23153.112230266524,53102.04088909635],[23167.878947423378,53107.084777631346],[23252.39761658588,53133.76176342543],[23311.673151907034,53158.36436741933],[23327.324850394365,53164.403590717804],[23327.41961267542,53164.437440646056],[23359.53473409411,53174.11719227759],[23359.632418495923,53174.14134730184],[23392.557752420616,53180.54455002476],[23392.6573698195,53180.55876555828],[23426.059523849257,53183.62058239347],[23426.160065548564,53183.62471449394],[23459.70081929716,53183.31414238954],[23459.801267241044,53183.308149216515],[23476.517447279268,53181.88786465375],[23550.018737601848,53173.77528400859],[23563.88983566164,53171.9488873519],[23563.972795670805,53171.93618757041],[23570.471267737168,53170.801325651635],[23588.73987101442,53172.43300260421],[23605.187361122014,53173.49293806939],[23605.286142923534,53173.496854811165],[23638.237694425654,53173.173254179994],[23638.336380254263,53173.167398207836],[23671.094959097172,53169.59178960726],[23671.192584477987,53169.57621815266],[23687.39930100714,53166.57859692734],[23689.18977723667,53166.201423818115],[23695.477095719285,53168.53728227496],[23708.90248443646,53173.20183575076],[23708.98359668283,53173.22809344984],[23736.369541628814,53180.82014665214],[23736.45259568983,53180.8393998654],[23750.36336448661,53183.75309729929],[23870.279118352588,53206.21282668073],[23885.7729408093,53208.73867064906],[23885.86620896279,53208.75162886852],[23917.124482506693,53211.60249443634],[23917.21855600713,53211.6066224411],[23948.60639944342,53211.50470814486],[23948.700444153874,53211.49996933244],[23979.939545692694,53208.44617882808],[23980.03272773152,53208.4326152169],[24010.846094513752,53202.454026051775],[24010.93758764849,53202.431757908525],[24041.052001738626,53193.581381423595],[24041.1409947121,53193.55060619688],[24070.289435726685,53181.906917467924],[24070.375139450316,53181.86790803748],[24070.776650377426,53181.661807269695],[24099.238017316144,53183.222967429385],[24099.332986779293,53183.22366006655],[24130.964726473758,53181.951038865845],[24131.05933334681,53181.942719115315],[24162.42769193163,53177.67509694974],[24162.521082890984,53177.657839853],[24178.017915046865,53174.411884944646],[24191.222310651265,53171.317013149775],[24206.645653640397,53167.31084452991],[24206.737566440584,53167.28460992443],[24236.92222466989,53157.08550854921],[24237.011212870755,53157.050618472254],[24241.596386798945,53154.99493726782],[24265.028480023957,53160.59542476116],[24265.121889581547,53160.61310427486],[24280.76022024219,53163.189470109515],[24313.440913311497,53167.77837274979],[24334.932956605615,53170.08846402037],[24335.062222472523,53170.09813107807],[24356.658801480666,53171.010392374716],[24368.786931940773,53171.12908777367],[24373.75084011489,53171.140705924096],[24373.78062243191,53171.14055387121],[24378.74415326373,53171.07825142587],[24386.979447381378,53170.91354554352],[24403.754157593186,53170.15501735631],[24403.854627403234,53170.14793477291],[24428.548872129188,53167.15129948234],[24431.594018222477,53167.1545896063],[24431.703252916028,53167.1517214005],[24440.1676604334,53166.46532830142],[24448.05089456005,53185.06175579436],[24448.091149540774,53185.14562864978],[24455.12561133051,53198.96831016509],[24459.64833257427,53207.36617729792],[24454.447192843487,53227.82900615997],[24454.428751499923,53227.91850989413],[24449.651255927358,53258.00280148744],[24449.641062235776,53258.093614978905],[24447.62986108792,53288.4884193652],[24447.62800017585,53288.57978423037],[24448.399888995038,53319.031274382825],[24448.406376402963,53319.122427633556],[24451.954909146083,53349.376303088946],[24451.96969069765,53349.4664835043],[24458.265233560396,53379.27009409683],[24458.288185814843,53379.35854858002],[24462.450542034872,53394.01352242701],[24472.55865014298,53426.73784675133],[24477.639280184547,53441.88823568426],[24477.67192469708,53441.97835532449],[24489.980585928148,53471.462221898386],[24490.021708522476,53471.54880218476],[24502.344097065194,53494.575269194356],[24504.56096917371,53500.27124040028],[24510.335454208813,53514.17110586605],[24510.371965916227,53514.25368050873],[24523.772691844675,53541.201080493876],[24523.816502522255,53541.28002541721],[24539.593118929748,53566.908919182904],[24539.643871447035,53566.983590853444],[24557.66777246714,53591.085059960766],[24557.725053106027,53591.1548496792],[24577.849313742416,53613.53242676252],[24577.912655569682,53613.596765625654],[24594.51600365533,53629.003963532305],[24607.15200370872,53641.557740631186],[24607.23555329431,53641.63611975713],[24636.53619946811,53666.12437055369],[24636.628165120277,53666.19267969992],[24652.282101877252,53677.13819692386],[24672.215599798037,53690.24207350482],[24694.422386853807,53704.99350367895],[24694.71448842373,53705.18731837465],[24694.71624164456,53705.1884803412],[24695.008547017693,53705.38198782954],[24718.6497606713,53721.01470590792],[24730.155847543378,53728.28983619399],[24730.225746429227,53728.33205936316],[24754.080614840692,53741.44336719147],[24754.1537258057,53741.47974626586],[24766.462720807525,53747.29405600627],[24817.928833764337,53770.33133175378],[24833.282683765865,53776.748921234015],[24833.375710327604,53776.78510395083],[24864.947854550202,53787.28339781467],[24865.04402478869,53787.31012636523],[24897.505476729453,53794.60866070397],[24897.60383248808,53794.62566878824],[24930.631174439688,53798.65172734827],[24930.730735787227,53798.6588455125],[24963.994912085673,53799.37231615452],[24964.094687079454,53799.36947347951],[24980.71202272277,53798.480473553514],[24994.05114642189,53797.43238217882],[25006.268561667242,53797.24574429669],[25021.696045021632,53797.723555879944],[25037.21205079715,53797.84279498418],[25037.305113047616,53797.84134383631],[25068.26974401426,53795.91454606592],[25068.362268262917,53795.90444895238],[25099.01364113072,53791.107130658784],[25099.10482586885,53791.08847504771],[25129.17741736034,53783.46219389608],[25129.266472682975,53783.43514139521],[25140.56396187201,53779.42014325043],[25159.876833160106,53783.929671886886],[25159.972894504772,53783.947206215955],[25192.24052153777,53788.221637215116],[25192.337835058093,53788.22971888553],[25224.868516506813,53789.33664261128],[25224.966154295547,53789.33519456241],[25257.449702449496,53787.26405623642],[25257.546733507417,53787.25309227576],[25289.67341013804,53782.023640687265],[25289.76890925124,53782.00326535875],[25321.232378929024,53773.665364562294],[25321.325435491057,53773.635772149464],[25351.825686691776,53762.2689259744],[25351.915413386487,53762.23039864785],[25381.161619050177,53747.94299263692],[25381.247160312476,53747.895897763745],[25408.960450955856,53730.82416571463],[25409.040991129736,53730.76895235551],[25434.95711409655,53711.07567719434],[25435.03188521256,53711.01287182159],[25458.903724133794,53688.88583358708],[25458.972013231793,53688.81603506469],[25480.571944542364,53664.46622024504],[25480.633100469786,53664.39009411828],[25499.755163771202,53638.04968388993],[25499.808603391924,53637.967956039276],[25516.270465294616,53609.888112435416],[25516.31567904932,53609.80156215512],[25529.960371860005,53580.25003303855],[25529.996928624932,53580.15948560583],[25535.721093657998,53564.91941997625],[25576.39820756288,53448.02459881453],[25590.63059180541,53424.93443084512],[25591.631970455113,53423.97263534957],[25591.69824663218,53423.902526117105],[25612.63726411196,53399.49429884575],[25612.69647578206,53399.41812920451],[25631.18595056996,53373.105711272045],[25631.23754660057,53373.02419019656],[25647.10538163682,53345.0524933548],[25647.14888178054,53344.966379629885],[25660.247381883397,53315.595759811295],[25660.282381248024,53315.505854969386],[25670.489627723102,53285.00968908843],[25670.51580054028,53284.91682994906],[25677.736786004978,53253.57897133436],[25677.753888662417,53253.48402221519],[25681.921401369174,53221.59615851937],[25681.929274678143,53221.500003191235],[25683.0045241031,53189.35894140349],[25683.003094780124,53189.26247486442],[25682.376864491103,53173.19046741084],[25681.754001243244,53163.32828792366],[25681.223613732887,53157.833467493154],[25688.35562537482,53155.54854109764],[25688.442960898763,53155.51831814528],[25717.058185758062,53144.109545939864],[25717.14235818504,53144.07138937911],[25735.647656124824,53134.62864815],[25765.385569783877,53128.785064213684],[25797.1544339665,53136.0210369974],[25797.253944070297,53136.03846858927],[25830.675139917283,53140.16607444447],[25830.775900999543,53140.17337687241],[25864.443006944617,53140.90784155729],[25864.54399062553,53140.90494029184],[25881.36238375259,53139.996044902626],[25918.811130203027,53137.0217646858],[25933.20247471953,53137.50208071575],[25943.38637745887,53138.86763058063],[25953.047922894508,53140.01985744926],[25953.10598070883,53140.02592336559],[25962.797040046968,53140.89566860491],[25986.001999786316,53142.63725400642],[25987.631874151986,53143.01216101287],[26024.929911609197,53183.07249997574],[26035.71950327623,53194.13549550927],[26035.78574426887,53194.20033760473],[26058.84410364503,53214.76777413907],[26058.9160641344,53214.82620404939],[26083.779810737684,53233.17018096993],[26083.856872412893,53233.221696643894],[26101.758369837262,53244.02322552214],[26104.522391973867,53245.97445726368],[26113.062540169427,53253.80472482207],[26113.133847679837,53253.86706156449],[26137.860370751227,53273.49703303646],[26137.937255926387,53273.55234397874],[26164.41000832512,53290.75496298979],[26164.49178145653,53290.80275195793],[26192.473285965578,53305.423700212246],[26192.559213496697,53305.46353850905],[26221.798458327834,53317.37165685485],[26221.887769434525,53317.40318710569],[26252.122460180777,53326.49165223439],[26252.214353686104,53326.514591593026],[26267.620516420553,53329.97496666775],[26275.810992611023,53331.61187142966],[26292.12542673505,53334.452904048725],[26292.223676237387,53334.467508979644],[26325.17487802773,53337.70330591372],[26325.27409175639,53337.708091805674],[26358.383752943217,53337.658952176556],[26358.48295202889,53337.65387181067],[26391.42440384096,53334.3202804484],[26391.522609558815,53334.30538394892],[26423.970842798506,53327.720230956016],[26424.067086224542,53327.6956652958],[26455.701957868823,53317.923921566864],[26455.79528943953,53317.88992911733],[26486.30468136175,53305.02800529749],[26486.32296396486,53305.01920423643],[26508.860715474122,53298.57143970845],[26508.945276011196,53298.5431120121],[26536.683046145754,53287.85309704725],[26536.764746699526,53287.817348448334],[26550.248604819637,53281.55551441065],[26557.565132886164,53277.95728156242],[26569.34769799817,53271.86864133242],[26569.417638784413,53271.83071780551],[26580.948669085894,53265.27818240086],[26595.51820907796,53256.61110144586],[26606.65685169428,53252.485180817406],[26614.722858098914,53249.37789570631],[26614.77100429216,53249.358627692476],[26622.75372897064,53246.04324152702],[26637.20100400119,53239.82215934426],[26648.799381033692,53244.329960598945],[26667.010813533434,53250.80673287745],[26667.121116500028,53250.8423941201],[26704.515958850458,53260.57835580902],[26704.629647723872,53260.601012126644],[26723.040565973584,53263.717969915066],[26732.399490863416,53268.89709326858],[26732.4852815481,53268.93934287663],[26761.722855030337,53281.63907876864],[26761.81228913708,53281.67294042113],[26792.12925770945,53291.52181915216],[26792.22151735701,53291.54698318188],[26823.340630200604,53298.45493605509],[26823.43487166795,53298.47117233518],[26839.802612796328,53300.490893717506],[26847.9233298651,53305.66927506263],[26861.661901974898,53313.97161109033],[26861.745484714436,53314.01941197686],[26887.55153664483,53327.17150802649],[26889.68759742068,53329.872313783446],[26917.427588969582,53375.03742993829],[26927.193636964712,53390.021268709716],[26927.254602150613,53390.109535564145],[26949.125206059995,53418.39946633781],[26949.1952755998,53418.48069472615],[26973.9704543434,53444.26507011792],[26974.048821891458,53444.33832528084],[27001.443467943376,53467.32042413757],[27001.529231662287,53467.38486306991],[27031.228093070684,53487.300212123075],[27031.32026600945,53487.355093275044],[27046.927905046963,53496.089663759376],[27068.633559148962,53507.48323360416],[27084.472230036838,53515.26945955944],[27084.568431800588,53515.313629218246],[27117.370016816556,53528.318937054006],[27117.470348695126,53528.352689865016],[27151.46292595376,53537.81771516568],[27151.566263654397,53537.84067290372],[27186.368921190846,53543.65935306409],[27186.474106738333,53543.67125847078],[27204.057579520708,53545.19122406962],[27236.407733603908,53547.12650912355],[27253.086021236482,53547.70575717951],[27253.18611522886,53547.706726278055],[27271.017869108884,53546.98613345291],[27272.280040494257,53547.26081749748],[27288.86377266578,53550.432277954256],[27288.96369301066,53550.44877528293],[27322.506202813616,53554.2542900765],[27322.607279347136,53554.260596545115],[27356.36268103112,53554.65400064644],[27356.46387708838,53554.650051574354],[27390.0859671736,53551.62731013507],[27390.18624486383,53551.6131460249],[27423.330187271007,53545.20526099532],[27423.428518122437,53545.18102711754],[27455.754380693743,53535.45371928841],[27455.849756201835,53535.419664191424],[27471.601879283025,53529.341099231744],[27493.568107412688,53520.21889660051],[27509.10049531643,53513.29893533352],[27509.19257034703,53513.2550663159],[27539.09860077389,53497.08593916],[27539.18572845536,53497.03291964388],[27567.289242475006,53477.90169305047],[27567.370516478884,53477.84007456087],[27593.37917279426,53455.94575736565],[27593.45374768382,53455.8761808767],[27617.096996453245,53431.446524332],[27617.164096477965,53431.36971359935],[27638.195993434176,53404.65884242667],[27638.254920599342,53404.57559645876],[27656.456685645528,53375.86136515003],[27656.506826972967,53375.77254989655],[27671.689119821654,53345.353652604856],[27671.729953726146,53345.2601919489],[27683.734843605464,53313.45305518514],[27683.765945320396,53313.35592133267],[27688.536510573926,53297.03468837367],[27691.569044820502,53285.58263357915],[27695.28185269821,53270.07085154155],[27695.301890724768,53269.97730130437],[27700.481893593907,53238.510074061334],[27700.492900004123,53238.41503707737],[27702.642103840317,53206.59680733472],[27702.643977890646,53206.5011534936],[27701.74271066494,53174.623158927454],[27701.73543520189,53174.52776376498],[27697.791946366517,53142.881789039166],[27697.775587983626,53142.78752572342],[27690.8259729576,53111.66323180292],[27690.800681385917,53111.570963142],[27686.2173943834,53096.29373157612],[27684.16497502856,53090.003408995486],[27679.021648106387,53075.39927304653],[27678.98877024921,53075.312412026666],[27666.69676933537,53046.8988966753],[27666.65597475117,53046.81546051909],[27651.780925817475,53019.66487931995],[27651.732566391784,53019.58558773016],[27634.402778486816,52993.93213589089],[27634.347271357896,52993.85767282015],[27624.80777070343,52981.66207828578],[27556.82894005827,52898.796150866416],[27543.943032339354,52883.99883542027],[27543.86317187788,52883.912403031274],[27515.59393133542,52856.71783344284],[27515.504470217915,52856.64138110717],[27513.883065068858,52855.33633094341],[27483.944331846702,52789.45657070628],[27476.02005625175,52767.627254855535],[27470.314305755543,52752.993843680466],[27470.27802227947,52752.9068982772],[27456.831732677947,52724.5269964576],[27456.787427977994,52724.443851479715],[27456.331049775672,52723.676791126745],[27456.4049491838,52723.359481166],[27459.576262789054,52726.80687394841],[27459.645230008213,52726.87491341731],[27483.705932929573,52748.41451473653],[27483.78116045589,52748.475561160914],[27501.97793804773,52761.83386402011],[27502.612674527692,52762.96447177509],[27502.651780242082,52763.02839268981],[27509.369047113374,52773.55973739319],[27586.292124036456,52889.31729233824],[27595.25258492633,52902.13832073436],[27595.308122503848,52902.213943477145],[27614.982822652684,52926.52529727701],[27615.04520330393,52926.59538205491],[27636.91181622061,52948.95577088465],[27636.980490794875,52949.019700725825],[27648.67631784841,52959.406050321915],[27681.203690111182,52986.95408212588],[27696.57555847324,52999.21292495512],[27696.66987776026,52999.28369511723],[27712.737771738735,53010.61490632379],[27747.074035839603,53033.34311910858],[27760.49164232532,53041.772959366135],[27760.57330435198,53041.821596839654],[27788.533712194,53056.72212169769],[27788.619623055456,53056.76278635449],[27817.868407646194,53068.94140069653],[27817.95779119877,53068.97372516029],[27848.230710552903,53078.3204038568],[27848.32275927963,53078.344096098925],[27879.34631899073,53084.77439852336],[27879.44020129667,53084.78924450126],[27910.934125586344,53088.24507744932],[27911.028993311484,53088.25094304011],[27942.708756874265,53088.701085505396],[27942.803752956024,53088.69791771763],[27974.383151601167,53086.138302987165],[27974.47741781735,53086.12613043957],[27986.503996230338,53083.98780429169],[28008.182779849114,53092.028943201716],[28008.275365744186,53092.058255717304],[28039.575374151405,53100.318984688456],[28039.670366774728,53100.33917807974],[28071.624070637463,53105.52482964658],[28071.720574078307,53105.535713462166],[28104.02660605812,53107.59737980211],[28104.12371015668,53107.5988513927],[28106.804096212723,53107.50923117167],[28175.391403778896,53123.985263148374],[28192.22043596501,53127.57118364464],[28192.321898028298,53127.59007953353],[28226.42255532812,53132.13505794871],[28226.525424606887,53132.14339559761],[28260.9129153616,53133.149444073155],[28261.01609613294,53133.147134672734],[28295.32413847455,53130.60353717961],[28295.426531697638,53130.590605328674],[28329.289689815534,53124.524455268984],[28329.390204838226,53124.501038712515],[28362.44778184307,53114.97695030372],[28362.54534801905,53114.94329846561],[28378.661568697473,53108.91481766022],[28390.521669707574,53104.125928771326],[28411.96612835565,53094.575601788],[28412.09261908138,53094.51384301591],[28415.284353686977,53092.81378207326],[28423.649174799495,53097.508403042084],[28428.14213231329,53128.460459688846],[28428.162248319204,53128.56185005711],[28436.605352239396,53161.96691691955],[28436.635827153004,53162.065689082185],[28442.140669956392,53178.396374709046],[28458.74799620907,53223.75469560286],[28466.67603224739,53247.0425828636],[28465.521499484967,53249.4296733345],[28458.498650710226,53264.94971727463],[28458.45891981271,53265.04385309529],[28446.835664405597,53297.058079709146],[28446.805746841063,53297.15577841068],[28438.510004753094,53330.18896529751],[28438.490212863817,53330.289206896],[28433.608592452336,53363.99648435728],[28433.599132867555,53364.09822232072],[28432.182598718722,53398.127683136845],[28432.183570197423,53398.22985531104],[28434.246911067174,53432.226228601176],[28434.258303467024,53432.3277682987],[28439.77997787395,53465.936128617395],[28439.80167225719,53466.035975753985],[28448.72403338934,53498.90544858635],[28448.755803264503,53499.00256074821],[28460.985700799964,53530.789985586496],[28461.027214486476,53530.883348913245],[28476.436967117083,53561.2568619818],[28476.48779120803,53561.345501751246],[28494.916519617964,53589.9880006176],[28494.97612350491,53590.07099142197],[28516.23142997785,53616.683445616356],[28516.29919139044,53616.7599210236],[28527.918556710974,53629.21714859486],[28533.470280848906,53634.87232100865],[28544.622401005665,53645.714257136824],[28544.690794581173,53645.77771266005],[28568.450533743755,53665.84304411188],[28568.524543410236,53665.89984951538],[28574.573722983143,53670.10945954154],[28591.081778976728,53697.10124135538],[28591.139017163405,53697.184971533476],[28611.609246837965,53724.09155891156],[28611.674671995523,53724.1690605341],[28634.765092466187,53748.863740782275],[28634.83803156913,53748.93421659372],[28660.311112721134,53771.16295664757],[28660.390815448354,53771.22568166659],[28687.984516923847,53790.75981555521],[28688.070163377153,53790.8141445325],[28717.50063009466,53807.4527255539],[28717.59133923304,53807.49809960983],[28748.555821329926,53821.06996744311],[28748.650660032756,53821.10591981692],[28780.830627388732,53831.47146131815],[28780.928620054765,53831.49762216946],[28813.993038800938,53838.55020748518],[28814.093177384242,53838.566307698566],[28847.701915505313,53842.233387235996],[28847.80316988502,53842.2392611893],[28864.703739283956,53842.790074330755],[28927.941473087158,53843.24620517018],[28943.841405845546,53842.981563935115],[28943.93671329766,53842.977702052725],[28945.24254315232,53842.862216385416],[28953.474839201055,53849.23921714198],[28953.554918506696,53849.29521039192],[28981.12802661805,53866.6331989303],[28981.21318839329,53866.68110938083],[29010.346796676637,53881.24527791902],[29010.436227802013,53881.284648124056],[29040.852170344642,53892.935938871866],[29040.945016937207,53892.9663929271],[29072.352884164862,53901.59356006764],[29072.448259730994,53901.61480719959],[29104.54817125328,53907.13547906823],[29104.64516515287,53907.14731641058],[29137.130632914384,53909.50878196228],[29137.228319055568,53909.5110964928],[29169.789173846795,53908.69080860404],[29169.88661952824,53908.68357822374],[29202.211972284163,53904.689368946034],[29202.30824710042,53904.67266269013],[29234.08945724308,53897.54266850402],[29234.183641968055,53897.516645882846],[29265.117264509612,53887.31894352647],[29265.208459873273,53887.283853002424],[29294.999142445497,53874.11580951993],[29295.08647772005,53874.0719861352],[29314.49427451855,53863.11520891565],[29340.591449951058,53868.650080047766],[29340.68984235075,53868.6658721258],[29373.70885635423,53872.289198752704],[29373.808331965498,53872.295119631715],[29407.02402112969,53872.614142880375],[29407.123592114553,53872.610133763344],[29440.206109577564,53869.6216855823],[29440.304787150926,53869.60778628157],[29472.925608429057,53863.34154332586],[29473.022412677816,53863.31789186782],[29489.05818865185,53858.97378639481],[29560.71081934785,53837.63272314361],[29596.07261147845,53834.22474754158],[29611.860607097915,53832.32210833706],[29611.955008944868,53832.30844006145],[29643.16918845508,53826.25676034347],[29643.26185856152,53826.23415986033],[29673.757446555748,53817.23599649628],[29673.847541759893,53817.20466943678],[29703.347073141318,53805.34189251224],[29703.433773709206,53805.3021239066],[29731.66884617119,53790.682667228626],[29731.751363255058,53790.63481891271],[29758.465079080568,53773.39169807587],[29758.54266189622,53773.33620539904],[29783.491965550606,53753.62630745034],[29783.563908208427,53753.5636753144],[29806.521797660862,53731.566331390095],[29806.587445588393,53731.49712965546],[29827.345037850042,53707.41248318838],[29827.403793747606,53707.33734148912],[29845.77222515301,53681.38452745988],[29845.82355442829,53681.304129475044],[29861.635699292292,53653.71928029508],[29861.67913492431,53653.634357528186],[29868.580695548502,53639.30783306757],[29889.328063969555,53593.47449973424],[29895.334997620757,53579.347304549214],[29895.3690687986,53579.26175661719],[29905.401164691368,53550.25312320534],[29905.42722225618,53550.164803914406],[29912.74841399439,53520.35635025144],[29912.76623699643,53520.26600848683],[29915.389930612488,53505.14062822836],[29921.108663886353,53466.972831618186],[29922.782481379938,53454.094112527375],[29922.791015452007,53454.01667393283],[29923.96188864788,53441.08252817415],[29929.83669604387,53358.24123387523],[29930.591386614527,53341.9801632539],[29930.59353040506,53341.88254446782],[29929.718654280172,53309.346863963925],[29929.711267492436,53309.24950145266],[29925.667490777603,53276.95424197345],[29925.650643837398,53276.85806399344],[29918.476519991364,53245.111129298806],[29918.450373517808,53245.01705281315],[29908.21430081085,53214.121118940224],[29908.179104085033,53214.030040876314],[29894.978673463298,53184.27967034772],[29894.93476205162,53184.192459045946],[29878.89582673637,53155.87129260683],[29878.843619291252,53155.78877954176],[29869.806479525454,53142.24913108965],[29814.702825204804,53063.90446557593],[29841.88853124935,52986.477087251624],[29846.382511651533,52972.730797538155],[29846.407674046688,52972.647773814504],[29853.58681846368,52944.63542772947],[29853.604690392778,52944.55053556864],[29856.276340325727,52930.337209873964],[29863.04628212648,52889.454464238916],[29865.72126581215,52869.624389980156],[29865.73373172294,52869.50503520754],[29867.49437345231,52829.54246668233],[29867.49245235855,52829.42247805755],[29866.571765952292,52809.433988379526],[29861.085699015155,52737.432941962616],[29861.842722874764,52734.44891976433],[29864.287820913978,52723.72342956825],[29867.388354970823,52708.49240603537],[29867.404817964274,52708.40063595339],[29871.460484668765,52677.5880443539],[29871.4683292199,52677.49513988082],[29872.636677603336,52646.43875253203],[29872.635835521214,52646.34552126582],[29870.906709391107,52615.31530444179],[29870.89718799576,52615.222556821165],[29866.28561826034,52584.48824930837],[29866.267500319143,52584.396791567815],[29861.41216038995,52564.743848123406],[29861.474728724905,52564.62162001462],[29861.517027061105,52564.52725534205],[29868.15987981272,52548.61743318197],[29891.229900777078,52489.07822982766],[29896.69461280296,52473.89364389374],[29896.725177069897,52473.80179629245],[29905.419524710993,52442.7287083319],[29905.4410653935,52442.634335903334],[29911.090342935913,52410.86620505811],[29911.10265819444,52410.770192086675],[29913.65393103629,52378.60469064565],[29913.656905474927,52378.50793678789],[29913.086267785704,52346.24646057604],[29913.079873533505,52346.149872430724],[29909.392672280555,52314.094716503816],[29909.376969252662,52313.99919911696],[29902.60775408165,52282.4507252689],[29902.582889417885,52282.357173653356],[29892.79508894549,52251.610996068775],[29892.76129563164,52251.52028681778],[29880.046623056875,52221.864501921795],[29880.004217741567,52221.777484995226],[29864.481811559115,52193.48997218856],[29864.431191586787,52193.407462948606],[29846.24649915991,52166.75328062094],[29846.188138847614,52166.67605219207],[29825.51155356571,52141.904954173195],[29825.445999758686,52141.83373019787],[29819.467023142453,52135.93772650954],[29828.981483022075,52105.295878674675],[29829.006026900213,52105.20046941728],[29835.610837884244,52073.03299688433],[29835.625874766407,52072.93563559569],[29839.033483017196,52040.274373798784],[29839.03886696551,52040.17600540217],[29839.21620052974,52007.337942578626],[29839.211879291215,52007.23952177163],[29836.157217087064,51974.543362126795],[29836.14323260074,51974.445844115675],[29829.88622113048,51942.20891461601],[29829.862709120393,51942.11324584507],[29820.464074725725,51910.64841644256],[29820.431263383645,51910.55552540864],[29807.982222912484,51880.168172654274],[29807.940430683266,51880.078960895364],[29792.561806148824,51851.06400398962],[29792.51143863977,51850.97933733512],[29774.352484642437,51823.618375967],[29774.294030686764,51823.53907613461],[29764.22599569748,51810.562525959525],[29734.60293715507,51774.26473623432],[29724.27859469794,51762.21162099892],[29724.21496264635,51762.14081753619],[29711.970291682883,51749.75629057178],[29715.041930415875,51736.8513046224],[29715.05939143499,51736.758814730565],[29717.606631509625,51721.27531582313],[29724.223044069728,51674.15837263479],[29726.69493520344,51659.09360247393],[29747.127740073414,51638.57293591932],[29747.194425511218,51638.49893159285],[29768.166630310523,51612.75427178963],[29768.225621915,51612.67399988575],[29786.5323391117,51584.97048042424],[29786.583051474478,51584.88473752824],[29802.042612708516,51555.49727678353],[29802.084542580997,51555.4069137726],[29814.543533564793,51524.627140749486],[29814.576264852203,51524.533054348896],[29823.911047685357,51492.66641484243],[29823.934255575885,51492.56953872686],[29830.052195717177,51459.93226414755],[29830.065649905282,51459.833559675644],[29832.906035439686,51426.74952888554],[29832.90960241155,51426.64997555981],[29832.4442465242,51393.447500844326],[29832.437890882662,51393.34808659096],[29828.671411571995,51360.35665561901],[29828.655196387823,51360.2583669841],[29825.544444042833,51343.94427427091],[29816.770197898186,51303.44051713418],[29812.887556263708,51282.85645595329],[29824.601388644525,51261.85879583259],[29824.644180990657,51261.77258025303],[29837.5087082515,51232.38088359548],[29837.543013631377,51232.29095333384],[29847.522239625323,51201.7986109808],[29847.547740223235,51201.705799179006],[29854.5492143026,51170.395301652075],[29854.565673873072,51170.30046814752],[29858.524532197953,51138.46188565476],[29858.531798254407,51138.36590901453],[29859.411364731397,51106.294204099526],[29859.40936995883,51106.19797348107],[29858.69075409099,51090.167541683346],[29851.858409972905,50991.11856469555],[29852.015230645935,50989.69918044191],[29852.021235994576,50989.59861594302],[29852.331938596715,50956.018837262396],[29852.327795097128,50955.91817885956],[29849.258266124223,50922.477543929606],[29849.244015829954,50922.37781323341],[29845.98195133532,50905.62581832039],[29883.492011877148,50869.872648393575],[29895.555714141115,50857.76881697645],[29895.626187818594,50857.694386901814],[29917.815021051705,50831.71303387827],[29917.87750541552,50831.63178069675],[29937.29017173574,50803.51553251958],[29937.344010301713,50803.42830990759],[29953.776552951538,50773.472566431796],[29953.821180071493,50773.38029078283],[29967.100952596153,50741.899778279076],[29967.135899400822,50741.80341907572],[29973.945892192864,50719.524190664684],[29994.289506824687,50708.649603594444],[29994.372931114056,50708.59964894095],[30021.338566778133,50690.61579846053],[30021.41674496793,50690.55797761565],[30046.508267652975,50670.04018351132],[30046.580460562203,50669.975043175735],[30069.560627907085,50647.11730283879],[30069.626152946046,50647.04545891956],[30090.277685650744,50622.063894097955],[30090.335923274997,50621.98602588503],[30108.46355947909,50595.11683922697],[30108.51395904726,50595.03368297049],[30123.94630047397,50566.530924824954],[30123.988385454144,50566.443266773946],[30136.579518116283,50536.57643293802],[30136.612890591623,50536.48510190631],[30146.243764317704,50505.53658568937],[30146.268108748805,50505.44244521913],[30149.943873319957,50489.65367577823],[30163.826990203073,50422.68614331069],[30164.919615971754,50417.18308216576],[30164.925893398442,50417.15001096796],[30165.92574319243,50411.62933951576],[30166.988439117198,50405.466330111376],[30169.39640842052,50389.08008230248],[30169.40840553803,50388.98146667506],[30171.769717848852,50355.95152968688],[30171.77187111662,50355.85221032202],[30170.84429867796,50322.75096950957],[30170.836586845442,50322.65192658737],[30166.629283848153,50289.806057233814],[30166.611783023225,50289.70826820618],[30159.166271219437,50257.44192524879],[30159.139154117256,50257.34635519298],[30148.52891306524,50225.977974326284],[30148.492447303754,50225.88556642058],[30134.82218918314,50195.72472133606],[30134.776734641953,50195.63638755156],[30118.18137086532,50166.980734819124],[30118.127376134067,50166.89734691955],[30098.770685876236,50140.02968836649],[30098.708683827448,50139.95206930476],[30076.781697761013,50115.13756115536],[30076.712300291223,50115.06647695187],[30052.431415223058,50092.55001288643],[30052.35530721401,50092.48616506926],[30025.96015056374,50072.48995948214],[30025.878083123305,50072.43397816366],[29999.464068629495,50056.277711626055],[29994.06983085537,50034.31304798573],[29994.044112108568,50034.22570458487],[29984.154631361253,50005.53171150779],[29984.121074745715,50005.44706945461],[29971.66267342827,49977.77153324569],[29971.621557139206,49977.69029425021],[29964.460477884477,49964.30652957866],[29935.55581095189,49913.121846690745],[29926.998526663272,49898.81618609271],[29926.94506948994,49898.731689220105],[29907.74019618224,49871.492121542266],[29907.678568204752,49871.41338537999],[29885.84949855026,49846.2278155883],[29885.780315887587,49846.15562729254],[29861.545283666095,49823.2758454148],[29861.469237964367,49823.21092668015],[29835.070530232264,49802.86567080377],[29834.988381750078,49802.8086706482],[29806.689916704116,49785.201340252184],[29806.602486711956,49785.15282852854],[29776.68717520625,49770.459450998394],[29776.595337775925,49770.419912697325],[29746.37063647134,49759.162947685545],[29745.395646629775,49757.07496257951],[29745.345614207774,49756.981170075305],[29727.0299806755,49726.64762572869],[29726.97027463491,49726.55967423176],[29705.538145431132,49698.34176887773],[29705.469440466757,49698.260652264355],[29681.16300460427,49672.47725606875],[29681.086077101252,49672.403890979134],[29672.940679706982,49665.03911147653],[29665.12398017139,49647.48907932592],[29665.080535558584,49647.402969389135],[29649.231647949924,49619.43141549703],[29649.180109875404,49619.34989137501],[29630.710256519185,49593.035264576974],[29630.651104408447,49592.9590846361],[29620.486097013774,49580.5002805836],[29592.789166067487,49548.17739055802],[29581.235936581706,49535.379793464446],[29581.164678429413,49535.30485135209],[29556.152081375756,49511.5857208437],[29556.073464694353,49511.5185385404],[29528.74504856206,49490.5093777962],[29528.659914081833,49490.450673752486],[29499.307930159768,49472.37615566727],[29499.217188312632,49472.3265576668],[29483.879694553514,49464.45147748302],[29445.877386930613,49446.16511599123],[29428.420940166146,49427.294327416035],[29406.04758731521,49395.518987993],[29396.444683757585,49382.558551372866],[29396.385219108543,49382.4822279542],[29375.356113276393,49358.029781804646],[29375.289551021968,49357.95956232724],[29351.995776810236,49335.65383447756],[29351.92274006024,49335.590376287604],[29326.58235762263,49315.64017748548],[29326.503530096626,49315.584074634695],[29299.35375862421,49298.17616489006],[29299.26987825101,49298.12794257454],[29270.564875087603,49283.42528267462],[29270.47672709727,49283.38539231836],[29240.485208676102,49271.52561842377],[29240.39361824919,49271.49443345271],[29209.396344452143,49262.58856856949],[29209.302168994916,49262.566380915756],[29177.589314798883,49256.69779557623],[29177.493435916866,49256.684812945314],[29145.36187523507,49253.90844480551],[29145.26519048008,49253.904788731816],[29113.015716681683,49254.24662822178],[29112.91913114956,49254.252332930955],[29080.853641576214,49257.70917998787],[29080.75805943394,49257.72419207636],[29049.17672900365,49264.26368608903],[29049.083045025174,49264.287865024045],[29018.28151631873,49273.848787773815],[29018.190607508688,49273.88190720889],[28988.457223178313,49286.37475593446],[28988.36994056215,49286.416505828325],[28959.983043976074,49301.72433112151],[28959.900204633297,49301.77432064052],[28956.553535260835,49304.02164780345],[28939.39976024161,49306.72915239836],[28939.297278103833,49306.75088323796],[28905.56288436709,49315.77390364886],[28905.463238004882,49315.80623661118],[28872.857919592632,49328.30893340063],[28872.762202606682,49328.35151363728],[28841.643796904595,49344.19667199983],[28841.553059771395,49344.249032200474],[28812.263085620656,49363.26275441162],[28812.178324163728,49363.32431993259],[28789.22685983177,49381.9066683176],[28776.90522870559,49385.43657997482],[28776.8108642868,49385.466157572206],[28745.882027217034,49396.868599535825],[28745.791045603197,49396.90735290657],[28716.139664878385,49411.30888980095],[28716.052955822175,49411.35643995732],[28687.969006437146,49428.61623228141],[28687.887417907845,49428.672114207715],[28661.645546206793,49448.62137022041],[28661.569876097623,49448.68503742059],[28637.42671392594,49471.12866378172],[28637.357702251044,49471.1994936238],[28615.549357093154,49495.91800341636],[28615.487678750684,49495.99530322147],[28596.227424854987,49522.7469623034],[28596.173683026915,49522.829976119814],[28579.64987559971,49551.353167261084],[28579.604595853056,49551.44108325703],[28565.978829116197,49581.456864520056],[28565.942454263233,49581.548822923],[28555.347981086557,49612.76365567589],[28555.32086685436,49612.85875718068],[28547.86129567061,49644.96737660501],[28547.8437072222,49645.06469116858],[28543.591988728822,49677.75309178289],[28543.58409807005,49677.85166771963],[28542.581811859032,49710.8001740174],[28542.583696156416,49710.89904730613],[28544.840644061085,49743.785440079446],[28544.852284887176,49743.88364379103],[28550.346395138582,49776.38631133485],[28550.367678652186,49776.48288508827],[28559.045221722114,49808.28396826947],[28559.075939781582,49808.37796762384],[28570.852053821156,49839.16646843134],[28570.891906019904,49839.25697412207],[28585.65142679218,49868.73179712401],[28585.700023396515,49868.81792405271],[28599.00864711916,49889.89631481632],[28591.027510954224,49910.98851146031],[28590.996665095747,49911.08435069797],[28582.335943995215,49943.50785666685],[28582.314891411734,49943.60631180988],[28578.807421254613,49965.299908632915],[28522.57930111921,49971.678003627516],[28506.974725851247,49973.82260900026],[28506.881454602426,49973.83768095698],[28476.063085510523,49980.32478676493],[28475.971652989563,49980.34859398751],[28445.903061889167,49989.71525003858],[28445.814284285814,49989.74758000732],[28416.76388420247,50001.91017305456],[28416.678554006845,50001.950737169864],[28395.474422523737,50013.2884310176],[28393.918369682593,50012.12965914702],[28393.83576579016,50012.07430881599],[28365.417904172355,49995.01594996535],[28365.330211752334,49994.96907671434],[28335.358756419093,49980.81724534308],[28335.266842491885,49980.77931261084],[28304.038123083003,49969.673928756536],[28303.942896407327,49969.64531158635],[28287.953147481694,49965.27055821638],[28242.9880624799,49954.1622781137],[28230.763586667174,49948.6847497997],[28215.305814835283,49942.21989699725],[28215.212152216856,49942.18346262942],[28183.42044865778,49931.62285710632],[28183.323602032666,49931.596007889304],[28167.069996243426,49927.52693793236],[28058.073968438064,49903.13369066324],[28044.15457056021,49900.32844731422],[28044.0707336495,49900.31340189263],[28030.044494623467,49898.103504710176],[27953.880747992742,49887.76084972365],[27937.37648905494,49885.93702524665],[27937.27725246059,49885.92855476137],[27904.098823009794,49884.75584803846],[27903.99923601967,49884.757291013455],[27870.868712138446,49886.890787505145],[27870.769762620712,49886.90212962659],[27859.483625417273,49888.76921117483],[27832.242392064505,49865.64766613075],[27795.051672311685,49807.923399444924],[27786.71521579954,49795.59750628097],[27786.663571671317,49795.52470393156],[27768.382962227723,49772.04972451371],[27768.325031989054,49771.98181733068],[27748.02396378427,49750.23045026632],[27747.96020898264,49750.16797928643],[27725.80042667327,49730.31352419125],[27725.73135526218,49730.25698713942],[27714.009078527666,49721.091160496166],[27704.749497431134,49714.1783602836],[27691.94426396353,49690.692565432146],[27691.894942418894,49690.611509151844],[27674.19113210729,49664.40313212836],[27674.13435039437,49664.327115206426],[27654.026308661494,49639.914606434744],[27653.962577971026,49639.84431323141],[27644.92685317943,49630.782038979065],[27644.75669850526,49630.309598337204],[27644.71855895175,49630.211830588305],[27630.312871530317,49598.334559341965],[27630.264696030416,49598.241326946976],[27612.597627690695,49568.04929243279],[27612.539946808807,49567.96162217483],[27591.80606777534,49539.78733405057],[27591.739516760146,49539.706191456055],[27568.167172498597,49513.85993758592],[27568.092484286964,49513.786216291104],[27555.321869424137,49501.82614432963],[27498.555202757474,49451.392810996294],[27485.885487320287,49440.688613124395],[27485.8079186996,49440.62631838592],[27458.95080840856,49421.1732808915],[27458.867433855274,49421.11900189721],[27430.210318006648,49404.4308398924],[27430.121962722515,49404.38511387002],[27399.948475857105,49390.626998860236],[27399.856014340792,49390.590278384225],[27368.46479925848,49379.898381639374],[27368.36914665019,49379.87103015158],[27336.070898722002,49372.35117500464],[27335.97300174585,49372.33346321711],[27303.087393743423,49368.06007763003],[27302.988221337215,49368.05218084562],[27269.84073932301,49367.06756075052],[27269.741273048156,49367.06955712786],[27236.659995101247,49369.383447834305],[27236.561219427713,49369.39531761421],[27203.87356838125,49374.98481732096],[27203.776460943773,49375.006443021965],[27171.805963572024,49383.816229526994],[27171.711485493932,49383.847397108184],[27140.774570664184,49395.79027531244],[27140.68365704465,49395.83067629189],[27140.553986249583,49395.892208145415],[27136.543628907737,49385.632670835315],[27136.506031435627,49385.54822240433],[27122.68586901407,49358.00807917695],[27122.640634130086,49357.927463343054],[27106.336435869154,49331.78115391869],[27106.28395011024,49331.70505955283],[27092.384341467183,49313.422801920555],[27091.138345714775,49306.71504722247],[27091.12340360559,49306.64218195825],[27085.24284119746,49282.5557998721],[27085.222524341763,49282.48424682372],[27081.614545574477,49270.621727158185],[27061.174822254317,49207.650383284665],[27056.010072839745,49192.922186618016],[27055.97703306023,49192.83459115324],[27043.60907317373,49164.1836369487],[27043.567986538594,49164.09951512695],[27028.574881765635,49136.730729666575],[27028.526108382488,49136.650818781345],[27011.039267163622,49110.80407829716],[27010.983234511295,49110.7290787348],[26991.155921891757,49086.630919390875],[26991.09312107361,49086.561488491985],[26969.099115383186,49064.42312084803],[26969.0300968228,49064.35986714614],[26945.062166533316,49044.37532494687],[26944.987535150245,49044.3188028349],[26919.255749423774,49026.66324246668],[26919.176159331673,49026.61394733791],[26891.906046754808,49011.4421125745],[26891.822195528406,49011.400476480645],[26863.252767575563,48998.84534229744],[26863.165390136688,48998.81173016189],[26848.47129724947,48993.55073713252],[26799.452556619788,48977.28462019099],[26783.203947239745,48972.34853623714],[26783.105764673393,48972.32142152328],[26749.960405908605,48964.96169038455],[26749.85997440282,48964.94470401682],[26716.137883933287,48960.9948856979],[26716.036245467356,48960.98820391028],[26682.08729083991,48960.489277870896],[26681.985499915358,48960.49296998708],[26648.161902277185,48963.450112594],[26648.061014977306,48963.4641403082],[26614.713695001796,48969.84667113691],[26614.61475803475,48969.87088891125],[26607.251681341473,48972.076230837825],[26580.827321591467,48946.99208525027],[26569.42874651636,48936.66109288889],[26569.35896150764,48936.60071768658],[26555.764734771194,48925.895214912154],[26522.92890037169,48883.13366337105],[26508.28738547269,48865.37129606723],[26508.195963461152,48865.2678804156],[26492.363474515154,48848.55836384411],[26443.696807848486,48800.62503051078],[26430.357512553906,48788.18707695984],[26430.275495812017,48788.114693860705],[26416.27587714239,48776.42494770091],[26406.453654920166,48768.66939214534],[26392.88484643533,48758.50490127663],[26392.801935801428,48758.44602348204],[26364.20292803085,48740.25066783464],[26364.11446656347,48740.20051470215],[26333.815442036554,48725.003695146224],[26333.7223444952,48724.96278529773],[26318.032637734163,48718.53919284369],[26308.212530409062,48714.80737826692],[26292.725599513775,48707.192501024416],[26292.61906152614,48707.14393733351],[26287.945476601057,48705.17674489086],[26279.219666302703,48697.91925944398],[26265.91804420637,48687.41636972253],[26265.83668452026,48687.355421411776],[26237.71920970318,48668.444038595204],[26237.632082607848,48668.39166527789],[26207.7399073886,48652.43263496758],[26207.647913263736,48652.38937787455],[26176.289946138226,48639.54762216631],[26176.19403565986,48639.513928320484],[26143.694332947736,48629.92215518337],[26143.595497263876,48629.89837278014],[26110.289913913482,48623.65570448418],[26110.189174401487,48623.642079293175],[26076.421893500436,48620.813028173514],[26076.320291212,48620.80970099875],[26042.440267036258,48621.42350273952],[26042.338851939094,48621.43050796434],[26011.888234479644,48625.096523981825],[26004.99659615251,48624.22577116477],[26004.89527828395,48624.218172298766],[25971.03758597371,48623.40417778528],[25970.936019993696,48623.406898990455],[25954.01988413851,48624.29068388061],[25946.717257068758,48624.85857532648],[25894.950124501673,48609.68102602175],[25877.177772319876,48604.998372986636],[25877.070444986664,48604.973237029946],[25840.887251892444,48598.579128519734],[25840.777810063657,48598.565958140665],[25804.110686986805,48596.19316015767],[25804.000460487125,48596.19211538914],[25803.965250082496,48596.19372441106],[25800.976276192872,48592.89749357806],[25800.90847981907,48592.82958206508],[25777.249584185152,48571.30277241114],[25777.175590673287,48571.241671821146],[25751.562290796777,48552.08166799781],[25751.482781502924,48552.027940964705],[25724.150932893135,48535.41117445722],[25724.066639964465,48535.36531571682],[25698.73462920469,48523.1205105368],[25682.767505078973,48504.710460725466],[25682.70241610664,48504.64220190629],[25659.95722808602,48482.93775146303],[25659.885997767946,48482.87592846972],[25635.197140919525,48463.410906164674],[25635.120402909277,48463.35606896473],[25608.707505337625,48446.30363250964],[25608.625942284318,48446.25626892606],[25580.72396897522,48431.76811411206],[25580.638306450786,48431.72864548373],[25551.4954688334,48419.933656586945],[25551.406468878013,48419.90243402051],[25521.282017069094,48410.90553741593],[25521.190471412174,48410.88283866235],[25513.477921106645,48409.35254524327],[25499.80201674023,48397.65903989932],[25499.72598308853,48397.60011506437],[25473.466063547574,48379.20022982955],[25473.38472002974,48379.14888312107],[25445.47838834998,48363.35724597608],[25445.392487658108,48363.31395251814],[25416.097968175975,48350.276687472186],[25416.008305170843,48350.241847870064],[25385.596667449587,48340.079592021706],[25385.50407180561,48340.053528655044],[25354.256722455648,48332.86031593725],[25354.162050983694,48332.84326997695],[25322.368129548377,48328.68566098697],[25322.272258267458,48328.67779016361],[25290.225961992066,48327.594256315315],[25290.129778023347,48327.5956334596],[25258.127639306866,48329.59620096287],[25258.03203266488,48329.606813331746],[25226.370175436212,48334.67297042735],[25226.276030793346,48334.692719821884],[25195.247430177606,48342.77758808037],[25195.155618677996,48342.80629175442],[25165.047390111198,48353.83505986481],[25164.958761309823,48353.87245221606],[25136.049503920414,48367.74306816732],[25135.96487792194,48367.78880319489],[25122.0439604375,48375.75069163076],[25114.808272253595,48380.12333469133],[25083.431501837207,48376.369547530034],[25083.327953049888,48376.36258321072],[25048.737730474855,48375.83536684297],[25048.634017539687,48375.839172125874],[25019.771121007103,48378.40281027487],[25007.548775701813,48369.97376429822],[24993.081517614875,48360.5400626432],[24992.99330643126,48360.48574647744],[24962.691254615213,48343.92766793176],[24962.59789754071,48343.882768985044],[24930.74544388393,48330.54839594579],[24930.647942776126,48330.513396049304],[24897.586910553655,48320.545825781606],[24897.48631174167,48320.5211005353],[24863.57149408215,48314.02729961351],[24863.468877137995,48314.01311435534],[24829.064229453517,48311.062770728364],[24828.960695606693,48311.05927768685],[24794.435430001606,48311.68405285374],[24794.332090321324,48311.69128951432],[24760.056713279842,48315.88447871957],[24759.95467675162,48315.9023674223],[24743.025854727835,48319.324540553585],[24712.476379465465,48326.32853855458],[24696.080011531576,48330.52856161107],[24695.982336327572,48330.55624238841],[24663.93427509538,48341.42396649182],[24663.83990982332,48341.4614079974],[24633.05889128403,48355.52250876272],[24632.968808535716,48355.56932509926],[24603.772082537504,48372.67887938122],[24603.68721076618,48372.73458802816],[24576.37569833989,48392.71625329235],[24576.29691229097,48392.78028007899],[24551.152104244276,48415.428111846675],[24551.08021593964,48415.49979686999],[24531.233589177256,48437.40947684593],[24523.91407047085,48438.000333214084],[24523.818351276623,48438.01273310432],[24507.91504903815,48440.46455265789],[24460.082689190225,48449.02561243864],[24436.325820501843,48446.33707832443],[24436.225204345803,48446.33080563898],[24402.62372620807,48445.93311256535],[24402.52298977593,48445.93700212559],[24369.052215738015,48448.9244391487],[24368.952382809846,48448.93845142521],[24335.95247499508,48455.28065734076],[24335.85456016869,48455.30464992735],[24303.66089515909,48464.937169179495],[24303.565893538682,48464.97089824054],[24272.505654225937,48477.79583593611],[24272.414531308943,48477.838958684595],[24242.803381562022,48493.725975536094],[24242.717063426768,48493.77805371737],[24214.855940121644,48512.56569063666],[24214.77530401566,48512.626194982375],[24188.94735854617,48534.123514024584],[24188.87322397077,48534.19182963166],[24165.340944644566,48558.18035446386],[24165.274065026293,48558.25578704368],[24154.444516466785,48571.10898876717],[24096.28757866774,48643.7750174753],[24086.159871078315,48657.10198955262],[24086.1011501732,48657.18342620321],[24067.914894360198,48685.27734343493],[24067.864635306334,48685.36425776207],[24065.794246252153,48689.39944550103],[24062.210572684606,48692.826436595235],[24050.522197254213,48704.57374093624],[24050.45386183553,48704.64592392618],[24028.89935467485,48729.80926252331],[24028.838522870123,48729.88787298711],[24009.888609939502,48757.06674687339],[24009.835882773863,48757.15100813072],[23993.677791326918,48786.07688699677],[23993.63368975075,48786.165966536864],[23982.514224346094,48811.75071645279],[23972.37679853045,48818.213236036216],[23951.704944241097,48816.752935837736],[23951.60879879895,48816.750779757036],[23919.562831690386,48817.57396255173],[23919.466923743756,48817.58105201593],[23887.6482203473,48821.47871155645],[23887.55343690991,48821.49498099795],[23856.25627546648,48828.431069415106],[23856.16349315194,48828.45636836445],[23828.444256980412,48837.46727019173],[23809.70201599036,48812.17062654339],[23809.638588718353,48812.09340529326],[23787.23644398713,48787.441527982504],[23787.16562627872,48787.37102271687],[23775.068923121533,48775.91519860265],[23755.289526977012,48758.09991565629],[23743.100441339928,48743.65670674576],[23732.851124357043,48732.0686153811],[23732.788048556373,48732.00055093609],[23710.732727146562,48710.31238085306],[23710.66361353978,48710.250456426045],[23686.692820457763,48690.700136716674],[23686.618264204622,48690.64488555903],[23673.978475480417,48681.72479016346],[23593.583237385177,48627.73907587775],[23584.7702759376,48622.020555331095],[23584.716870673827,48621.98708590209],[23575.728077530897,48616.54913011124],[23557.449130162477,48605.880709058605],[23542.080615795803,48597.444762416366],[23541.987137879063,48597.3966058108],[23510.02695924514,48583.004854978135],[23509.928941315706,48582.96678051049],[23476.634212969155,48572.01066020203],[23476.53273882887,48571.983088868525],[23442.271606514652,48564.583742855604],[23442.16779818131,48564.566979517425],[23407.319093412858,48560.8062237032],[23407.214098713845,48560.80045371559],[23372.163149875978,48560.71987145013],[23372.058129756537,48560.72515861287],[23354.5779576064,48562.066803900656],[23344.82357164149,48563.07411384218],[23327.977034109146,48565.248916750475],[23327.876352874602,48565.264531708875],[23294.624671357025,48572.17240963631],[23294.526101548356,48572.19818812993],[23262.14989999632,48582.453658571416],[23262.054464821154,48582.48933300562],[23230.889825593582,48595.985938674174],[23230.79851572038,48596.03113872916],[23201.16894459322,48612.628777571896],[23201.08270786758,48612.683034046764],[23173.295775664476,48632.20941367976],[23173.215507269997,48632.27216336313],[23147.559657349448,48654.524589424655],[23147.486190515243,48654.59518094105],[23124.22774436716,48679.34266130329],[23124.161841718487,48679.4203618748],[23103.542234518154,48706.4060043952],[23103.484580159962,48706.4900074481],[23094.232362331753,48720.73542982946],[23039.992968392362,48809.09654094057],[23030.890182748422,48824.8774943732],[23030.83819334554,48824.973601346865],[23015.284507904475,48857.9082069559],[23015.243314575608,48858.00941247974],[23008.838875077447,48875.064685941885],[22974.197316635888,48975.58116945837],[22968.77456975445,48992.819253204834],[22968.744859719773,48992.923487334265],[22960.738981129292,49028.15382947534],[22960.720726480715,49028.26066677082],[22959.75383242974,49036.630579585784],[22939.13575908662,49040.54935301006],[22939.04022190624,49040.5724276421],[22907.610950042243,49049.81964519323],[22907.51813942906,49049.8519868314],[22877.148425255607,49062.13981121117],[22877.059237740796,49062.18110744201],[22848.042446483298,49077.39084078297],[22847.957743599654,49077.44069269348],[22820.574171339766,49095.425412174285],[22820.49477129948,49095.48333820541],[22795.008937654267,49116.06931517695],[22794.93560744518,49116.13475577531],[22771.593700259993,49139.123133985086],[22771.527148236622,49139.19545700814],[22750.55464545119,49164.36417353271],[22750.49551449221,49164.44268035515],[22732.09500612048,49191.54861063132],[22732.04386741862,49191.6325428936],[22716.393098535413,49220.413849284254],[22716.350446079876,49220.502396218224],[22703.600599841804,49250.681057321315],[22703.566845646415,49250.77336358206],[22693.841082920848,49282.05785979615],[22693.816553044093,49282.15303372444],[22688.859378464032,49306.225816868464],[22680.685831460596,49306.347959892395],[22680.58807354155,49306.35421918773],[22648.14340144949,49310.03417685908],[22648.046724975437,49310.04997080979],[22616.117768018834,49316.88667641456],[22616.023100676866,49316.91185346522],[22584.91624244235,49326.83970340307],[22584.82449264036,49326.87402196],[22554.838227932083,49339.797750690755],[22554.75027608186,49339.84088144031],[22526.172346817995,49355.63647557219],[22526.08903688698,49355.68800464077],[22499.19367084763,49374.20389298517],[22499.11580226038,49374.26332591069],[22474.16108173561,49395.32183388661],[22474.089401702706,49395.388600363214],[22451.314786922416,49418.787654972104],[22451.24998327036,49418.86111432274],[22440.73416425287,49432.029167880144],[22439.535090787755,49432.47218170018],[22439.442301426785,49432.51189396274],[22409.21995304256,49447.29332462406],[22409.13163936513,49447.34218794042],[22380.553221008766,49465.09479448892],[22380.470282660066,49465.15231109193],[22353.82692068934,49485.695248958335],[22353.750202556457,49485.76083293042],[22329.313310987,49508.88483267838],[22329.24359459214,49508.95781592025],[22307.26211031313,49534.42731500068],[22307.200105852273,49534.50695403722],[22287.8979527011,49562.06249645102],[22287.84429180931,49562.147980004986],[22271.418099448896,49591.50885939785],[22271.37332876588,49591.59931665433],[22257.990429656704,49622.466435825605],[22257.955005258245,49622.56094530292],[22247.751730052263,49654.61986307906],[22247.726012804207,49654.71746201583],[22240.80630154113,49687.64159647304],[22240.790553423263,49687.74129063581],[22237.224896711483,49721.19524594799],[22237.219278148765,49721.29601975937],[22237.043999082547,49754.93900287075],[22237.04856731089,49755.03982975505],[22240.265451445426,49788.52912192507],[22240.2801599286,49788.62897476594],[22245.456182445596,49814.59807591713],[22244.24518193054,49816.146758033974],[22244.188752412014,49816.22669392012],[22226.705018329652,49843.76032555563],[22226.656671061333,49843.845393634845],[22211.947489247923,49872.95590374147],[22211.907687108316,49873.045289568865],[22200.11388380243,49903.45397307161],[22200.083007858677,49903.54682086401],[22195.31578061501,49919.14740828271],[22191.824086262848,49931.661693997],[22187.77588404795,49947.697147731036],[22187.753995877094,49947.7939036186],[22182.06662916819,49980.36805584271],[22182.054435140788,49980.46650430383],[22179.622456317804,50013.44387552792],[22179.620076432773,50013.54304775159],[22180.467418099186,50046.59911444481],[22180.47487577648,50046.69803449764],[22184.59319941968,50079.507498753715],[22184.610421269837,50079.605193183845],[22189.56467332284,50101.34010458801],[22189.210005958572,50103.08231368165],[22189.195750487834,50103.17385168159],[22185.86239507404,50133.87387438711],[22185.85667188001,50133.96633880691],[22185.37866004727,50164.84309638694],[22185.381518248832,50164.93569365776],[22187.762952500936,50195.72418866427],[22187.774367567792,50195.81612407708],[22192.99480941928,50226.252116564334],[22193.01468338248,50226.34260109045],[22194.382083572385,50231.43065963595],[22193.949532250645,50234.03862204223],[22188.7172366662,50248.646872267826],[22188.685794951176,50248.742116550435],[22179.81057510363,50280.975861923755],[22179.788832505626,50281.073776755344],[22176.57452546778,50297.48383833663],[22172.847252740503,50319.415656518446],[22170.47109162902,50335.87256217014],[22170.459305509343,50335.971597657226],[22168.9067600618,50352.52652103524],[22167.11075119262,50378.68006870708],[22166.40923211937,50394.13809023759],[22166.407177459907,50394.23088607012],[22167.158558446197,50425.16128643538],[22167.16511653394,50425.25387304157],[22168.616397380247,50440.6595973863],[22169.31133706403,50446.56500486768]]]]}&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">SpatialCells</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0: Basic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../tutorials.html">Tutorials</a><ul>
+      <li>Previous: <a href="../tutorials.html" title="previous chapter">Tutorials</a></li>
+      <li>Next: <a href="1_tutorial_measurements.html" title="next chapter">1: Spatial and Measurement Functions</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Guihong Wan; Zoltan Maliga & Boshen Yan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../_sources/tutorial/0_tutorial_spatial_functions.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

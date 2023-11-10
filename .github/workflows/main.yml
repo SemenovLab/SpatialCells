@@ -7,19 +7,10 @@ on:
 jobs:
   pages:
     runs-on: ubuntu-20.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       pages: write
       id-token: write
     steps:
-    - uses: actions/checkout@v4
-    - name: build-sphinx
-      uses: ammaraskar/sphinx-action@master
-      with:
-        pre-build-command: "pip install . sphinx sphinx_rtd_theme"
-        docs-folder: "docs/"
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:

@@ -18,7 +18,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install . sphinx sphinx-tabs sphinx_rtd_theme sphinx-panels pandoc
+        pip install . sphinx sphinx-tabs sphinx_rtd_theme sphinx-panels pandoc nbsphinx
         cd docs
         make html
     - name: Deploy

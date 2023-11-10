@@ -1,5 +1,7 @@
-spatialcells module
-===================
+SpatialCells Functions
+======================
+
+Functions in SpatialCells are divided into 5 modules:
 
 .. toctree::
    :maxdepth: 4

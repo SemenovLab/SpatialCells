@@ -1,4 +1,5 @@
-ipykernel # optional for notebook
+IPython
+ipykernel
 matplotlib>=3.7.0
 pandas>=2.0.3
 seaborn>=0.12.2 # optional for notebook plots

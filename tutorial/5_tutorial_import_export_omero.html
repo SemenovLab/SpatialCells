@@ -1,55 +1,101 @@
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-<html lang="en" data-content_root="../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
-    <title>5: Loading and Saving Regions &#8212; SpatialCells 0.9.5 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    
-    <script src="../_static/documentation_options.js?v=61b282d3"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5: Loading and Saving Regions &mdash; SpatialCells 0.9.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=61b282d3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Functions Reference" href="../spatialcells.html" />
     <link rel="prev" title="4: Macro and Micro Regions Analysis" href="4_tutorial_macro_micro_regions.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../spatialcells.html" title="Functions Reference"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="4_tutorial_macro_micro_regions.html" title="4: Macro and Micro Regions Analysis"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Tutorials</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">5: Loading and Saving Regions</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpatialCells
+          </a>
+              <div class="version">
+                0.9.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5: Loading and Saving Regions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Read-Anndata-and-saved-region/shapes-files">Read Anndata and saved region/shapes files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Generate-and-export-tumor-region">Generate and export tumor region</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Save-the-boundary-objects-generated">Save the boundary objects generated</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpatialCells</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">5: Loading and Saving Regions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorial/5_tutorial_import_export_omero.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="5:-Loading-and-Saving-Regions">
-<h1>5: Loading and Saving Regions<a class="headerlink" href="#5:-Loading-and-Saving-Regions" title="Link to this heading">¶</a></h1>
+<h1>5: Loading and Saving Regions<a class="headerlink" href="#5:-Loading-and-Saving-Regions" title="Link to this heading"></a></h1>
 <p>Demonstrate importing / exporting of regions</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
@@ -70,7 +116,7 @@
 </div>
 </div>
 <section id="Read-Anndata-and-saved-region/shapes-files">
-<h2>Read Anndata and saved region/shapes files<a class="headerlink" href="#Read-Anndata-and-saved-region/shapes-files" title="Link to this heading">¶</a></h2>
+<h2>Read Anndata and saved region/shapes files<a class="headerlink" href="#Read-Anndata-and-saved-region/shapes-files" title="Link to this heading"></a></h2>
 <p>Load epithelial region file from omero csv format and tumor cell region from spatialcell outputs.</p>
 <p>The workflow for generating and saving the tumor cell region can be found at the end of this notebook.</p>
 <div class="nbinput nblast docutils container">
@@ -411,7 +457,7 @@ Name: count, dtype: int64
 </div>
 </section>
 <section id="Generate-and-export-tumor-region">
-<h2>Generate and export tumor region<a class="headerlink" href="#Generate-and-export-tumor-region" title="Link to this heading">¶</a></h2>
+<h2>Generate and export tumor region<a class="headerlink" href="#Generate-and-export-tumor-region" title="Link to this heading"></a></h2>
 <p>The following steps compute the tumor cell region based on SOX10+ cells for distance measurement with the epithelial cells. For detailed tutorial, please refer to tutorial 0.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
@@ -514,7 +560,7 @@ Cluster size and index:
 </div>
 </section>
 <section id="Save-the-boundary-objects-generated">
-<h2>Save the boundary objects generated<a class="headerlink" href="#Save-the-boundary-objects-generated" title="Link to this heading">¶</a></h2>
+<h2>Save the boundary objects generated<a class="headerlink" href="#Save-the-boundary-objects-generated" title="Link to this heading"></a></h2>
 <p>Boundary objects can be saved as geojson type files or omero format csv files. Note that currently, saving to csv format ignores the holes inside boundary regions. To preserve information of the holes, save to a json/geojson file instead.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -546,78 +592,34 @@ Cluster size and index:
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">5: Loading and Saving Regions</a><ul>
-<li><a class="reference internal" href="#Read-Anndata-and-saved-region/shapes-files">Read Anndata and saved region/shapes files</a></li>
-<li><a class="reference internal" href="#Generate-and-export-tumor-region">Generate and export tumor region</a></li>
-<li><a class="reference internal" href="#Save-the-boundary-objects-generated">Save the boundary objects generated</a></li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_tutorial_macro_micro_regions.html" class="btn btn-neutral float-left" title="4: Macro and Micro Regions Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../spatialcells.html" class="btn btn-neutral float-right" title="Functions Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.</p>
   </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="4_tutorial_macro_micro_regions.html"
-                          title="previous chapter">4: Macro and Micro Regions Analysis</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="../spatialcells.html"
-                          title="next chapter">Functions Reference</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/tutorial/5_tutorial_import_export_omero.ipynb.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../spatialcells.html" title="Functions Reference"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="4_tutorial_macro_micro_regions.html" title="4: Macro and Micro Regions Analysis"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Tutorials</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">5: Loading and Saving Regions</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

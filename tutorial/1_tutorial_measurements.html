@@ -1,55 +1,109 @@
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-<html lang="en" data-content_root="../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
-    <title>1: Spatial and Measurement Functions &#8212; SpatialCells 0.9.5 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    
-    <script src="../_static/documentation_options.js?v=61b282d3"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1: Spatial and Measurement Functions &mdash; SpatialCells 0.9.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=61b282d3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="2: Tumor Proliferation Analysis" href="2_tutorial_tumor_proliferation.html" />
     <link rel="prev" title="0: Basic Functions" href="0_tutorial_spatial_functions.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="2_tutorial_tumor_proliferation.html" title="2: Tumor Proliferation Analysis"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="0_tutorial_spatial_functions.html" title="0: Basic Functions"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Tutorials</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">1: Spatial and Measurement Functions</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpatialCells
+          </a>
+              <div class="version">
+                0.9.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1: Spatial and Measurement Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Read-and-process-data">Read and process data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getBoundary">getBoundary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#assignPointsToRegion">assignPointsToRegion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Tumor-area-and-density">Tumor area and density</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Tumor-organization">Tumor organization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Get-distance-from-the-epidermis-layer">Get distance from the epidermis layer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Sliding-window-analysis">Sliding window analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpatialCells</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">1: Spatial and Measurement Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorial/1_tutorial_measurements.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="1:-Spatial-and-Measurement-Functions">
-<h1>1: Spatial and Measurement Functions<a class="headerlink" href="#1:-Spatial-and-Measurement-Functions" title="Link to this heading">¶</a></h1>
+<h1>1: Spatial and Measurement Functions<a class="headerlink" href="#1:-Spatial-and-Measurement-Functions" title="Link to this heading"></a></h1>
 <p>Demonstrate the usage of spatial measurement functions</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
@@ -71,7 +125,7 @@
 </div>
 <p>In this tutorial, we will be demonstrating the spatial measurements functions by studying the distribution of MITF+ cells among SOX10+ tumor cells</p>
 <section id="Read-and-process-data">
-<h2>Read and process data<a class="headerlink" href="#Read-and-process-data" title="Link to this heading">¶</a></h2>
+<h2>Read and process data<a class="headerlink" href="#Read-and-process-data" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -158,7 +212,7 @@ Name: count, dtype: int64
 </div>
 </section>
 <section id="getBoundary">
-<h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading">¶</a></h2>
+<h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -209,7 +263,7 @@ Name: count, dtype: int64
 </div>
 </section>
 <section id="assignPointsToRegion">
-<h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading">¶</a></h2>
+<h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -349,7 +403,7 @@ Assigned points to region: Tumor
 </div>
 </div>
 <section id="Tumor-area-and-density">
-<h3>Tumor area and density<a class="headerlink" href="#Tumor-area-and-density" title="Link to this heading">¶</a></h3>
+<h3>Tumor area and density<a class="headerlink" href="#Tumor-area-and-density" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -405,7 +459,7 @@ Name: count, dtype: float64
 </section>
 </section>
 <section id="Tumor-organization">
-<h2>Tumor organization<a class="headerlink" href="#Tumor-organization" title="Link to this heading">¶</a></h2>
+<h2>Tumor organization<a class="headerlink" href="#Tumor-organization" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -637,7 +691,7 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 </div>
 </div>
 <section id="Get-distance-from-the-epidermis-layer">
-<h3>Get distance from the epidermis layer<a class="headerlink" href="#Get-distance-from-the-epidermis-layer" title="Link to this heading">¶</a></h3>
+<h3>Get distance from the epidermis layer<a class="headerlink" href="#Get-distance-from-the-epidermis-layer" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -866,7 +920,7 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 </div>
 </section>
 <section id="Sliding-window-analysis">
-<h3>Sliding window analysis<a class="headerlink" href="#Sliding-window-analysis" title="Link to this heading">¶</a></h3>
+<h3>Sliding window analysis<a class="headerlink" href="#Sliding-window-analysis" title="Link to this heading"></a></h3>
 <p>We can also divide the tumor region into square windows and get the cell composition within each window. This can be matched with patch-level image analysis to provide additional features</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
@@ -1137,86 +1191,34 @@ get_comp_mask(df, pheno_col, pheno_vals, step_size)
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">1: Spatial and Measurement Functions</a><ul>
-<li><a class="reference internal" href="#Read-and-process-data">Read and process data</a></li>
-<li><a class="reference internal" href="#getBoundary">getBoundary</a></li>
-<li><a class="reference internal" href="#assignPointsToRegion">assignPointsToRegion</a><ul>
-<li><a class="reference internal" href="#Tumor-area-and-density">Tumor area and density</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#Tumor-organization">Tumor organization</a><ul>
-<li><a class="reference internal" href="#Get-distance-from-the-epidermis-layer">Get distance from the epidermis layer</a></li>
-<li><a class="reference internal" href="#Sliding-window-analysis">Sliding window analysis</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="0_tutorial_spatial_functions.html" class="btn btn-neutral float-left" title="0: Basic Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_tutorial_tumor_proliferation.html" class="btn btn-neutral float-right" title="2: Tumor Proliferation Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.</p>
   </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="0_tutorial_spatial_functions.html"
-                          title="previous chapter">0: Basic Functions</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="2_tutorial_tumor_proliferation.html"
-                          title="next chapter">2: Tumor Proliferation Analysis</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/tutorial/1_tutorial_measurements.ipynb.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="2_tutorial_tumor_proliferation.html" title="2: Tumor Proliferation Analysis"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="0_tutorial_spatial_functions.html" title="0: Basic Functions"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Tutorials</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">1: Spatial and Measurement Functions</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

@@ -1,59 +1,136 @@
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-<html lang="en" data-content_root="./">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
-    <title>spatialcells.spatial &#8212; SpatialCells 0.9.5 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
-    
-    <script src="_static/documentation_options.js?v=61b282d3"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spatialcells.spatial &mdash; SpatialCells 0.9.5 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61b282d3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="spatialcells.measurements" href="spatialcells.measurements.html" />
     <link rel="prev" title="spatialcells.preprocessing" href="spatialcells.preprocessing.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="spatialcells.measurements.html" title="spatialcells.measurements"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="spatialcells.preprocessing.html" title="spatialcells.preprocessing"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="spatialcells.html" accesskey="U">Functions Reference</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">spatialcells.spatial</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SpatialCells
+          </a>
+              <div class="version">
+                0.9.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="spatialcells.html">Functions Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.preprocessing.html">spatialcells.preprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">spatialcells.spatial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#assignpointstoregions">assignPointsToRegions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.assignPointsToRegions"><code class="docutils literal notranslate"><span class="pre">assignPointsToRegions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#bufferboundary">bufferBoundary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.bufferBoundary"><code class="docutils literal notranslate"><span class="pre">bufferBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#estimateinitialdistance">estimateInitialDistance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.estimateInitialDistance"><code class="docutils literal notranslate"><span class="pre">estimateInitialDistance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#getboundary">getBoundary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.getBoundary"><code class="docutils literal notranslate"><span class="pre">getBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#getcommunities">getCommunities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.getCommunities"><code class="docutils literal notranslate"><span class="pre">getCommunities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#getextendedboundary">getExtendedBoundary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.getExtendedBoundary"><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#getshrunkenboundary">getShrunkenBoundary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial.getShrunkenBoundary"><code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-spatialcells.spatial._utils">Utility functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial._utils.getAlphaShapes"><code class="docutils literal notranslate"><span class="pre">getAlphaShapes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial._utils.getComponents"><code class="docutils literal notranslate"><span class="pre">getComponents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial._utils.getHoles"><code class="docutils literal notranslate"><span class="pre">getHoles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spatialcells.spatial._utils.pruneSmallComponents"><code class="docutils literal notranslate"><span class="pre">pruneSmallComponents()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.measurements.html">spatialcells.measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.plotting.html">spatialcells.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatialcells.utils.html">spatialcells.utils</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SpatialCells</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="spatialcells.html">Functions Reference</a></li>
+      <li class="breadcrumb-item active">spatialcells.spatial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spatialcells.spatial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="spatialcells-spatial">
-<h1>spatialcells.spatial<a class="headerlink" href="#spatialcells-spatial" title="Link to this heading">¶</a></h1>
+<h1>spatialcells.spatial<a class="headerlink" href="#spatialcells-spatial" title="Link to this heading"></a></h1>
 <p>Module for computing cell communities and region boundaries.</p>
 <p>Access via either <code class="docutils literal notranslate"><span class="pre">spatialcells.spatial</span></code> or <code class="docutils literal notranslate"><span class="pre">spatialcells.spa</span></code>.</p>
 <section id="assignpointstoregions">
-<h2>assignPointsToRegions<a class="headerlink" href="#assignpointstoregions" title="Link to this heading">¶</a></h2>
+<h2>assignPointsToRegions<a class="headerlink" href="#assignpointstoregions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.assignPointsToRegions">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">assignPointsToRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anndata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaries_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assigncolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'region'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BG'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_assignPointsToRegions.html#assignPointsToRegions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.assignPointsToRegions" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">assignPointsToRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anndata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaries_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assigncolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'region'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BG'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_assignPointsToRegions.html#assignPointsToRegions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.assignPointsToRegions" title="Link to this definition"></a></dt>
 <dd><p>Assign points to regions based on the boundaries. The region assignment is
 based on the order of the boundaries, so the innermost region should be the
 first element of boundaries_list.</p>
@@ -72,10 +149,10 @@ first element of boundaries_list.</p>
 
 </section>
 <section id="bufferboundary">
-<h2>bufferBoundary<a class="headerlink" href="#bufferboundary" title="Link to this heading">¶</a></h2>
+<h2>bufferBoundary<a class="headerlink" href="#bufferboundary" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.bufferBoundary">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">bufferBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_bufferBoundary.html#bufferBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.bufferBoundary" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">bufferBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_bufferBoundary.html#bufferBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.bufferBoundary" title="Link to this definition"></a></dt>
 <dd><p>Buffer a boundary by a given offset. Negative offset will shrink the boundary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -92,10 +169,10 @@ first element of boundaries_list.</p>
 
 </section>
 <section id="estimateinitialdistance">
-<h2>estimateInitialDistance<a class="headerlink" href="#estimateinitialdistance" title="Link to this heading">¶</a></h2>
+<h2>estimateInitialDistance<a class="headerlink" href="#estimateinitialdistance" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.estimateInitialDistance">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">estimateInitialDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers_of_interest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_estimateInitialDistance.html#estimateInitialDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.estimateInitialDistance" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">estimateInitialDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers_of_interest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_estimateInitialDistance.html#estimateInitialDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.estimateInitialDistance" title="Link to this definition"></a></dt>
 <dd><p>Use hierarchical clustering to get the checkpoints to estimate the distance parameter
 for density-based clustering algorithms, e.g., DBSCAN.</p>
 <dl class="field-list simple">
@@ -114,10 +191,10 @@ for density-based clustering algorithms, e.g., DBSCAN.</p>
 
 </section>
 <section id="getboundary">
-<h2>getBoundary<a class="headerlink" href="#getboundary" title="Link to this heading">¶</a></h2>
+<h2>getBoundary<a class="headerlink" href="#getboundary" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.getBoundary">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anndata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communitycolumn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communityIndexList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getBoundary.html#getBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getBoundary" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anndata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communitycolumn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communityIndexList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getBoundary.html#getBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getBoundary" title="Link to this definition"></a></dt>
 <dd><p>Get a boundary for the communities of interest as a Shapely MultiPolygon.</p>
 <p>The boundary is defined based on the alpha shape of points in the
 communities. The alpha shape is the generalization of the convex hull,
@@ -145,10 +222,10 @@ more detailed boundary, but may appear more jagged.</p></li>
 
 </section>
 <section id="getcommunities">
-<h2>getCommunities<a class="headerlink" href="#getcommunities" title="Link to this heading">¶</a></h2>
+<h2>getCommunities<a class="headerlink" href="#getcommunities" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.getCommunities">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getCommunities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers_of_interest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newcolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'COI_community'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getCommunities.html#getCommunities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getCommunities" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getCommunities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers_of_interest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newcolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'COI_community'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getCommunities.html#getCommunities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getCommunities" title="Link to this definition"></a></dt>
 <dd><p>Get the communities of interest (COI) using DBSCAN</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -168,10 +245,10 @@ more detailed boundary, but may appear more jagged.</p></li>
 
 </section>
 <section id="getextendedboundary">
-<h2>getExtendedBoundary<a class="headerlink" href="#getextendedboundary" title="Link to this heading">¶</a></h2>
+<h2>getExtendedBoundary<a class="headerlink" href="#getextendedboundary" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.getExtendedBoundary">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getExtendedBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getExtendedBoundary.html#getExtendedBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getExtendedBoundary" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getExtendedBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getExtendedBoundary.html#getExtendedBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getExtendedBoundary" title="Link to this definition"></a></dt>
 <dd><p>Get the expand the boundary of the communities of interest</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -188,10 +265,10 @@ more detailed boundary, but may appear more jagged.</p></li>
 
 </section>
 <section id="getshrunkenboundary">
-<h2>getShrunkenBoundary<a class="headerlink" href="#getshrunkenboundary" title="Link to this heading">¶</a></h2>
+<h2>getShrunkenBoundary<a class="headerlink" href="#getshrunkenboundary" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial.getShrunkenBoundary">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getShrunkenBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getShrunkenBoundary.html#getShrunkenBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getShrunkenBoundary" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial.</span></span><span class="sig-name descname"><span class="pre">getShrunkenBoundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_getShrunkenBoundary.html#getShrunkenBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial.getShrunkenBoundary" title="Link to this definition"></a></dt>
 <dd><p>Shrink the boundary of the communities of interest.
 Wrapper of bufferBoundary with negative offset.</p>
 <dl class="field-list simple">
@@ -209,10 +286,10 @@ Wrapper of bufferBoundary with negative offset.</p>
 
 </section>
 <section id="module-spatialcells.spatial._utils">
-<span id="utility-functions"></span><h2>Utility functions<a class="headerlink" href="#module-spatialcells.spatial._utils" title="Link to this heading">¶</a></h2>
+<span id="utility-functions"></span><h2>Utility functions<a class="headerlink" href="#module-spatialcells.spatial._utils" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial._utils.getAlphaShapes">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getAlphaShapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getAlphaShapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getAlphaShapes" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getAlphaShapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getAlphaShapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getAlphaShapes" title="Link to this definition"></a></dt>
 <dd><p>Compute the alpha shape of a set of points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -229,7 +306,7 @@ Wrapper of bufferBoundary with negative offset.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial._utils.getComponents">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getComponents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getComponents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getComponents" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getComponents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getComponents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getComponents" title="Link to this definition"></a></dt>
 <dd><p>Get the components of a boundary defined by a MultiPolygon.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -246,7 +323,7 @@ Wrapper of bufferBoundary with negative offset.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial._utils.getHoles">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getHoles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getHoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getHoles" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">getHoles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#getHoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.getHoles" title="Link to this definition"></a></dt>
 <dd><p>Get the holes within boundary components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -260,7 +337,7 @@ Wrapper of bufferBoundary with negative offset.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialcells.spatial._utils.pruneSmallComponents">
-<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">pruneSmallComponents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holes_min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holes_min_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#pruneSmallComponents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.pruneSmallComponents" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">spatialcells.spatial._utils.</span></span><span class="sig-name descname"><span class="pre">pruneSmallComponents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holes_min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holes_min_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialcells/spatial/_utils.html#pruneSmallComponents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialcells.spatial._utils.pruneSmallComponents" title="Link to this definition"></a></dt>
 <dd><p>Prune small components from a boundary defined by a MultiPolygon.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -282,110 +359,34 @@ Wrapper of bufferBoundary with negative offset.</p>
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">spatialcells.spatial</a><ul>
-<li><a class="reference internal" href="#assignpointstoregions">assignPointsToRegions</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.assignPointsToRegions"><code class="docutils literal notranslate"><span class="pre">assignPointsToRegions()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#bufferboundary">bufferBoundary</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.bufferBoundary"><code class="docutils literal notranslate"><span class="pre">bufferBoundary()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#estimateinitialdistance">estimateInitialDistance</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.estimateInitialDistance"><code class="docutils literal notranslate"><span class="pre">estimateInitialDistance()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#getboundary">getBoundary</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.getBoundary"><code class="docutils literal notranslate"><span class="pre">getBoundary()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#getcommunities">getCommunities</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.getCommunities"><code class="docutils literal notranslate"><span class="pre">getCommunities()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#getextendedboundary">getExtendedBoundary</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.getExtendedBoundary"><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#getshrunkenboundary">getShrunkenBoundary</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial.getShrunkenBoundary"><code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-spatialcells.spatial._utils">Utility functions</a><ul>
-<li><a class="reference internal" href="#spatialcells.spatial._utils.getAlphaShapes"><code class="docutils literal notranslate"><span class="pre">getAlphaShapes()</span></code></a></li>
-<li><a class="reference internal" href="#spatialcells.spatial._utils.getComponents"><code class="docutils literal notranslate"><span class="pre">getComponents()</span></code></a></li>
-<li><a class="reference internal" href="#spatialcells.spatial._utils.getHoles"><code class="docutils literal notranslate"><span class="pre">getHoles()</span></code></a></li>
-<li><a class="reference internal" href="#spatialcells.spatial._utils.pruneSmallComponents"><code class="docutils literal notranslate"><span class="pre">pruneSmallComponents()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spatialcells.preprocessing.html" class="btn btn-neutral float-left" title="spatialcells.preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spatialcells.measurements.html" class="btn btn-neutral float-right" title="spatialcells.measurements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.</p>
   </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="spatialcells.preprocessing.html"
-                          title="previous chapter">spatialcells.preprocessing</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="spatialcells.measurements.html"
-                          title="next chapter">spatialcells.measurements</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/spatialcells.spatial.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="spatialcells.measurements.html" title="spatialcells.measurements"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="spatialcells.preprocessing.html" title="spatialcells.preprocessing"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">SpatialCells 0.9.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="spatialcells.html" >Functions Reference</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">spatialcells.spatial</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

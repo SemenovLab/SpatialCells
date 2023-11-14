@@ -6,10 +6,6 @@
 SpatialCells
 ========================================
 
-.. image:: _static/0_regions.png
-  :width: 600
-  :alt: SpatialCells is able to efficiently compute cell regions and perform region-based queries.
-
 SpatialCells is an open-source software package designed to perform region-based exploratory 
 analysis and characterization of tumor microenvironments using multiplexed single-cell data. The package uses 
 the `Anndata <https://anndata.readthedocs.io/en/latest/>`_ framework and complements existing 

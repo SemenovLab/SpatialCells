@@ -13,6 +13,7 @@ pip install .
 ```
 
 
+
 See `tutorials/0_tutorial_spatial_functions.ipynb` for basic use case    
 
 ## Contact

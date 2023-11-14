@@ -5,10 +5,13 @@ Installation
 ------------
 
 SpatialCells can currently only be installed from source. 
-To install, download the repository and run the following commands from the root directory of SpatialCells:
+To install, download code from the `repository <https://github.com/SemenovLab/SpatialCells>`_ and change to the code folder.
+
+Run the following commands from the root directory of SpatialCells:
 
 .. code-block::
 
+    download code from `conda <https://github.com/SemenovLab/SpatialCells>`_.
     pip install -r requirements.txt
     pip install .
 
@@ -18,7 +21,8 @@ A conda environment can be created with the following yaml file:
 
 .. code-block::
 
-    conda env create -f conda.yml
+    conda env create --name spatialcells --file=conda.yaml
+    pip install .
 
 The conda.yml is specified as follows:
 

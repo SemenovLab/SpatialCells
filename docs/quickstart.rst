@@ -5,7 +5,7 @@ Installation
 ------------
 
 SpatialCells can currently only be installed from source. 
-To install, clone the repository and run the following command from the root directory:
+To install, clone the repository or download the code, and run the following commands from the root directory of SpatialCells:
 
 .. code-block::
 
@@ -18,10 +18,10 @@ A conda environment can be created with the following yaml file:
 
 .. code-block::
 
-    conda env create -f environment.yml
+    conda env create -f conda.yml
 
 
-
+conda.yml:
 .. literalinclude:: _static/conda.yaml
   :language: yaml
 

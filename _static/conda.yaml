@@ -5,7 +5,7 @@ channels:
   - defaults
 
 dependencies:
-  - python>=3.8, <3.11
+  - python>=3.7, <3.11
   - ipykernel
   - matplotlib>=3.7.0
   - pandas>=2.0.3

@@ -1,7 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
 #
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
+# This file only contains a selection of the most common options. 
+# For a full list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # -- Path setup --------------------------------------------------------------
@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath('../tutorials'))
 # -- Project information -----------------------------------------------------
 
 project = 'SpatialCells'
-copyright = '2023, Guihong Wan; Zoltan Maliga & Boshen Yan'
-author = 'Guihong Wan; Zoltan Maliga & Boshen Yan'
+copyright = '2023, Dermatology Clinical Informatics Laboratory'
+author = 'Guihong Wan, Zoltan Maliga, and Boshen Yan'
 version = '0.9.5'
 release = version
 
@@ -57,8 +57,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'alabaster'
+# sphinx-rtd-theme
+# alabaster
+html_theme = 'sphinx-rtd-theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

@@ -5,14 +5,14 @@ This package aims to develop computational methods for region-based analyses of 
 <img width="90%" alt="regions" align="middle" src="./materials/0_regions.png" >
 
 ## Installation
-Clone the repository and run 
+Download the repository and run the following commands:
 
 ```
 pip install -r requirements.txt
 pip install .
 ```
 
-See <https://semenovlab.github.io/SpatialCells/> for documentation.
+See <https://semenovlab.github.io/SpatialCells/> for detailed documentation and tutorials.
 
 ## Cite
 Please cite our paper if you use this package or code in your own work:

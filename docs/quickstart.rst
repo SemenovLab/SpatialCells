@@ -11,7 +11,6 @@ Run the following commands from the root directory of SpatialCells:
 
 .. code-block::
 
-    download code from `conda <https://github.com/SemenovLab/SpatialCells>`_.
     pip install -r requirements.txt
     pip install .
 

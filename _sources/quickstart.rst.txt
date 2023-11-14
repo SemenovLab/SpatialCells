@@ -25,6 +25,6 @@ A conda environment can be created with the following yaml file:
 
 The conda.yml is specified as follows:
 
-.. literalinclude:: _static/conda.yaml
+.. literalinclude:: ../conda.yaml
   :language: yaml
 

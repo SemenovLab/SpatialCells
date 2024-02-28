@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Squidpy analysis &mdash; SpatialCells 0.9.5 documentation</title>
+  <title>7: Working with Squidpy &mdash; SpatialCells 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -25,8 +25,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Seperate the tissue into two parts" href="8_tutorial_scimap_joint_analysis.html" />
-    <link rel="prev" title="Read data" href="6_tutorial_visium_cell2location.html" /> 
+    <link rel="next" title="8: Working with SCIMAP and Scanpy" href="8_tutorial_scimap_joint_analysis.html" />
+    <link rel="prev" title="6: Visium Data Analysis" href="6_tutorial_visium_cell2location.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,16 +58,16 @@
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Squidpy analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">6: Visium Data Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7: Working with Squidpy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Squidpy-analysis">Squidpy analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">8: Working with SCIMAP and Scanpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
@@ -91,7 +91,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Squidpy analysis</li>
+      <li class="breadcrumb-item active">7: Working with Squidpy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorial/7_tutorial_squidpy_joint_analysis.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,7 +101,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Demonstrate the joint usage of spatialcells and squidpy to analyze 4i dataset by Gut et al, 2018</p>
+  <section id="7:-Working-with-Squidpy">
+<h1>7: Working with Squidpy<a class="headerlink" href="#7:-Working-with-Squidpy" title="Link to this heading"></a></h1>
+<p>Demonstrate the joint usage of spatialcells and squidpy to analyze 4i dataset by Gut et al, 2018</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
 <div class="line">&#64;date: Feb 15 2024</div>
@@ -134,7 +136,7 @@
 </div>
 </div>
 <section id="Squidpy-analysis">
-<h1>Squidpy analysis<a class="headerlink" href="#Squidpy-analysis" title="Link to this heading"></a></h1>
+<h2>Squidpy analysis<a class="headerlink" href="#Squidpy-analysis" title="Link to this heading"></a></h2>
 <p>Original tutorial analysis for 4i from squidpy: <a class="reference external" href="https://squidpy.readthedocs.io/en/stable/notebooks/tutorials/tutorial_fouri.html">link</a></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -996,13 +998,14 @@ Assigned points to region: Nucleolus_ROI
 </div>
 </div>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="6_tutorial_visium_cell2location.html" class="btn btn-neutral float-left" title="Read data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="8_tutorial_scimap_joint_analysis.html" class="btn btn-neutral float-right" title="Seperate the tissue into two parts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="6_tutorial_visium_cell2location.html" class="btn btn-neutral float-left" title="6: Visium Data Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="8_tutorial_scimap_joint_analysis.html" class="btn btn-neutral float-right" title="8: Working with SCIMAP and Scanpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

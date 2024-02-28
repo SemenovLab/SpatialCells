@@ -58,16 +58,17 @@
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3: Immune Infiltration Overlap Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Read-and-preprocess-data">Read and preprocess data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Assign-cells-to-tumor-region">Assign cells to tumor region</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">6: Visium Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">7: Working with Squidpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">8: Working with SCIMAP and Scanpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
@@ -121,7 +122,8 @@
 </pre></div>
 </div>
 </div>
-<p>Read and preprocess data</p>
+<section id="Read-and-preprocess-data">
+<h2>Read and preprocess data<a class="headerlink" href="#Read-and-preprocess-data" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -215,7 +217,9 @@ Name: count, dtype: int64
 <img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_6_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_6_0.png" />
 </div>
 </div>
-<p>Assign cells to tumor region</p>
+</section>
+<section id="Assign-cells-to-tumor-region">
+<h2>Assign cells to tumor region<a class="headerlink" href="#Assign-cells-to-tumor-region" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
@@ -665,6 +669,7 @@ Percentage of tumor region that has overlap with immune cell region: 0.386
 <img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_24_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_24_0.png" />
 </div>
 </div>
+</section>
 </section>
 
 

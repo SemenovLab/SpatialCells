@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seperate the tissue into two parts &mdash; SpatialCells 0.9.5 documentation</title>
+  <title>8: Working with SCIMAP and Scanpy &mdash; SpatialCells 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Functions Reference" href="../spatialcells.html" />
-    <link rel="prev" title="Squidpy analysis" href="7_tutorial_squidpy_joint_analysis.html" /> 
+    <link rel="prev" title="7: Working with Squidpy" href="7_tutorial_squidpy_joint_analysis.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,16 +58,13 @@
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">6: Visium Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">7: Working with Squidpy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8: Working with SCIMAP and Scanpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
@@ -91,7 +88,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Seperate the tissue into two parts</li>
+      <li class="breadcrumb-item active">8: Working with SCIMAP and Scanpy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorial/8_tutorial_scimap_joint_analysis.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,7 +98,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Demonstrate analyizing data using spatialcells and SCIMAP together.</p>
+  <section id="8:-Working-with-SCIMAP-and-Scanpy">
+<h1>8: Working with SCIMAP and Scanpy<a class="headerlink" href="#8:-Working-with-SCIMAP-and-Scanpy" title="Link to this heading"></a></h1>
+<p>Demonstrate analyizing data using spatialcells and SCIMAP together.</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
 <div class="line">&#64;date: Feb 12 2024</div>
@@ -196,6 +195,7 @@ Name: count, dtype: int64
 </pre></div>
 </div>
 </div>
+</section>
 <section id="Seperate-the-tissue-into-two-parts">
 <h1>Seperate the tissue into two parts<a class="headerlink" href="#Seperate-the-tissue-into-two-parts" title="Link to this heading"></a></h1>
 <p>The tissue was fragmented. Following the original <a class="reference external" href="https://aacrjournals.org/cancerdiscovery/article/12/6/1518/699151/The-Spatial-Landscape-of-Progression-and">paper</a>, we can conduct analyses seperately for the two parts.</p>
@@ -785,8 +785,8 @@ AnnData object with n_obs × n_vars = 10000 × 6
 <section id="Annimate-with-SCIMAP">
 <h1>Annimate with SCIMAP<a class="headerlink" href="#Annimate-with-SCIMAP" title="Link to this heading"></a></h1>
 <p>The objective is to create an animation showing transition between UMAP plot and XY coordinate plot in spatial data. See <a class="reference external" href="https://scimap.xyz/tutorials/6_animate_with_scimap/">SCIMAP</a> for details.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[166]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[167]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -796,36 +796,6 @@ AnnData object with n_obs × n_vars = 10000 × 6
                <span class="n">save_animation</span> <span class="o">=</span> <span class="s1">&#39;MEL1_part1_animation_umap2xy&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-MovieWriter imagemagick unavailable; using Pillow instead.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Saving file- This can take several minutes to hours for large files
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/tutorial_8_tutorial_scimap_joint_analysis_34_2.png" src="../_images/tutorial_8_tutorial_scimap_joint_analysis_34_2.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[166]:
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<img src="MEL1_part1_animation_umap2xy_scimap.gif"/></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -888,7 +858,7 @@ Saving file- This can take several minutes to hours for large files
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="7_tutorial_squidpy_joint_analysis.html" class="btn btn-neutral float-left" title="Squidpy analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="7_tutorial_squidpy_joint_analysis.html" class="btn btn-neutral float-left" title="7: Working with Squidpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../spatialcells.html" class="btn btn-neutral float-right" title="Functions Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

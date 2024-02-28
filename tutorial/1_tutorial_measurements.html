@@ -57,30 +57,25 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">1: Spatial and Measurement Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Read-and-process-data">Read and process data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-and-process-data">read and process data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getBoundary">getBoundary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#assignPointsToRegion">assignPointsToRegion</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Tumor-area-and-density">Tumor area and density</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#assignPointsToRegion">assignPointsToRegion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tumor-area-and-density">Tumor area and density</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Tumor-organization">Tumor organization</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Get-distance-from-the-epidermis-layer">Get distance from the epidermis layer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Sliding-window-analysis">Sliding window analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#Sliding-window-analysis">Sliding window analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">6: Visium Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">7: Working with Squidpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">8: Working with SCIMAP and Scanpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
@@ -134,8 +129,8 @@
 </div>
 </div>
 <p>In this tutorial, we will be demonstrating the spatial measurements functions by studying the distribution of MITF+ cells among SOX10+ tumor cells</p>
-<section id="Read-and-process-data">
-<h2>Read and process data<a class="headerlink" href="#Read-and-process-data" title="Link to this heading"></a></h2>
+<section id="read-and-process-data">
+<h2>read and process data<a class="headerlink" href="#read-and-process-data" title="Link to this heading"></a></h2>
 <p>You can download the data from <a class="reference external" href="https://www.dropbox.com/scl/fo/coek1wvi9n0syv5tokus1/h?rlkey=1yvizq0joir6q73iosov608ou&amp;dl=0">here</a>. Please refer to the original <a class="reference external" href="https://aacrjournals.org/cancerdiscovery/article/12/6/1518/699151/The-Spatial-Landscape-of-Progression-and">paper</a> for the details.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -428,8 +423,9 @@ Assigned points to region: Tumor
 <img alt="../_images/tutorial_1_tutorial_measurements_19_0.png" src="../_images/tutorial_1_tutorial_measurements_19_0.png" />
 </div>
 </div>
+</section>
 <section id="Tumor-area-and-density">
-<h3>Tumor area and density<a class="headerlink" href="#Tumor-area-and-density" title="Link to this heading"></a></h3>
+<h2>Tumor area and density<a class="headerlink" href="#Tumor-area-and-density" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -484,7 +480,6 @@ SOX10-         19.602685
 Name: count, dtype: float64
 </pre></div></div>
 </div>
-</section>
 </section>
 <section id="Tumor-organization">
 <h2>Tumor organization<a class="headerlink" href="#Tumor-organization" title="Link to this heading"></a></h2>
@@ -1022,8 +1017,9 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 </div>
 </div>
 </section>
+</section>
 <section id="Sliding-window-analysis">
-<h3>Sliding window analysis<a class="headerlink" href="#Sliding-window-analysis" title="Link to this heading"></a></h3>
+<h2>Sliding window analysis<a class="headerlink" href="#Sliding-window-analysis" title="Link to this heading"></a></h2>
 <p>We can also divide the tumor region into square windows and get the cell composition within each window. This can be matched with patch-level image analysis to provide additional features</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
@@ -1297,7 +1293,6 @@ get_comp_mask(df, pheno_col, pheno_vals, step_size)
 </pre></div>
 </div>
 </div>
-</section>
 </section>
 </section>
 

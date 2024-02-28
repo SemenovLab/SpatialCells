@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8: Working with SCIMAP and Scanpy &mdash; SpatialCells 0.9.5 documentation</title>
+  <title>8: Working with SCIMAP and Scanpy &mdash; SpatialCells 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=61b282d3"></script>
+        <script src="../_static/documentation_options.js?v=292eb321"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -41,7 +41,7 @@
             SpatialCells
           </a>
               <div class="version">
-                0.9.5
+                1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -63,11 +63,13 @@
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">6: Visium Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">7: Working with Squidpy</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">8: Working with SCIMAP and Scanpy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8: Working with SCIMAP and Scanpy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Seperate-the-tissue-into-two-parts">Seperate the tissue into two parts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
@@ -195,9 +197,8 @@ Name: count, dtype: int64
 </pre></div>
 </div>
 </div>
-</section>
 <section id="Seperate-the-tissue-into-two-parts">
-<h1>Seperate the tissue into two parts<a class="headerlink" href="#Seperate-the-tissue-into-two-parts" title="Link to this heading"></a></h1>
+<h2>Seperate the tissue into two parts<a class="headerlink" href="#Seperate-the-tissue-into-two-parts" title="Link to this heading"></a></h2>
 <p>The tissue was fragmented. Following the original <a class="reference external" href="https://aacrjournals.org/cancerdiscovery/article/12/6/1518/699151/The-Spatial-Landscape-of-Progression-and">paper</a>, we can conduct analyses seperately for the two parts.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
@@ -554,7 +555,7 @@ Assigned points to region: Part2
 </div>
 </section>
 <section id="Work-with-SCANPY-to-cluster-cells-in-each-region">
-<h1>Work with SCANPY to cluster cells in each region<a class="headerlink" href="#Work-with-SCANPY-to-cluster-cells-in-each-region" title="Link to this heading"></a></h1>
+<h2>Work with SCANPY to cluster cells in each region<a class="headerlink" href="#Work-with-SCANPY-to-cluster-cells-in-each-region" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -762,7 +763,7 @@ AnnData object with n_obs × n_vars = 10000 × 6
 </div>
 </section>
 <section id="Work-with-SCIMAP-to-plot-cell-type-composition">
-<h1>Work with SCIMAP to plot cell-type composition<a class="headerlink" href="#Work-with-SCIMAP-to-plot-cell-type-composition" title="Link to this heading"></a></h1>
+<h2>Work with SCIMAP to plot cell-type composition<a class="headerlink" href="#Work-with-SCIMAP-to-plot-cell-type-composition" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[150]:
 </pre></div>
@@ -783,9 +784,9 @@ AnnData object with n_obs × n_vars = 10000 × 6
 </div>
 </section>
 <section id="Annimate-with-SCIMAP">
-<h1>Annimate with SCIMAP<a class="headerlink" href="#Annimate-with-SCIMAP" title="Link to this heading"></a></h1>
+<h2>Annimate with SCIMAP<a class="headerlink" href="#Annimate-with-SCIMAP" title="Link to this heading"></a></h2>
 <p>The objective is to create an animation showing transition between UMAP plot and XY coordinate plot in spatial data. See <a class="reference external" href="https://scimap.xyz/tutorials/6_animate_with_scimap/">SCIMAP</a> for details.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[167]:
 </pre></div>
 </div>
@@ -797,8 +798,31 @@ AnnData object with n_obs × n_vars = 10000 × 6
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+MovieWriter imagemagick unavailable; using Pillow instead.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Saving file- This can take several minutes to hours for large files
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_8_tutorial_scimap_joint_analysis_34_2.png" src="../_images/tutorial_8_tutorial_scimap_joint_analysis_34_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[168]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open MEL1_part1_animation_umap2xy_scimap.gif to enjoy the animation.</span>
@@ -806,6 +830,13 @@ AnnData object with n_obs × n_vars = 10000 × 6
 <span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;MEL1_part1_animation_umap2xy_scimap.gif&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[168]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<img src="MEL1_part1_animation_umap2xy_scimap.gif"/></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[162]:
@@ -842,8 +873,8 @@ Saving file- This can take several minutes to hours for large files
 <img alt="../_images/tutorial_8_tutorial_scimap_joint_analysis_36_2.png" src="../_images/tutorial_8_tutorial_scimap_joint_analysis_36_2.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[169]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open MEL1_part1_animation_umap2xy_scimap.gif to enjoy the animation.</span>
@@ -852,6 +883,14 @@ Saving file- This can take several minutes to hours for large files
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[169]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<img src="MEL1_part2_animation_umap2xy_scimap.gif"/></div>
+</div>
+</section>
 </section>
 
 

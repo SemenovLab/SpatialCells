@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3: Immune Infiltration Overlap Analysis &mdash; SpatialCells 0.9.5 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -56,9 +58,19 @@
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
@@ -98,16 +110,12 @@
 <div class="line">&#64;last updated: Oct 6, 2023</div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">import</span> <span class="nn">anndata</span> <span class="k">as</span> <span class="nn">ad</span>
-<span class="kn">import</span> <span class="nn">shapely</span>
-<span class="kn">import</span> <span class="nn">statistics</span>
 
 <span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
 </pre></div>
@@ -115,14 +123,13 @@
 </div>
 <p>Read and preprocess data</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;../../../Cycif/unmicst-1_750_PCA_Mel1.h5ad&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;../../data/MEL1_adata.h5ad&quot;</span><span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;KERATIN_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">6.4</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;SOX10_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.9</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;CD3D_cellRingMask&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;KI67_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;PCNA_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.3</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -135,26 +142,22 @@ KERATIN_cellRingMask_positive
 False    1067400
 True       43185
 Name: count, dtype: int64
+SOX10_cellRingMask_positive
+False    566576
+True     544009
+Name: count, dtype: int64
 CD3D_cellRingMask_positive
 False    1038559
 True       72026
-Name: count, dtype: int64
-KI67_cellRingMask_positive
-False    1025315
-True       85270
-Name: count, dtype: int64
-PCNA_cellRingMask_positive
-False    896678
-True     213907
 Name: count, dtype: int64
 </pre></div></div>
 </div>
 <p>Isolate tumor cell communities and draw region boundary as before</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marker</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marker</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">]</span>
 <span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;COI_community&quot;</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -174,7 +177,7 @@ Name: count, dtype: int64
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
@@ -214,7 +217,7 @@ Name: count, dtype: int64
 </div>
 <p>Assign cells to tumor region</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
@@ -248,7 +251,7 @@ Name: count, dtype: int64
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-955899it [01:36, 9950.30it/s]
+955899it [02:32, 6267.29it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -264,7 +267,7 @@ Assigned points to region: Tumor
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-403552it [00:10, 37077.35it/s]
+403552it [00:18, 22222.54it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -284,7 +287,7 @@ Assigned points to region: Tumor_ROI
 </div>
 <p>Generalize cell-types based on existing phenotypes</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">merge_pheno</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -301,7 +304,7 @@ Assigned points to region: Tumor_ROI
 
 
 <span class="k">def</span> <span class="nf">cell_type</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">]:</span>
         <span class="k">return</span> <span class="s2">&quot;SOX10+&quot;</span>
     <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;CD3D_cellRingMask_positive&quot;</span><span class="p">]:</span>
         <span class="k">return</span> <span class="s2">&quot;CD3D+&quot;</span>
@@ -316,7 +319,7 @@ Assigned points to region: Tumor_ROI
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;pheno1&quot;</span><span class="p">)</span>
@@ -324,7 +327,7 @@ Assigned points to region: Tumor_ROI
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -376,16 +379,17 @@ Assigned points to region: Tumor_ROI
 </div>
 <p>Find immune cell infiltrated areas in the tumor ROI region</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">melano</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">]))</span>
+    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_cellRingMask_positive</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">]))</span>
 <span class="p">]</span>
 <span class="n">tcells</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span>
     <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">CD3D_cellRingMask_positive</span><span class="p">)</span>
     <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">]))</span>
 <span class="p">]</span>
+
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
@@ -411,45 +415,49 @@ Assigned points to region: Tumor_ROI
 <img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_13_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_13_0.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;CD3D_cellRingMask_positive&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tumor</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">])]</span>
+<span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;CD3D_cellRingMask_positive&quot;</span>
 <span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span>
-<span class="n">tumor</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">])]</span>
+
 <span class="n">immune_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span>
     <span class="n">tumor</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">130</span>
 <span class="p">)</span>
 <span class="n">immune_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
     <span class="n">immune_boundary</span><span class="p">,</span> <span class="n">min_edges</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_area</span><span class="o">=</span><span class="mi">30000</span>
 <span class="p">)</span>
-
-<span class="n">markersize</span> <span class="o">=</span> <span class="mf">0.1</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
+<span class="c1">## all points</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
     <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
     <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
     <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
 <span class="p">)</span>
-<span class="c1">## all points</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tumor</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
-    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
-<span class="p">)</span>
+
 <span class="c1"># Points in selected commnities</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">tumor</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">tumor</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)][</span>
     <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
 <span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;T cells&quot;</span><span class="p">)</span>
+
 <span class="c1"># Bounds of points in selected commnities</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span>
     <span class="n">immune_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Immune Cell Region Boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">)</span>
+
 <span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">roi_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
 <span class="c1"># ax.set_xlim(0, 20000)</span>
 <span class="c1"># ax.set_ylim(0, 13000)</span>
@@ -459,8 +467,21 @@ Assigned points to region: Tumor_ROI
 <span class="c1"># plt.legend(loc=&quot;upper right&quot;, markerscale=5, fontsize=13.5)</span>
 <span class="c1"># plt.savefig(&quot;immune_cell_region1.png&quot;, dpi=400)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_15_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_15_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
     <span class="n">melano</span><span class="p">,</span> <span class="p">[</span><span class="n">immune_boundary</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="n">assigncolumn</span><span class="o">=</span><span class="s2">&quot;tumor_isolated_region&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;F&quot;</span>
 <span class="p">)</span>
 </pre></div>
@@ -469,18 +490,9 @@ Assigned points to region: Tumor_ROI
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_14_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_14_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/boshenyan/anaconda3/envs/spatial-cells/lib/python3.10/site-packages/spatialcells/spatial/_assignPointsToRegions.py:56: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  anndata.obs[assigncolumn] = default
-543014it [04:14, 2134.53it/s]
+543014it [06:55, 1305.99it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -491,9 +503,9 @@ Assigned points to region: Tumor_ROI
 Assigned points to region: T
 </pre></div></div>
 </div>
-<p>We can estimate the scale of immune infiltration by overlapping the identified immune infiltrated regions with all tumor cells</p>
+<p>We can estimate the scale of immune infiltration by overlapping the identified immune infiltrated regions with all tumor cells.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">point_size</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -533,11 +545,11 @@ Assigned points to region: T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_16_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_16_0.png" />
+<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_18_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_18_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Percentage of tumor cells in immune-isolated regions: &quot;</span><span class="p">)</span>
@@ -554,7 +566,7 @@ Percentage of tumor cells in immune-isolated regions:
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -565,14 +577,15 @@ T    0.419787
 Name: count, dtype: float64
 </pre></div></div>
 </div>
-<p>We can also look at the scale of immune infiltration by comparing the area overlap between tumor regions and immune cell regions</p>
+<p>We can also look at the scale of immune infiltration by comparing the area overlap between tumor regions and immune cell regions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roi_area</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionArea</span><span class="p">(</span><span class="n">roi_boundary</span><span class="p">)</span>
 <span class="n">tumor_area</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionArea</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span>
 <span class="n">immune_area</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionArea</span><span class="p">(</span><span class="n">immune_boundary</span><span class="p">)</span>
+
 <span class="n">tumor_immune_overlap</span> <span class="o">=</span> <span class="n">boundary</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">immune_boundary</span><span class="p">)</span>
 <span class="n">overlap_area</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionArea</span><span class="p">(</span><span class="n">tumor_immune_overlap</span><span class="p">)</span>
 
@@ -594,46 +607,40 @@ Name: count, dtype: float64
 <div class="highlight"><pre>
 Area of ROI: 202741300.25
 Area of main tumor cell region: 77493721.80
-Area of immune cell region: 58152303.471073814
+Area of immune cell region: 58152303.47107381
 Area of overlap between tumor and immune cell regions: 29934754.20
 Percentage of tumor region that has overlap with immune cell region: 0.386
 </pre></div></div>
 </div>
-<p>Identify tumor cells that are adjacent to (&gt;=20um) immune cells</p>
+<p>Identify tumor cells that are adjacent to (&lt;=20um) immune cells.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">melano</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">]))</span>
-<span class="p">]</span>
-<span class="n">tcells</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">CD3D_cellRingMask_positive</span><span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">]))</span>
-<span class="p">]</span>
-<span class="n">dists</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getMinCellTypesDistance</span><span class="p">(</span><span class="n">melano</span><span class="p">,</span> <span class="n">tcells</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dists</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getMinCellTypesDistance</span><span class="p">(</span><span class="n">melano</span><span class="p">,</span> <span class="n">tcells</span><span class="p">)</span>
 <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">])),</span> <span class="s2">&quot;dist&quot;</span>
+    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_cellRingMask_positive</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Tumor_ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">])),</span> <span class="s2">&quot;dist&quot;</span>
 <span class="p">]</span> <span class="o">=</span> <span class="n">dists</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;dist_binned&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">threshold</span>
 <span class="n">infiltrated</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_cellRingMask_positive</span><span class="p">)</span>
     <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">)</span>
     <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">dist_binned</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
 <span class="p">]</span>
 <span class="n">non_infiltrated</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_positive</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">SOX10_cellRingMask_positive</span><span class="p">)</span>
     <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">)</span>
     <span class="o">&amp;</span> <span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">dist_binned</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span>
 <span class="p">]</span>
+
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">region</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;Tumor&quot;</span><span class="p">)]</span>
@@ -643,7 +650,7 @@ Percentage of tumor region that has overlap with immune cell region: 0.386
     <span class="n">infiltrated</span><span class="p">[</span><span class="s2">&quot;Y_centroid&quot;</span><span class="p">],</span>
     <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
     <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Infiltrated (distance to t-cells &lt;= </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">um)&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">markerscale</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -655,15 +662,7 @@ Percentage of tumor region that has overlap with immune cell region: 0.386
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_22_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_22_0.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<img alt="../_images/tutorial_3_tutorial_immune_infiltration_overlap_24_0.png" src="../_images/tutorial_3_tutorial_immune_infiltration_overlap_24_0.png" />
 </div>
 </div>
 </section>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Squidpy analysis &mdash; SpatialCells 0.9.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=61b282d3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Seperate the tissue into two parts" href="8_tutorial_scimap_joint_analysis.html" />
+    <link rel="prev" title="Read data" href="6_tutorial_visium_cell2location.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpatialCells
+          </a>
+              <div class="version">
+                0.9.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Squidpy analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpatialCells</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Squidpy analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorial/7_tutorial_squidpy_joint_analysis.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Demonstrate the joint usage of spatialcells and squidpy to analyze 4i dataset by Gut et al, 2018</p>
+<div class="line-block">
+<div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
+<div class="line">&#64;date: Feb 15 2024</div>
+<div class="line">&#64;last updated: Feb 15 2024</div>
+</div>
+<p>Installing the environment</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-bash notranslate"><div class="highlight"><pre><span></span>%%bash
+
+<span class="c1"># conda env create --name spatialcells_env --file=conda.yaml</span>
+<span class="c1"># conda activate spatialcells_env</span>
+<span class="c1"># pip install scimap</span>
+<span class="c1"># conda install -c conda-forge squidpy</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">squidpy</span> <span class="k">as</span> <span class="nn">sq</span>
+
+<span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
+</pre></div>
+</div>
+</div>
+<section id="Squidpy-analysis">
+<h1>Squidpy analysis<a class="headerlink" href="#Squidpy-analysis" title="Link to this heading"></a></h1>
+<p>Original tutorial analysis for 4i from squidpy: <a class="reference external" href="https://squidpy.readthedocs.io/en/stable/notebooks/tutorials/tutorial_fouri.html">link</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">sq</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">four_i</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 173M/173M [00:08&lt;00:00, 22.4MB/s]
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/anndata/__init__.py:51: FutureWarning: `anndata.read` is deprecated, use `anndata.read_h5ad` instead. `ad.read` will be removed in mid 2024.
+  warnings.warn(
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1908: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sq</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">spatial_scatter</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+WARNING: Please specify a valid `library_id` or set it permanently in `adata.uns[&#39;spatial&#39;]`
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/squidpy/pl/_spatial_utils.py:955: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+  _cax = scatter(
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_6_2.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_6_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build spatial neighbors graph</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">gr</span><span class="o">.</span><span class="n">spatial_neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="s2">&quot;generic&quot;</span><span class="p">)</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">gr</span><span class="o">.</span><span class="n">nhood_enrichment</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_key</span><span class="o">=</span><span class="s2">&quot;cluster&quot;</span><span class="p">)</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">nhood_enrichment</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_key</span><span class="o">=</span><span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ward&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+100%|██████████| 1000/1000 [00:22&lt;00:00, 45.12/s]
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/anndata/_core/anndata.py:522: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+  warnings.warn(
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/squidpy/pl/_utils.py:555: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+  row_labels = adata.obs[key][row_order]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_7_1.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_7_1.png" />
+</div>
+</div>
+<p>The squidpy tutorial allows calculating the neighborhood enrichment score for the entire sample. However, we may only be interested in a region of the image, for example, only around the three cells on the left. Spatialcells simplifies the region annotation, while providing convenient methods for region-based quantification.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x</th>
+      <th>y</th>
+      <th>is_nucleous</th>
+      <th>is_cytplasm</th>
+      <th>cell_id</th>
+      <th>leiden</th>
+      <th>cluster</th>
+      <th>X_centroid</th>
+      <th>Y_centroid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>908860</th>
+      <td>1777</td>
+      <td>1201</td>
+      <td>False</td>
+      <td>True</td>
+      <td>140</td>
+      <td>1</td>
+      <td>Cell_periphery_1</td>
+      <td>1777</td>
+      <td>1201</td>
+    </tr>
+    <tr>
+      <th>682735</th>
+      <td>1447</td>
+      <td>982</td>
+      <td>True</td>
+      <td>False</td>
+      <td>118</td>
+      <td>5</td>
+      <td>Nucleus</td>
+      <td>1447</td>
+      <td>982</td>
+    </tr>
+    <tr>
+      <th>806699</th>
+      <td>2089</td>
+      <td>1104</td>
+      <td>False</td>
+      <td>True</td>
+      <td>136</td>
+      <td>7</td>
+      <td>Endosomes_golgi_1</td>
+      <td>2089</td>
+      <td>1104</td>
+    </tr>
+    <tr>
+      <th>790375</th>
+      <td>1306</td>
+      <td>1089</td>
+      <td>True</td>
+      <td>False</td>
+      <td>127</td>
+      <td>0</td>
+      <td>Nucleolus</td>
+      <td>1306</td>
+      <td>1089</td>
+    </tr>
+    <tr>
+      <th>835641</th>
+      <td>1902</td>
+      <td>1133</td>
+      <td>False</td>
+      <td>True</td>
+      <td>142</td>
+      <td>4</td>
+      <td>ER_mitochondria_2</td>
+      <td>1902</td>
+      <td>1133</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>961485</th>
+      <td>1364</td>
+      <td>1246</td>
+      <td>False</td>
+      <td>True</td>
+      <td>143</td>
+      <td>1</td>
+      <td>Cell_periphery_1</td>
+      <td>1364</td>
+      <td>1246</td>
+    </tr>
+    <tr>
+      <th>806705</th>
+      <td>2095</td>
+      <td>1104</td>
+      <td>False</td>
+      <td>True</td>
+      <td>136</td>
+      <td>7</td>
+      <td>Endosomes_golgi_1</td>
+      <td>2095</td>
+      <td>1104</td>
+    </tr>
+    <tr>
+      <th>603424</th>
+      <td>1386</td>
+      <td>909</td>
+      <td>False</td>
+      <td>True</td>
+      <td>118</td>
+      <td>2</td>
+      <td>Cell_periphery_2</td>
+      <td>1386</td>
+      <td>909</td>
+    </tr>
+    <tr>
+      <th>839951</th>
+      <td>2033</td>
+      <td>1137</td>
+      <td>True</td>
+      <td>False</td>
+      <td>136</td>
+      <td>0</td>
+      <td>Nucleolus</td>
+      <td>2033</td>
+      <td>1137</td>
+    </tr>
+    <tr>
+      <th>768582</th>
+      <td>2054</td>
+      <td>1067</td>
+      <td>True</td>
+      <td>False</td>
+      <td>136</td>
+      <td>5</td>
+      <td>Nucleus</td>
+      <td>2054</td>
+      <td>1067</td>
+    </tr>
+  </tbody>
+</table>
+<p>270876 rows × 9 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">marker</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;is_nucleous&quot;</span><span class="p">]</span>
+<span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;Nucleolus&quot;</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">plot_first_n_clusters</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_10_0.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_10_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># selecting cells of interest: the three cells on the left</span>
+<span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<span class="n">boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+<span class="n">roi_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getExtendedBoundary</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+
+<span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="c1">## all points</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="p">)</span>
+<span class="c1"># Points in selected commnities</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">communitycolumn</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">communityIndexList</span><span class="p">)][</span>
+    <span class="p">[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">roi_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_11_0.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_11_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">boundary</span><span class="p">,</span> <span class="n">roi_boundary</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Nucleolus&quot;</span><span class="p">,</span> <span class="s2">&quot;Nucleolus_ROI&quot;</span><span class="p">],</span>
+    <span class="n">assigncolumn</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Others&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">point_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">point_size</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">region</span>
+    <span class="p">)</span>
+<span class="c1"># Bounds of points in selected commnities</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">roi_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI boundary&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+45636it [00:02, 19639.93it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Nucleolus
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+40441it [00:01, 24158.65it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned points to region: Nucleolus_ROI
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_12_4.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_12_4.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roi_adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">region</span> <span class="o">!=</span> <span class="s2">&quot;Others&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">roi_adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">roi_adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;X_centroid&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_centroid&quot;</span><span class="p">]])</span>
+
+<span class="n">sq</span><span class="o">.</span><span class="n">gr</span><span class="o">.</span><span class="n">spatial_neighbors</span><span class="p">(</span><span class="n">roi_adata</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="s2">&quot;generic&quot;</span><span class="p">)</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">gr</span><span class="o">.</span><span class="n">nhood_enrichment</span><span class="p">(</span><span class="n">roi_adata</span><span class="p">,</span> <span class="n">cluster_key</span><span class="o">=</span><span class="s2">&quot;cluster&quot;</span><span class="p">)</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">nhood_enrichment</span><span class="p">(</span><span class="n">roi_adata</span><span class="p">,</span> <span class="n">cluster_key</span><span class="o">=</span><span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ward&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/anndata/_core/anndata.py:1908: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+100%|██████████| 1000/1000 [00:08&lt;00:00, 117.28/s]
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/anndata/_core/anndata.py:522: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+  warnings.warn(
+/Users/ghwan/opt/anaconda3/envs/spatialcells_env/lib/python3.10/site-packages/squidpy/pl/_utils.py:555: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+  row_labels = adata.obs[key][row_order]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorial_7_tutorial_squidpy_joint_analysis_13_1.png" src="../_images/tutorial_7_tutorial_squidpy_joint_analysis_13_1.png" />
+</div>
+</div>
+<p>Quantifying the protein composition within each region</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nucleolus_comp</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Nucleolus&quot;</span><span class="p">])</span>
+<span class="n">nucleolus_comp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cell_count&quot;</span><span class="p">:</span> <span class="s2">&quot;protein_count&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nucleolus_comp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cluster</th>
+      <th>protein_count</th>
+      <th>composition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Nucleolus</td>
+      <td>10883</td>
+      <td>0.540528</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nucleus</td>
+      <td>8035</td>
+      <td>0.399076</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Endosomes_golgi_1</td>
+      <td>534</td>
+      <td>0.026522</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Nuclear_envelope</td>
+      <td>316</td>
+      <td>0.015695</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ER_mitochondria_1</td>
+      <td>306</td>
+      <td>0.015198</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Cell_periphery_3</td>
+      <td>57</td>
+      <td>0.002831</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Endosomes_golgi_2</td>
+      <td>2</td>
+      <td>0.000099</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ER_mitochondria_2</td>
+      <td>1</td>
+      <td>0.000050</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Cell_periphery_1</td>
+      <td>0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Cell_periphery_2</td>
+      <td>0</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roi_comp</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Nucleolus_ROI&quot;</span><span class="p">])</span>
+<span class="n">roi_comp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cell_count&quot;</span><span class="p">:</span> <span class="s2">&quot;protein_count&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">roi_comp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cluster</th>
+      <th>protein_count</th>
+      <th>composition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ER_mitochondria_1</td>
+      <td>7690</td>
+      <td>0.256376</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Cell_periphery_3</td>
+      <td>5687</td>
+      <td>0.189598</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ER_mitochondria_2</td>
+      <td>4836</td>
+      <td>0.161227</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Endosomes_golgi_1</td>
+      <td>4643</td>
+      <td>0.154792</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Cell_periphery_1</td>
+      <td>4495</td>
+      <td>0.149858</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Cell_periphery_2</td>
+      <td>2117</td>
+      <td>0.070578</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Nuclear_envelope</td>
+      <td>278</td>
+      <td>0.009268</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Nucleus</td>
+      <td>232</td>
+      <td>0.007735</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Nucleolus</td>
+      <td>12</td>
+      <td>0.000400</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Endosomes_golgi_2</td>
+      <td>5</td>
+      <td>0.000167</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">combined_comp</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Nucleolus&quot;</span><span class="p">,</span> <span class="s2">&quot;Nucleolus_ROI&quot;</span><span class="p">])</span>
+<span class="n">combined_comp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cell_count&quot;</span><span class="p">:</span> <span class="s2">&quot;protein_count&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">combined_comp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cluster</th>
+      <th>protein_count</th>
+      <th>composition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Nucleolus</td>
+      <td>10895</td>
+      <td>0.217339</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nucleus</td>
+      <td>8267</td>
+      <td>0.164915</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ER_mitochondria_1</td>
+      <td>7996</td>
+      <td>0.159508</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Cell_periphery_3</td>
+      <td>5744</td>
+      <td>0.114584</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Endosomes_golgi_1</td>
+      <td>5177</td>
+      <td>0.103274</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>ER_mitochondria_2</td>
+      <td>4837</td>
+      <td>0.096491</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cell_periphery_1</td>
+      <td>4495</td>
+      <td>0.089669</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Cell_periphery_2</td>
+      <td>2117</td>
+      <td>0.042231</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Nuclear_envelope</td>
+      <td>594</td>
+      <td>0.011849</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Endosomes_golgi_2</td>
+      <td>7</td>
+      <td>0.000140</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Comparison with the protein composition of the entire sample.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">overall_comp</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">)</span>
+<span class="n">overall_comp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cell_count&quot;</span><span class="p">:</span> <span class="s2">&quot;protein_count&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">overall_comp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cluster</th>
+      <th>protein_count</th>
+      <th>composition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Nucleolus</td>
+      <td>51802</td>
+      <td>0.191239</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Cell_periphery_1</td>
+      <td>37885</td>
+      <td>0.139861</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Cell_periphery_2</td>
+      <td>36226</td>
+      <td>0.133736</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ER_mitochondria_1</td>
+      <td>33660</td>
+      <td>0.124264</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ER_mitochondria_2</td>
+      <td>32378</td>
+      <td>0.119531</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Nucleus</td>
+      <td>28458</td>
+      <td>0.105059</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cell_periphery_3</td>
+      <td>22788</td>
+      <td>0.084127</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Endosomes_golgi_1</td>
+      <td>22402</td>
+      <td>0.082702</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Nuclear_envelope</td>
+      <td>3674</td>
+      <td>0.013563</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Endosomes_golgi_2</td>
+      <td>1603</td>
+      <td>0.005918</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="6_tutorial_visium_cell2location.html" class="btn btn-neutral float-left" title="Read data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="8_tutorial_scimap_joint_analysis.html" class="btn btn-neutral float-right" title="Seperate the tissue into two parts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Dermatology Clinical Informatics Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

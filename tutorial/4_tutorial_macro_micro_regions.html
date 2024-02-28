@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4: Macro and Micro Regions Analysis &mdash; SpatialCells 0.9.5 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -56,13 +58,15 @@
 <li class="toctree-l2"><a class="reference internal" href="0_tutorial_spatial_functions.html">0: Basic Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_tutorial_measurements.html">1: Spatial and Measurement Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">4: Macro and Micro Regions Analysis</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Read-data">Read data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setGate-or-setGates">setGate or setGates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getCommunities">getCommunities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getBoundary">getBoundary</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#isolate-and-plot-each-boundary-component-(for-demo)">isolate and plot each boundary component (for demo)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Isolate-and-plot-each-boundary-component-(for-demo)">Isolate and plot each boundary component (for demo)</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#getExtendedBoundary-&amp;-getShrunkenBoundary">getExtendedBoundary &amp; getShrunkenBoundary</a></li>
@@ -70,6 +74,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
@@ -102,22 +114,21 @@
              
   <section id="4:-Macro-and-Micro-Regions-Analysis">
 <h1>4: Macro and Micro Regions Analysis<a class="headerlink" href="#4:-Macro-and-Micro-Regions-Analysis" title="Link to this heading"></a></h1>
-<p>Demonstrate the usage of SpatialCells to extract region components or holes for fine-grained analysis into cell types</p>
+<p>Demonstrate the usage of SpatialCells to extract region components or holes for fine-grained analysis into cell types.</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
 <div class="line">&#64;date: Aug 20, 2023</div>
 <div class="line">&#64;last updated: Oct 6, 2023</div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">anndata</span> <span class="k">as</span> <span class="nn">ad</span>
-<span class="kn">import</span> <span class="nn">statistics</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">statistics</span>
 <span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
 </pre></div>
 </div>
@@ -125,16 +136,16 @@
 <section id="Read-data">
 <h2>Read data<a class="headerlink" href="#Read-data" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;../../../Cycif/unmicst-1_750_PCA_Mel1.h5ad&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;../../data/MEL1_adata.h5ad&quot;</span><span class="p">)</span>
 <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span>
@@ -142,21 +153,13 @@
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Index([&#39;HHLA2_cellRingMask&#39;, &#39;CMA1_cellRingMask&#39;, &#39;SOX10_cellRingMask&#39;,
-       &#39;S100B_cellRingMask&#39;, &#39;KERATIN_cellRingMask&#39;, &#39;CD1A_cellRingMask&#39;,
-       &#39;CD163_cellRingMask&#39;, &#39;CD3D_cellRingMask&#39;, &#39;C8A_cellRingMask&#39;,
-       &#39;MITF_cellRingMask&#39;, &#39;FOXP3_cellRingMask&#39;, &#39;PDL1_cellRingMask&#39;,
-       &#39;KI67_cellRingMask&#39;, &#39;LAG3_cellRingMask&#39;, &#39;TIM3_cellRingMask&#39;,
-       &#39;PCNA_cellRingMask&#39;, &#39;pSTAT1_cellRingMask&#39;, &#39;cPARP_cellRingMask&#39;,
-       &#39;SNAIL_cellRingMask&#39;, &#39;aSMA_cellRingMask&#39;, &#39;HLADPB1_cellRingMask&#39;,
-       &#39;S100A_cellRingMask&#39;, &#39;CD11C_cellRingMask&#39;, &#39;PD1_cellRingMask&#39;,
-       &#39;LDH_cellRingMask&#39;, &#39;PANCK_cellRingMask&#39;, &#39;CCNA2_cellRingMask&#39;,
-       &#39;CCND1_cellRingMask&#39;, &#39;CD63_cellRingMask&#39;, &#39;CD31_cellRingMask&#39;],
+Index([&#39;SOX10_cellRingMask&#39;, &#39;KERATIN_cellRingMask&#39;, &#39;CD3D_cellRingMask&#39;,
+       &#39;MITF_cellRingMask&#39;, &#39;KI67_cellRingMask&#39;, &#39;CCND1_cellRingMask&#39;],
       dtype=&#39;object&#39;)
 </pre></div></div>
 </div>
@@ -166,14 +169,14 @@ Index([&#39;HHLA2_cellRingMask&#39;, &#39;CMA1_cellRingMask&#39;, &#39;SOX10_cel
 <p>This package relies on gated biomarkers in adata.obs</p>
 <p>If gating has not yet been performed, <code class="docutils literal notranslate"><span class="pre">setGate</span></code> and <code class="docutils literal notranslate"><span class="pre">setGates</span></code> are convenience functions to gate the dataset manually or via a csv file</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># New columns, SOX10_positive and CD45_positive, will be added</span>
-<span class="c1"># spc.prep.setGate(adata, &quot;SOX10&quot;, 7.5, debug = True)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;SOX10_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.9</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;CCND1_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_negative&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_cellRingMask_positive&quot;</span><span class="p">]</span>
-<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_negative&quot;</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;CCND1_negative&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -182,6 +185,10 @@ Index([&#39;HHLA2_cellRingMask&#39;, &#39;CMA1_cellRingMask&#39;, &#39;SOX10_cel
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+SOX10_cellRingMask_positive
+False    566576
+True     544009
+Name: count, dtype: int64
 CCND1_cellRingMask_positive
 False    827121
 True     283464
@@ -190,7 +197,7 @@ Name: count, dtype: int64
 </div>
 <p>Visualizing cells with markers of interest</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -222,61 +229,15 @@ Name: count, dtype: int64
 <img alt="../_images/tutorial_4_tutorial_macro_micro_regions_9_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_9_0.png" />
 </div>
 </div>
-<p>The following steps compute the communities based on SOX10+ or CD45+ cells.</p>
 </section>
 <section id="getCommunities">
 <h2>getCommunities<a class="headerlink" href="#getCommunities" title="Link to this heading"></a></h2>
 <p>We first use DBSCAN via <code class="docutils literal notranslate"><span class="pre">getCommunities</span></code> to identify regions with high densities of markers of interest.</p>
-<div class="line-block">
-<div class="line">Optionally, <code class="docutils literal notranslate"><span class="pre">estimateInitialDistance</span></code> can be run first to estimate the eps parameter for DBSCAN.</div>
-<div class="line">In this tutorial, we used a threshold between the first quartile and median.</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10+CCND1-&quot;</span><span class="p">]</span>
-<span class="n">eps_estims</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">estimateInitialDistance</span><span class="p">(</span>
-    <span class="n">adata</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">sampling_ratio</span><span class="o">=</span><span class="mf">0.01</span>
-<span class="p">)</span>
-<span class="n">eps_estims</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Computing distances...
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[38.0266446350757,
- 83.31972051088243,
- 152.74027929906723,
- 247.1479778340266,
- 434.05637411112275,
- 889.9071638862762,
- 1618.9907606280917,
- 2525.6415331917565,
- 6121.660491248601,
- 12414.412212745556,
- 33084.107551174115,
- 132872.67781583336]
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># markers_of_interest = [&quot;SOX10_positive&quot;, &quot;CCND1_negative&quot;]</span>
-
 <span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;COI_community&quot;</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
@@ -299,7 +260,7 @@ number of communities: 149
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotCommunities</span><span class="p">)</span>
@@ -326,7 +287,7 @@ plotCommunities(adata, ret, communitycolumn, plot_first_n_clusters=10, **kwargs)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -342,11 +303,11 @@ plotCommunities(adata, ret, communitycolumn, plot_first_n_clusters=10, **kwargs)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_15_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_15_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_13_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_13_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_first_n_clusters</span> <span class="o">=</span> <span class="mi">10</span>
@@ -379,7 +340,7 @@ Cluster size and index:
 <section id="getBoundary">
 <h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">)</span>
@@ -410,12 +371,12 @@ getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=False
     :param alpha: the alpha parameter for alpha shape. Smaller alpha gives
         more detailed boundary, but may appear more jagged.
     :param debug: whether to return the polygons and edge components
-    :return: the boundaries of components as a MultiPolygon object
+    :returns: the boundaries of components as a MultiPolygon object
 
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># smaller alpha results in more detailed boundaries</span>
@@ -440,13 +401,13 @@ getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=False
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_19_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_19_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_17_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_17_0.png" />
 </div>
 </div>
-<section id="isolate-and-plot-each-boundary-component-(for-demo)">
-<h3>isolate and plot each boundary component (for demo)<a class="headerlink" href="#isolate-and-plot-each-boundary-component-(for-demo)" title="Link to this heading"></a></h3>
+<section id="Isolate-and-plot-each-boundary-component-(for-demo)">
+<h3>Isolate and plot each boundary component (for demo)<a class="headerlink" href="#Isolate-and-plot-each-boundary-component-(for-demo)" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getComponents</span><span class="p">)</span>
@@ -462,14 +423,15 @@ Help on function getComponents in module spatialcells.spatial._utils:
 
 getComponents(boundary, keep_holes=True)
     Get the components of a boundary defined by a MultiPolygon.
+
     :param boundary: the boundary to get components from
     :param keep_holes: whether to keep holes
-    :return: a list of components, where each component is a MultiPolygon
+    :returns: a list of components, where each component is a MultiPolygon
 
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boundary_component_list</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getComponents</span><span class="p">(</span><span class="n">boundaries1</span><span class="p">)</span>
@@ -499,11 +461,11 @@ Number of components: 24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_22_1.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_22_1.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_20_1.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_20_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># larger alpha results in more rough boundaries with less jagged exterior</span>
@@ -532,12 +494,12 @@ Number of components: 24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_21_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_21_0.png" />
 </div>
 </div>
 <p>Visualization of regions of interest and boundary</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
@@ -584,11 +546,11 @@ Number of components: 24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_25_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_25_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_23_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mf">0.3</span>
@@ -635,7 +597,7 @@ Number of components: 24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_24_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_24_0.png" />
 </div>
 </div>
 </section>
@@ -644,7 +606,7 @@ Number of components: 24
 <h2>getExtendedBoundary &amp; getShrunkenBoundary<a class="headerlink" href="#getExtendedBoundary-&-getShrunkenBoundary" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">getExtendedBoundary</span></code> and <code class="docutils literal notranslate"><span class="pre">getShrunkenBoundary</span></code> can be used to expand or shrink the current boundary, which is useful to generate regions of interest</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrunken_boundaries_rough</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getShrunkenBoundary</span><span class="p">(</span><span class="n">boundaries_rough1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -694,7 +656,7 @@ Number of components: 24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_28_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_28_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_26_0.png" />
 </div>
 </div>
 </section>
@@ -702,7 +664,7 @@ Number of components: 24
 <h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading"></a></h2>
 <p>Using 1 or more generated boundaries, cells can be assigned to different regions for downstream analysis</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">assignPointsToRegions</span><span class="p">)</span>
@@ -720,6 +682,7 @@ assignPointsToRegions(anndata, boundaries_list, region_names, assigncolumn=&#39;
     Assign points to regions based on the boundaries. The region assignment is
     based on the order of the boundaries, so the innermost region should be the
     first element of boundaries_list.
+
     :param anndata: Anndata object
     :param boundaries_list: List of boundaries
     :param region_names: List of region names. The order and length should match boundaries_list
@@ -729,7 +692,7 @@ assignPointsToRegions(anndata, boundaries_list, region_names, assigncolumn=&#39;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma&quot;</span><span class="p">]</span>
@@ -751,7 +714,7 @@ assignPointsToRegions(anndata, boundaries_list, region_names, assigncolumn=&#39;
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-701940it [00:28, 24872.67it/s]
+701940it [00:41, 17077.27it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -767,7 +730,7 @@ Assigned points to region: Tumor
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-184786it [00:08, 22456.62it/s]
+184786it [00:11, 16340.51it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -783,7 +746,7 @@ Assigned points to region: Tumor Border
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-172844it [00:10, 17030.99it/s]
+172844it [00:12, 13941.30it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -799,10 +762,10 @@ Assigned points to region: Stroma Border
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-227665it [00:07, 31317.39it/s]
+227665it [00:10, 21396.41it/s]
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -810,16 +773,8 @@ Assigned points to region: Stroma Border
 Assigned points to region: Stroma
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Regions:&quot;</span><span class="p">)</span>
@@ -848,7 +803,7 @@ Name: count, dtype: int64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:gray&quot;</span><span class="p">]</span>
@@ -889,12 +844,12 @@ Name: count, dtype: int64
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_33_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_33_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_31_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_31_0.png" />
 </div>
 </div>
 <p>Isolate non-tumor cell holes within the tumor region:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
@@ -921,7 +876,7 @@ Name: count, dtype: int64
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotRegions</span><span class="p">)</span>
@@ -938,9 +893,9 @@ Help on function plotRegions in module spatialcells.plotting._plotRegions:
 plotRegions(regions_list, ax=None, add_label=True, label_prefix=&#39;&#39;, x_offset=0, y_offset=0, fontsize=12, label_bounds=None, colors_list=[&#39;k&#39;, &#39;r&#39;, &#39;b&#39;, &#39;g&#39;], fontcolor=&#39;black&#39;, foreground_linewidth=5, **kwargs)
     Plot the regions in the regions_list and label them with their index in
     the list.
-
     labels are placed at the lower left corner of each region. Their position
     can be adjusted by x_offset and y_offset, and the overall label_bounds.
+
     :param regions_list: a list of MultiPolygon regions
     :param add_label: whether to label the regions
     :param ax: the matplotlib ax object.
@@ -960,7 +915,7 @@ plotRegions(regions_list, ax=None, add_label=True, label_prefix=&#39;&#39;, x_of
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1015,11 +970,11 @@ plotRegions(regions_list, ax=None, add_label=True, label_prefix=&#39;&#39;, x_of
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_35_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_35_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_holes</span><span class="p">):</span>
@@ -1036,7 +991,15 @@ plotRegions(regions_list, ax=None, add_label=True, label_prefix=&#39;&#39;, x_of
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-159it [00:00, 29057.31it/s]
+0it [00:00, ?it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+159it [00:00, 15059.83it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1052,7 +1015,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-389it [00:00, 38279.43it/s]
+389it [00:00, 22986.21it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1068,7 +1031,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-545it [00:00, 61256.15it/s]
+545it [00:00, 24717.73it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1084,7 +1047,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-79it [00:00, 44381.20it/s]
+79it [00:00, 18220.06it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1100,7 +1063,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-298it [00:00, 64308.63it/s]
+298it [00:00, 24557.01it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1116,7 +1079,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-514it [00:00, 68036.49it/s]
+514it [00:00, 24785.55it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1132,7 +1095,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-7it [00:00, 7831.46it/s]
+7it [00:00, 4577.51it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1148,7 +1111,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-111it [00:00, 48011.52it/s]
+111it [00:00, 20959.25it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1164,7 +1127,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-318it [00:00, 23622.35it/s]
+318it [00:00, 19802.08it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1180,7 +1143,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-45it [00:00, 42692.53it/s]
+45it [00:00, 16368.37it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1196,7 +1159,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-241it [00:00, 73901.69it/s]
+241it [00:00, 13876.79it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1212,7 +1175,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-439it [00:00, 64152.30it/s]
+439it [00:00, 18670.46it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1228,7 +1191,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-8569it [00:00, 22600.13it/s]
+8569it [00:00, 12239.67it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1244,7 +1207,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-9184it [00:00, 29848.93it/s]
+9184it [00:00, 16369.07it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1260,7 +1223,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-9428it [00:00, 32988.35it/s]
+9428it [00:00, 19331.28it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1276,7 +1239,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-165it [00:00, 56777.44it/s]
+165it [00:00, 22793.63it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1292,7 +1255,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-305it [00:00, 65900.61it/s]
+305it [00:00, 24602.63it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1308,7 +1271,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-454it [00:00, 67638.05it/s]
+454it [00:00, 24623.24it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1324,7 +1287,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-113it [00:00, 55504.90it/s]
+113it [00:00, 21380.20it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1340,7 +1303,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-241it [00:00, 67600.30it/s]
+241it [00:00, 24140.89it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1356,7 +1319,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-382it [00:00, 68336.78it/s]
+382it [00:00, 23657.45it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1372,7 +1335,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-34it [00:00, 29610.95it/s]
+34it [00:00, 15337.31it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1388,7 +1351,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-166it [00:00, 65174.06it/s]
+166it [00:00, 15573.72it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1404,7 +1367,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-308it [00:00, 70094.72it/s]
+308it [00:00, 20740.88it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1420,7 +1383,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-293it [00:00, 59405.96it/s]
+293it [00:00, 12896.21it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1436,7 +1399,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-437it [00:00, 67178.96it/s]
+437it [00:00, 18728.97it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1452,7 +1415,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-578it [00:00, 65348.74it/s]
+578it [00:00, 20754.82it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1468,7 +1431,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2313it [00:00, 34923.22it/s]
+2313it [00:00, 18936.96it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1484,7 +1447,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2914it [00:00, 43759.65it/s]
+2914it [00:00, 20212.01it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1500,7 +1463,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3325it [00:00, 46577.85it/s]
+3325it [00:00, 21602.41it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1516,7 +1479,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-69it [00:00, 50331.65it/s]
+69it [00:00, 19840.06it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1532,7 +1495,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-193it [00:00, 63485.27it/s]
+193it [00:00, 24091.56it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1548,7 +1511,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-343it [00:00, 57909.52it/s]
+343it [00:00, 24756.44it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1564,7 +1527,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1396it [00:00, 43888.47it/s]
+1396it [00:00, 22197.89it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1580,7 +1543,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1806it [00:00, 53897.48it/s]
+1806it [00:00, 21617.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1596,7 +1559,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2085it [00:00, 56205.49it/s]
+2085it [00:00, 23697.53it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1612,7 +1575,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-128it [00:00, 60153.60it/s]
+128it [00:00, 23472.85it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1628,7 +1591,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-252it [00:00, 68332.34it/s]
+252it [00:00, 25407.80it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1644,7 +1607,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-367it [00:00, 71876.61it/s]
+367it [00:00, 25420.44it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1660,7 +1623,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-295it [00:00, 69008.35it/s]
+295it [00:00, 24452.96it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1676,7 +1639,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-508it [00:00, 75527.50it/s]
+508it [00:00, 25643.66it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1692,7 +1655,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-596it [00:00, 69262.03it/s]
+596it [00:00, 24377.40it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1708,7 +1671,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1344it [00:00, 46875.03it/s]
+1344it [00:00, 12743.92it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1724,7 +1687,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1589it [00:00, 53714.62it/s]
+1589it [00:00, 22798.72it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1740,7 +1703,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1807it [00:00, 53851.84it/s]
+1807it [00:00, 24100.06it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1756,7 +1719,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-184it [00:00, 51051.92it/s]
+184it [00:00, 21428.03it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1772,7 +1735,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-455it [00:00, 61997.54it/s]
+455it [00:00, 23658.44it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1788,7 +1751,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-662it [00:00, 62352.73it/s]
+662it [00:00, 24303.31it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1804,7 +1767,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-28it [00:00, 34189.38it/s]
+28it [00:00, 11428.62it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1820,7 +1783,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-179it [00:00, 63814.74it/s]
+179it [00:00, 23968.98it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1836,7 +1799,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-421it [00:00, 66593.83it/s]
+421it [00:00, 24933.66it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1852,7 +1815,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-92it [00:00, 47058.04it/s]
+92it [00:00, 14069.71it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1868,7 +1831,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-302it [00:00, 65242.33it/s]
+302it [00:00, 24358.76it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1884,7 +1847,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-454it [00:00, 67862.22it/s]
+454it [00:00, 24960.20it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1900,7 +1863,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-572it [00:00, 48367.85it/s]
+572it [00:00, 18603.48it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1916,7 +1879,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1461it [00:00, 61432.36it/s]
+1461it [00:00, 25550.07it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1932,7 +1895,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1759it [00:00, 59696.10it/s]
+1759it [00:00, 24821.12it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1948,7 +1911,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-186it [00:00, 55624.99it/s]
+186it [00:00, 19464.10it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1964,7 +1927,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-402it [00:00, 44891.11it/s]
+402it [00:00, 25348.56it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1980,7 +1943,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-588it [00:00, 68196.29it/s]
+588it [00:00, 25152.99it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1996,7 +1959,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-19991it [00:01, 10351.90it/s]
+19991it [00:03, 6190.09it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2012,7 +1975,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-19075it [00:01, 14605.40it/s]
+19075it [00:02, 7644.09it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2028,7 +1991,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-18563it [00:01, 18559.03it/s]
+18563it [00:01, 9923.46it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2044,7 +2007,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1it [00:00, 8192.00it/s]
+1it [00:00, 1926.64it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2060,7 +2023,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-85it [00:00, 48518.76it/s]
+85it [00:00, 19730.80it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2076,7 +2039,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-313it [00:00, 64750.54it/s]
+313it [00:00, 25090.15it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2092,7 +2055,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-591it [00:00, 57210.90it/s]
+591it [00:00, 24106.60it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2108,7 +2071,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-652it [00:00, 63839.35it/s]
+652it [00:00, 24594.49it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2124,7 +2087,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-737it [00:00, 62548.35it/s]
+737it [00:00, 20282.28it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2140,7 +2103,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-4it [00:00, 10894.30it/s]
+4it [00:00, 4727.31it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2156,7 +2119,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-105it [00:00, 57568.88it/s]
+105it [00:00, 16284.64it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2172,7 +2135,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-274it [00:00, 66215.68it/s]
+274it [00:00, 18988.16it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2188,7 +2151,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2798it [00:00, 45847.09it/s]
+2798it [00:00, 22993.43it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2204,7 +2167,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3021it [00:00, 53894.35it/s]
+3021it [00:00, 23991.28it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2220,7 +2183,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3172it [00:00, 53603.49it/s]
+3172it [00:00, 22966.66it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2236,7 +2199,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-219it [00:00, 61763.89it/s]
+219it [00:00, 20791.61it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2252,7 +2215,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-437it [00:00, 65832.59it/s]
+437it [00:00, 20615.12it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2268,7 +2231,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-578it [00:00, 67627.42it/s]
+578it [00:00, 20965.54it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2284,7 +2247,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1522it [00:00, 43851.83it/s]
+1522it [00:00, 18025.25it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2300,7 +2263,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2359it [00:00, 55895.30it/s]
+2359it [00:00, 14006.76it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2316,8 +2279,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-
-2422it [00:00, 57934.62it/s]
+2422it [00:00, 23111.58it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2333,7 +2295,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2186it [00:00, 44904.56it/s]
+2186it [00:00, 19627.91it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2349,7 +2311,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2900it [00:00, 52363.57it/s]
+2900it [00:00, 22858.40it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2365,7 +2327,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3060it [00:00, 52302.32it/s]
+3060it [00:00, 22060.30it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2381,7 +2343,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1279it [00:00, 57144.08it/s]
+1279it [00:00, 23974.63it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2397,7 +2359,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1063it [00:00, 62873.45it/s]
+1063it [00:00, 25321.56it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2413,7 +2375,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1115it [00:00, 62728.34it/s]
+1115it [00:00, 26420.70it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2429,7 +2391,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-111it [00:00, 60660.29it/s]
+111it [00:00, 22575.17it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2445,7 +2407,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-478it [00:00, 73743.97it/s]
+478it [00:00, 26430.74it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2461,7 +2423,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-632it [00:00, 68390.10it/s]
+632it [00:00, 25858.19it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2477,7 +2439,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-72it [00:00, 47215.43it/s]
+72it [00:00, 18692.12it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2493,7 +2455,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-250it [00:00, 61145.02it/s]
+250it [00:00, 24560.27it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2509,7 +2471,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-353it [00:00, 69954.61it/s]
+353it [00:00, 24812.13it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2525,7 +2487,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2498it [00:00, 31415.84it/s]
+2498it [00:00, 17473.70it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2541,7 +2503,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3291it [00:00, 40620.98it/s]
+3291it [00:00, 22281.75it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2557,7 +2519,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3796it [00:00, 43412.15it/s]
+3796it [00:00, 22696.86it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2573,7 +2535,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-879it [00:00, 48111.62it/s]
+879it [00:00, 25673.15it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2589,7 +2551,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-969it [00:00, 55851.05it/s]
+969it [00:00, 25438.96it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2605,7 +2567,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1080it [00:00, 56896.21it/s]
+1080it [00:00, 22564.06it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2621,7 +2583,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-70it [00:00, 43781.88it/s]
+70it [00:00, 18291.77it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2637,7 +2599,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-187it [00:00, 56852.34it/s]
+187it [00:00, 25710.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2653,7 +2615,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-342it [00:00, 20752.17it/s]
+342it [00:00, 25239.77it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2669,7 +2631,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-286it [00:00, 48401.02it/s]
+286it [00:00, 22303.91it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2685,7 +2647,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-753it [00:00, 57057.63it/s]
+753it [00:00, 24957.81it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2701,7 +2663,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-1177it [00:00, 59420.27it/s]
+1177it [00:00, 26875.15it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2717,7 +2679,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-153it [00:00, 59161.84it/s]
+153it [00:00, 23501.37it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2733,7 +2695,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-383it [00:00, 66992.72it/s]
+383it [00:00, 25404.75it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2749,7 +2711,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-456it [00:00, 61772.58it/s]
+456it [00:00, 24574.42it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2765,7 +2727,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2496it [00:00, 49034.36it/s]
+2496it [00:00, 23549.57it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2781,7 +2743,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3029it [00:00, 58814.35it/s]
+3029it [00:00, 27413.04it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2797,7 +2759,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-3292it [00:00, 57468.89it/s]
+3292it [00:00, 23545.70it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2813,7 +2775,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-180it [00:00, 57255.78it/s]
+180it [00:00, 20363.44it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2829,7 +2791,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-346it [00:00, 69743.81it/s]
+346it [00:00, 21051.22it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2845,7 +2807,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-440it [00:00, 70909.62it/s]
+440it [00:00, 20896.48it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2861,7 +2823,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-351it [00:00, 60907.73it/s]
+351it [00:00, 20081.31it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2877,7 +2839,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-529it [00:00, 67610.90it/s]
+529it [00:00, 25676.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2893,7 +2855,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-647it [00:00, 68336.60it/s]
+647it [00:00, 20525.95it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2909,7 +2871,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-7351it [00:00, 31607.66it/s]
+7351it [00:00, 15422.70it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2925,7 +2887,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-7765it [00:00, 41852.17it/s]
+7765it [00:00, 22056.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2941,7 +2903,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-7833it [00:00, 42714.11it/s]
+7833it [00:00, 20331.47it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2957,7 +2919,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-343it [00:00, 64438.16it/s]
+343it [00:00, 24038.33it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2973,7 +2935,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-415it [00:00, 68639.78it/s]
+415it [00:00, 23768.79it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2989,7 +2951,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-444it [00:00, 64885.23it/s]
+444it [00:00, 23285.96it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -3005,7 +2967,7 @@ Assigned points to region: 2Bo
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-35it [00:00, 29196.63it/s]
+35it [00:00, 8441.67it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -3021,7 +2983,7 @@ Assigned points to region: 0In
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-205it [00:00, 63353.40it/s]
+205it [00:00, 22044.72it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -3037,7 +2999,7 @@ Assigned points to region: 1Bi
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-303it [00:00, 66274.20it/s]
+303it [00:00, 22737.63it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -3057,7 +3019,7 @@ Assigned points to region: 2Bo
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="k">as</span> <span class="nn">PathEffects</span>
@@ -3116,11 +3078,11 @@ Assigned points to region: 2Bo
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_39_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_39_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_37_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">merge_pheno</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -3142,7 +3104,7 @@ Assigned points to region: 2Bo
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -3150,7 +3112,7 @@ Assigned points to region: 2Bo
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3174,14 +3136,14 @@ Assigned points to region: 2Bo
       <th></th>
       <th>X_centroid</th>
       <th>Y_centroid</th>
-      <th>column_centroid</th>
-      <th>row_centroid</th>
-      <th>Area</th>
-      <th>MajorAxisLength</th>
-      <th>MinorAxisLength</th>
-      <th>Eccentricity</th>
-      <th>Solidity</th>
-      <th>Extent</th>
+      <th>phenotype_large_cohort</th>
+      <th>id</th>
+      <th>CCND1_cellRingMask_positive</th>
+      <th>CCND1_negative</th>
+      <th>SOX10_cellRingMask_positive</th>
+      <th>SOX10+CCND1-</th>
+      <th>COI_community</th>
+      <th>region_rough</th>
       <th>...</th>
       <th>hole_33</th>
       <th>hole_34</th>
@@ -3200,14 +3162,14 @@ Assigned points to region: 2Bo
       <th>0</th>
       <td>21807.565909</td>
       <td>9.997727</td>
-      <td>36345.943182</td>
-      <td>16.662879</td>
-      <td>792</td>
-      <td>40.112476</td>
-      <td>25.480990</td>
-      <td>0.772316</td>
-      <td>0.938389</td>
-      <td>0.673469</td>
+      <td>Unknown</td>
+      <td>0</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>-2</td>
+      <td>BG</td>
       <td>...</td>
       <td>BG</td>
       <td>BG</td>
@@ -3224,14 +3186,14 @@ Assigned points to region: 2Bo
       <th>1</th>
       <td>21896.527273</td>
       <td>28.150000</td>
-      <td>36494.212121</td>
-      <td>46.916667</td>
-      <td>132</td>
-      <td>14.340782</td>
-      <td>12.703926</td>
-      <td>0.463953</td>
-      <td>0.929577</td>
-      <td>0.628571</td>
+      <td>Unknown</td>
+      <td>1</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>-2</td>
+      <td>BG</td>
       <td>...</td>
       <td>BG</td>
       <td>BG</td>
@@ -3248,14 +3210,14 @@ Assigned points to region: 2Bo
       <th>2</th>
       <td>21891.008824</td>
       <td>31.755882</td>
-      <td>36485.014706</td>
-      <td>52.926471</td>
-      <td>68</td>
-      <td>10.909423</td>
-      <td>9.252049</td>
-      <td>0.529870</td>
-      <td>0.829268</td>
-      <td>0.472222</td>
+      <td>Unknown</td>
+      <td>2</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>-2</td>
+      <td>BG</td>
       <td>...</td>
       <td>BG</td>
       <td>BG</td>
@@ -3272,14 +3234,14 @@ Assigned points to region: 2Bo
       <th>3</th>
       <td>21893.457692</td>
       <td>37.430769</td>
-      <td>36489.096154</td>
-      <td>62.384615</td>
-      <td>104</td>
-      <td>12.931909</td>
-      <td>10.616614</td>
-      <td>0.570982</td>
-      <td>0.981132</td>
-      <td>0.533333</td>
+      <td>Unknown</td>
+      <td>3</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>-2</td>
+      <td>BG</td>
       <td>...</td>
       <td>BG</td>
       <td>BG</td>
@@ -3296,14 +3258,14 @@ Assigned points to region: 2Bo
       <th>4</th>
       <td>21888.600000</td>
       <td>35.496000</td>
-      <td>36481.000000</td>
-      <td>59.160000</td>
-      <td>25</td>
-      <td>5.959514</td>
-      <td>5.534852</td>
-      <td>0.370726</td>
-      <td>1.000000</td>
-      <td>0.694444</td>
+      <td>Unknown</td>
+      <td>4</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>-2</td>
+      <td>BG</td>
       <td>...</td>
       <td>BG</td>
       <td>BG</td>
@@ -3318,11 +3280,11 @@ Assigned points to region: 2Bo
     </tr>
   </tbody>
 </table>
-<p>5 rows × 69 columns</p>
+<p>5 rows × 53 columns</p>
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">,</span> <span class="s2">&quot;Tumor Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma Border&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroma&quot;</span><span class="p">]</span>
@@ -3345,7 +3307,7 @@ Assigned points to region: 2Bo
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3484,7 +3446,7 @@ Assigned points to region: 2Bo
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
@@ -3518,15 +3480,26 @@ Assigned points to region: 2Bo
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_41_1.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_41_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">micro_df</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3545,7 +3518,7 @@ Assigned points to region: 2Bo
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3669,7 +3642,7 @@ Assigned points to region: 2Bo
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3702,7 +3675,7 @@ Assigned points to region: 2Bo
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_45_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_45_0.png" />
+<img alt="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" src="../_images/tutorial_4_tutorial_macro_micro_regions_43_0.png" />
 </div>
 </div>
 </section>

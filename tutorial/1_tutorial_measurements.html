@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1: Spatial and Measurement Functions &mdash; SpatialCells 0.9.5 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -69,9 +71,19 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html">2: Tumor Proliferation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_tutorial_tumor_proliferation.html#Sliding-window-Analyses">Sliding window Analyses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_tutorial_immune_infiltration_overlap.html">3: Immune Infiltration Overlap Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_tutorial_macro_micro_regions.html">4: Macro and Micro Regions Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_tutorial_import_export_omero.html">5: Loading and Saving Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html">Read data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#getBoundary">getBoundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_tutorial_visium_cell2location.html#assignPointsToRegion">assignPointsToRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_tutorial_squidpy_joint_analysis.html">Squidpy analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html">Seperate the tissue into two parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCANPY-to-cluster-cells-in-each-region">Work with SCANPY to cluster cells in each region</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Work-with-SCIMAP-to-plot-cell-type-composition">Work with SCIMAP to plot cell-type composition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_tutorial_scimap_joint_analysis.html#Annimate-with-SCIMAP">Annimate with SCIMAP</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../spatialcells.html">Functions Reference</a></li>
@@ -104,7 +116,7 @@
              
   <section id="1:-Spatial-and-Measurement-Functions">
 <h1>1: Spatial and Measurement Functions<a class="headerlink" href="#1:-Spatial-and-Measurement-Functions" title="Link to this heading"></a></h1>
-<p>Demonstrate the usage of spatial measurement functions</p>
+<p>Demonstrate the usage of spatial measurement functions.</p>
 <div class="line-block">
 <div class="line">&#64;author: Guihong Wan and Boshen Yan</div>
 <div class="line">&#64;date: Aug 20, 2023</div>
@@ -114,9 +126,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">import</span> <span class="nn">anndata</span> <span class="k">as</span> <span class="nn">ad</span>
 <span class="kn">import</span> <span class="nn">spatialcells</span> <span class="k">as</span> <span class="nn">spc</span>
@@ -126,12 +136,20 @@
 <p>In this tutorial, we will be demonstrating the spatial measurements functions by studying the distribution of MITF+ cells among SOX10+ tumor cells</p>
 <section id="Read-and-process-data">
 <h2>Read and process data<a class="headerlink" href="#Read-and-process-data" title="Link to this heading"></a></h2>
-<div class="nbinput docutils container">
+<p>You can download the data from <a class="reference external" href="https://www.dropbox.com/scl/fo/coek1wvi9n0syv5tokus1/h?rlkey=1yvizq0joir6q73iosov608ou&amp;dl=0">here</a>. Please refer to the original <a class="reference external" href="https://aacrjournals.org/cancerdiscovery/article/12/6/1518/699151/The-Spatial-Landscape-of-Progression-and">paper</a> for the details.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;../../../Cycif/unmicst-1_750_PCA_Mel1.h5ad&quot;</span><span class="p">)</span>
-<span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;SOX10_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.9</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="s2">&quot;../../data/MEL1_adata.h5ad&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;SOX10_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">7.9</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;MITF_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">prep</span><span class="o">.</span><span class="n">setGate</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;KERATIN_cellRingMask&quot;</span><span class="p">,</span> <span class="mf">6.4</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -157,7 +175,7 @@ Name: count, dtype: int64
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">combine_columns</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -176,13 +194,14 @@ Name: count, dtype: int64
 </div>
 <p>The following steps compute the communities based on SOX10+ cells.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">]</span>
+
 <span class="n">communitycolumn</span> <span class="o">=</span> <span class="s2">&quot;COI_community&quot;</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">getCommunities</span><span class="p">(</span>
-    <span class="n">adata</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">newcolumn</span><span class="o">=</span><span class="n">communitycolumn</span>
 <span class="p">)</span>
 <span class="c1"># Plotting the communities</span>
 <span class="n">plot_first_n_clusters</span> <span class="o">=</span> <span class="mi">10</span>
@@ -192,14 +211,12 @@ Name: count, dtype: int64
     <span class="n">ret</span><span class="p">,</span>
     <span class="n">communitycolumn</span><span class="p">,</span>
     <span class="n">plot_first_n_clusters</span><span class="o">=</span><span class="n">plot_first_n_clusters</span><span class="p">,</span>
-    <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="c1"># Here we choose the three largest ones of interest</span>
-<span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -207,25 +224,34 @@ Name: count, dtype: int64
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_7_0.png" src="../_images/tutorial_1_tutorial_measurements_7_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_9_0.png" src="../_images/tutorial_1_tutorial_measurements_9_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here we chose the main tumor area.</span>
+<span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+</pre></div>
 </div>
 </div>
 </section>
 <section id="getBoundary">
 <h2>getBoundary<a class="headerlink" href="#getBoundary" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">getBoundary</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">communitycolumn</span><span class="p">,</span> <span class="n">communityIndexList</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 <span class="n">pruned_boundary</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">spa</span><span class="o">.</span><span class="n">pruneSmallComponents</span><span class="p">(</span>
-    <span class="n">boundary</span><span class="p">,</span> <span class="n">min_edges</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">50</span>
+    <span class="n">boundary</span><span class="p">,</span> <span class="n">min_edges</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">holes_min_edges</span><span class="o">=</span><span class="mi">200</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span>
@@ -247,7 +273,7 @@ Name: count, dtype: int64
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Selected communities&quot;</span><span class="p">)</span>
 
 <span class="c1"># Bounds of points in selected commnities</span>
-<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">pruned_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boundary&quot;</span><span class="p">)</span>
+<span class="n">spc</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plotBoundary</span><span class="p">(</span><span class="n">pruned_boundary</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boundary&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -258,14 +284,14 @@ Name: count, dtype: int64
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_10_0.png" src="../_images/tutorial_1_tutorial_measurements_10_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_13_0.png" src="../_images/tutorial_1_tutorial_measurements_13_0.png" />
 </div>
 </div>
 </section>
 <section id="assignPointsToRegion">
 <h2>assignPointsToRegion<a class="headerlink" href="#assignPointsToRegion" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">]</span>
@@ -281,7 +307,7 @@ Name: count, dtype: int64
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-724039it [00:33, 21633.43it/s]
+719117it [00:58, 12263.00it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -293,7 +319,7 @@ Assigned points to region: Tumor
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">point_size</span> <span class="o">=</span> <span class="mi">1</span>
@@ -321,12 +347,12 @@ Assigned points to region: Tumor
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_13_0.png" src="../_images/tutorial_1_tutorial_measurements_13_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_16_0.png" src="../_images/tutorial_1_tutorial_measurements_16_0.png" />
 </div>
 </div>
-<p>First we calculate the overall Tumor region composition</p>
+<p>First we calculate the overall Tumor region composition.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roi_comp</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">])</span>
@@ -335,7 +361,7 @@ Assigned points to region: Tumor
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -366,27 +392,27 @@ Assigned points to region: Tumor
     <tr>
       <th>0</th>
       <td>SOX10+MITF-</td>
-      <td>256116</td>
-      <td>0.435167</td>
+      <td>252594</td>
+      <td>0.437427</td>
     </tr>
     <tr>
       <th>1</th>
       <td>SOX10+MITF+</td>
-      <td>196215</td>
-      <td>0.333389</td>
+      <td>195279</td>
+      <td>0.338172</td>
     </tr>
     <tr>
       <th>2</th>
       <td>SOX10-</td>
-      <td>136216</td>
-      <td>0.231445</td>
+      <td>129581</td>
+      <td>0.224401</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;composition&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">roi_comp</span><span class="p">)</span>
@@ -399,38 +425,40 @@ Assigned points to region: Tumor
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_16_0.png" src="../_images/tutorial_1_tutorial_measurements_16_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_19_0.png" src="../_images/tutorial_1_tutorial_measurements_19_0.png" />
 </div>
 </div>
 <section id="Tumor-area-and-density">
 <h3>Tumor area and density<a class="headerlink" href="#Tumor-area-and-density" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionArea</span><span class="p">(</span><span class="n">pruned_boundary</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;area: &quot;</span><span class="p">,</span> <span class="n">area</span><span class="p">)</span>
 
-<span class="n">density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">pruned_boundary</span><span class="p">,</span> <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All cell density/100px2: &quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span>
+    <span class="n">pruned_boundary</span><span class="p">,</span>
+    <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All cell density/100px2: &quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
 <span class="n">sox10_density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
     <span class="n">pruned_boundary</span><span class="p">,</span>
     <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span>
     <span class="n">phenotype_col</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SOX10 positive cell density in tumor/100px2:&quot;</span><span class="p">,</span> <span class="n">sox10_density</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
-<span class="n">mitf_density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SOX10 positive cell density in tumor/100px2:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sox10_density</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">pheno_density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
     <span class="n">pruned_boundary</span><span class="p">,</span>
     <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span>
-    <span class="n">phenotype_col</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MITF_cellRingMask_positive&quot;</span><span class="p">],</span>
+    <span class="n">phenotype_col</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pheno&quot;</span><span class="p">]</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MITF positive cell density in tumor/100px2:&quot;</span><span class="p">,</span> <span class="n">mitf_density</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
-<span class="n">pheno_density</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionDensity</span><span class="p">(</span>
-    <span class="n">adata</span><span class="p">,</span> <span class="n">pruned_boundary</span><span class="p">,</span> <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span> <span class="n">phenotype_col</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pheno&quot;</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pheno density in tumor/100px2:&quot;</span><span class="p">,</span> <span class="n">pheno_density</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pheno density in tumor/100px2:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pheno_density</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -439,20 +467,20 @@ Assigned points to region: Tumor
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-area:  69084819.09951547
-All cell density/100px2:  [85.19194342]
-SOX10 positive cell density in tumor/100px2: SOX10_cellRingMask_positive
-True                           65.474732
-False                          19.717212
+area:  66103699.31245056
+All cell density/100px2:  87.35577675775208
+
+SOX10 positive cell density in tumor/100px2:
+ SOX10_cellRingMask_positive
+True                           67.753092
+False                          19.602685
 Name: count, dtype: float64
-MITF positive cell density in tumor/100px2: MITF_cellRingMask_positive
-False                         56.644427
-True                          28.547516
-Name: count, dtype: float64
-pheno density in tumor/100px2: pheno
-SOX10+MITF-    37.072689
-SOX10+MITF+    28.402043
-SOX10-         19.717212
+
+pheno density in tumor/100px2:
+ pheno
+SOX10+MITF-    38.211780
+SOX10+MITF+    29.541312
+SOX10-         19.602685
 Name: count, dtype: float64
 </pre></div></div>
 </div>
@@ -461,7 +489,7 @@ Name: count, dtype: float64
 <section id="Tumor-organization">
 <h2>Tumor organization<a class="headerlink" href="#Tumor-organization" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">centroid</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionCentroid</span><span class="p">(</span><span class="n">pruned_boundary</span><span class="p">)</span>
@@ -470,7 +498,7 @@ Name: count, dtype: float64
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromPoint</span><span class="p">)</span>
@@ -486,6 +514,7 @@ Help on function getDistanceFromPoint in module spatialcells.measurements._getDi
 
 getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39;, region_col=&#39;region&#39;, region_subset=None, metric=&#39;angular&#39;, name=&#39;distance&#39;, inplace=True, binned=False, binsize=10)
     Get the distance of each cell from a point.
+
     :param adata: Anndata object
     :param point: iterable coordinate of a point in (x, y) to calculate distance from
     :param x: Name of the column containing the x coordinate. Default is &#34;X_centroid&#34;.
@@ -498,12 +527,12 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
     :param inplace: If True, add the distance column to adata.obs. If False, return a copy
     :param binned: If True, bin the distances into bins of size binsize.
     :param binsize: Size of the bins to use for binning. Default is 10.
-    :return: If inplace is False, return a copy of adata with the distance column added
+    :returns: If inplace is False, return a copy of adata with the distance column added
 
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromPoint</span><span class="p">(</span>
@@ -515,6 +544,7 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
     <span class="n">binned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">binsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
 <span class="p">)</span>
+
 <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromPoint</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
     <span class="n">centroid</span><span class="p">,</span>
@@ -522,7 +552,7 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
     <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;angular&quot;</span><span class="p">,</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ang_distance&quot;</span><span class="p">,</span>
     <span class="n">binned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">binsize</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">binsize</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromPoint</span><span class="p">(</span>
@@ -534,6 +564,7 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
     <span class="n">binned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">binsize</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
 <span class="p">)</span>
+
 <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromPoint</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
     <span class="n">edge_pt</span><span class="p">,</span>
@@ -547,11 +578,12 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;ang_distance_binned&quot;</span>
 <span class="n">pheno</span> <span class="o">=</span> <span class="s2">&quot;pheno&quot;</span>
+
 <span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
@@ -560,10 +592,11 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
     <span class="n">hue</span><span class="o">=</span><span class="n">metric_col</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
     <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span>
 <span class="p">)</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">metric_col</span><span class="p">)</span>
+
 <span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">pheno</span><span class="p">],</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">]</span>
 <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -575,19 +608,34 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_23_0.png" src="../_images/tutorial_1_tutorial_measurements_23_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_26_1.png" src="../_images/tutorial_1_tutorial_measurements_26_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;euc_distance_binned&quot;</span>
 <span class="n">pheno</span> <span class="o">=</span> <span class="s2">&quot;pheno&quot;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">pheno</span><span class="p">],</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
 <span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
@@ -600,26 +648,35 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 <span class="p">)</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">metric_col</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getRegionComposition</span><span class="p">(</span>
-    <span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">pheno</span><span class="p">],</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">metric_col</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;composition&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="n">pheno</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
 <span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.02</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span> <span class="n">borderaxespad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_24_0.png" src="../_images/tutorial_1_tutorial_measurements_24_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_27_1.png" src="../_images/tutorial_1_tutorial_measurements_27_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;euc_edge_binned&quot;</span>
@@ -647,15 +704,26 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_25_0.png" src="../_images/tutorial_1_tutorial_measurements_25_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_28_1.png" src="../_images/tutorial_1_tutorial_measurements_28_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;ang_edge_binned&quot;</span>
@@ -683,17 +751,28 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_26_0.png" src="../_images/tutorial_1_tutorial_measurements_26_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_29_1.png" src="../_images/tutorial_1_tutorial_measurements_29_1.png" />
 </div>
 </div>
 <section id="Get-distance-from-the-epidermis-layer">
 <h3>Get distance from the epidermis layer<a class="headerlink" href="#Get-distance-from-the-epidermis-layer" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># find skin cell communities</span>
@@ -721,11 +800,11 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_28_0.png" src="../_images/tutorial_1_tutorial_measurements_28_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_31_0.png" src="../_images/tutorial_1_tutorial_measurements_31_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">communityIndexList</span> <span class="o">=</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">29</span><span class="p">]</span>
@@ -756,22 +835,23 @@ getDistanceFromPoint(adata, point, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_29_0.png" src="../_images/tutorial_1_tutorial_measurements_29_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_32_0.png" src="../_images/tutorial_1_tutorial_measurements_32_0.png" />
 </div>
 </div>
 <p>For demonstration, we included a custom, manually drawn line as well. In general, any Shapely object should work</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">LineString</span>
 
+<span class="c1"># manually input the line</span>
 <span class="n">shapely_obj</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">([(</span><span class="mi">12000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span> <span class="p">(</span><span class="mi">13000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">),</span> <span class="p">(</span><span class="mi">13500</span><span class="p">,</span> <span class="mi">3800</span><span class="p">)])</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromObject</span><span class="p">)</span>
@@ -787,6 +867,7 @@ Help on function getDistanceFromObject in module spatialcells.measurements._getD
 
 getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#39;, region_col=&#39;region&#39;, region_subset=None, name=&#39;distance&#39;, inplace=True, binned=False, binsize=10)
     Get the minimum euclidean distance between each cell and a shapely object.
+
     :param adata: Anndata object
     :param object: Shapely object to measure distance from
     :param x: Name of the column containing the x coordinate. Default is &#34;X_centroid&#34;.
@@ -797,12 +878,12 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
     :param inplace: If True, add the distance column to adata.obs. If False, return a copy
     :param binned: If True, bin the distances into bins of size binsize.
     :param binsize: Size of the bins to use for binning. Default is 10.
-    :return: If inplace is False, return a copy of adata with the distance column added
+    :returns: If inplace is False, return a copy of adata with the distance column added
 
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromObject</span><span class="p">(</span>
@@ -812,7 +893,7 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
     <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;distance_from_epidermis&quot;</span><span class="p">,</span>
     <span class="n">binned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">binsize</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+    <span class="n">binsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getDistanceFromObject</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
@@ -821,7 +902,7 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
     <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;distance_from_object&quot;</span><span class="p">,</span>
     <span class="n">binned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">binsize</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+    <span class="n">binsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -831,12 +912,12 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-588547it [00:06, 90601.06it/s]
-588547it [00:04, 133739.28it/s]
+577454it [00:15, 36305.82it/s]
+577454it [00:12, 47052.12it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;distance_from_epidermis_binned&quot;</span>
@@ -872,15 +953,26 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_34_0.png" src="../_images/tutorial_1_tutorial_measurements_34_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_37_1.png" src="../_images/tutorial_1_tutorial_measurements_37_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_col</span> <span class="o">=</span> <span class="s2">&quot;distance_from_object_binned&quot;</span>
@@ -911,11 +1003,22 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+/Users/ghwan/opt/anaconda3/envs/spatialcells/lib/python3.10/site-packages/seaborn/categorical.py:253: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_35_0.png" src="../_images/tutorial_1_tutorial_measurements_35_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_38_1.png" src="../_images/tutorial_1_tutorial_measurements_38_1.png" />
 </div>
 </div>
 </section>
@@ -923,7 +1026,7 @@ getDistanceFromObject(adata, object, x=&#39;X_centroid&#39;, y=&#39;Y_centroid&#
 <h3>Sliding window analysis<a class="headerlink" href="#Sliding-window-analysis" title="Link to this heading"></a></h3>
 <p>We can also divide the tumor region into square windows and get the cell composition within each window. This can be matched with patch-level image analysis to provide additional features</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getSlidingWindowsComposition</span><span class="p">)</span>
@@ -939,6 +1042,7 @@ Help on function getSlidingWindowsComposition in module spatialcells.measurement
 
 getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, region_col=&#39;region&#39;, region_subset=None, min_cells=0)
     Get Sliding window cell composition for cells in region subset.
+
     :param adata: Anndata object
     :param window_size: Size of the sliding window
     :param step_size: Size of the step
@@ -947,24 +1051,29 @@ getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, regio
     :param region_col: Column containing the region information
     :param region_subset: List of regions to consider. If None, consider all cells.
     :param min_cells: Minimum number of cells in a window to consider it
-    :return: A dataframe containing the cell type composition of the region in each window
+    :returns: A dataframe containing the cell type composition of the region in each window
 
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="mi">300</span>
-<span class="n">adata1</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10_positive&quot;</span><span class="p">]]</span>
+<span class="n">adata1</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;SOX10_cellRingMask_positive&quot;</span><span class="p">]]</span>
 <span class="n">mitf_df</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">getSlidingWindowsComposition</span><span class="p">(</span>
-    <span class="n">adata1</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">adata</span> <span class="o">=</span> <span class="n">adata1</span><span class="p">,</span>
+    <span class="n">window_size</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span>
+    <span class="n">step_size</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span>
+    <span class="n">phenotype_col</span> <span class="o">=</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span>
+    <span class="n">region_subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tumor&quot;</span><span class="p">],</span>
+    <span class="n">min_cells</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mitf_df</span>
@@ -972,7 +1081,7 @@ getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, regio
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1007,10 +1116,10 @@ getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, regio
     <tr>
       <th>0</th>
       <td>SOX10+MITF-</td>
-      <td>76</td>
-      <td>0.863636</td>
-      <td>1209</td>
-      <td>8497</td>
+      <td>77</td>
+      <td>0.865169</td>
+      <td>1211</td>
+      <td>8562</td>
       <td>300</td>
       <td>300</td>
     </tr>
@@ -1018,39 +1127,39 @@ getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, regio
       <th>1</th>
       <td>SOX10+MITF+</td>
       <td>12</td>
-      <td>0.136364</td>
-      <td>1209</td>
-      <td>8497</td>
+      <td>0.134831</td>
+      <td>1211</td>
+      <td>8562</td>
       <td>300</td>
       <td>300</td>
     </tr>
     <tr>
       <th>0</th>
       <td>SOX10+MITF-</td>
-      <td>185</td>
-      <td>0.631399</td>
-      <td>1209</td>
-      <td>8797</td>
+      <td>215</td>
+      <td>0.520581</td>
+      <td>1211</td>
+      <td>8862</td>
       <td>300</td>
       <td>300</td>
     </tr>
     <tr>
       <th>1</th>
       <td>SOX10+MITF+</td>
-      <td>108</td>
-      <td>0.368601</td>
-      <td>1209</td>
-      <td>8797</td>
+      <td>198</td>
+      <td>0.479419</td>
+      <td>1211</td>
+      <td>8862</td>
       <td>300</td>
       <td>300</td>
     </tr>
     <tr>
       <th>0</th>
       <td>SOX10+MITF+</td>
-      <td>600</td>
-      <td>0.813008</td>
-      <td>1209</td>
-      <td>9097</td>
+      <td>643</td>
+      <td>0.883242</td>
+      <td>1211</td>
+      <td>9162</td>
       <td>300</td>
       <td>300</td>
     </tr>
@@ -1067,61 +1176,61 @@ getSlidingWindowsComposition(adata, window_size, step_size, phenotype_col, regio
     <tr>
       <th>1</th>
       <td>SOX10+MITF+</td>
-      <td>333</td>
-      <td>0.477077</td>
-      <td>12309</td>
-      <td>6697</td>
-      <td>300</td>
-      <td>300</td>
-    </tr>
-    <tr>
-      <th>0</th>
-      <td>SOX10+MITF+</td>
-      <td>115</td>
-      <td>0.635359</td>
-      <td>12309</td>
-      <td>6997</td>
-      <td>300</td>
-      <td>300</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>SOX10+MITF-</td>
-      <td>66</td>
-      <td>0.364641</td>
-      <td>12309</td>
-      <td>6997</td>
+      <td>169</td>
+      <td>0.288889</td>
+      <td>12311</td>
+      <td>6462</td>
       <td>300</td>
       <td>300</td>
     </tr>
     <tr>
       <th>0</th>
       <td>SOX10+MITF-</td>
-      <td>12</td>
-      <td>0.705882</td>
-      <td>12609</td>
-      <td>6397</td>
+      <td>273</td>
+      <td>0.505556</td>
+      <td>12311</td>
+      <td>6762</td>
       <td>300</td>
       <td>300</td>
     </tr>
     <tr>
       <th>1</th>
       <td>SOX10+MITF+</td>
-      <td>5</td>
-      <td>0.294118</td>
-      <td>12609</td>
-      <td>6397</td>
+      <td>267</td>
+      <td>0.494444</td>
+      <td>12311</td>
+      <td>6762</td>
+      <td>300</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>SOX10+MITF+</td>
+      <td>97</td>
+      <td>0.683099</td>
+      <td>12311</td>
+      <td>7062</td>
+      <td>300</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SOX10+MITF-</td>
+      <td>45</td>
+      <td>0.316901</td>
+      <td>12311</td>
+      <td>7062</td>
       <td>300</td>
       <td>300</td>
     </tr>
   </tbody>
 </table>
-<p>1646 rows × 7 columns</p>
+<p>1605 rows × 7 columns</p>
 </div></div>
 </div>
-<p>To plot non-overlapping windows, we can first create a numpy mask representing the composition for cell types of interest in each window</p>
+<p>To plot non-overlapping windows, we can first create a numpy mask representing the composition for cell types of interest in each window.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">get_comp_mask</span><span class="p">)</span>
@@ -1147,12 +1256,14 @@ get_comp_mask(df, pheno_col, pheno_vals, step_size)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+
 <span class="n">mask</span> <span class="o">=</span> <span class="n">spc</span><span class="o">.</span><span class="n">msmt</span><span class="o">.</span><span class="n">get_comp_mask</span><span class="p">(</span><span class="n">mitf_df</span><span class="p">,</span> <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;SOX10+MITF+&quot;</span><span class="p">],</span> <span class="n">size</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Reds&quot;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
 <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;SOX10+MITF+ cells percentage&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])):</span>
@@ -1175,7 +1286,7 @@ get_comp_mask(df, pheno_col, pheno_vals, step_size)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorial_1_tutorial_measurements_42_0.png" src="../_images/tutorial_1_tutorial_measurements_42_0.png" />
+<img alt="../_images/tutorial_1_tutorial_measurements_45_0.png" src="../_images/tutorial_1_tutorial_measurements_45_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">

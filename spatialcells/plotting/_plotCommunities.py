@@ -70,7 +70,7 @@ def plotCommunities(adata, ret, communitycolumn, plot_first_n_clusters=10, **kwa
             markersize=markersize,
             **kwargs
         )
-        plt.annotate(str(idx + 1) + ":" + str(k), (xy[0, 0], xy[0, 1]))
+        # plt.annotate(str(idx + 1) + ":" + str(k), (xy[0, 0], xy[0, 1]))
         txt = plt.text(
             xy[0, 0],
             xy[0, 1],

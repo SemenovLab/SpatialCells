@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.abspath('../tutorials'))
 
 project = 'SpatialCells'
 copyright = '2023, Dermatology Clinical Informatics Laboratory'
-author = 'Guihong Wan, Zoltan Maliga, and Boshen Yan'
-version = '0.9.5'
+author = 'Guihong Wan and Boshen Yan'
+version = '1.0.1'
 release = version
 
 

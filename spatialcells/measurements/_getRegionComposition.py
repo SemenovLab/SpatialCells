@@ -24,7 +24,7 @@ def getRegionComposition(adata, phenotype_col, regions=None, regioncol="region")
         )
     else:
         counts = (
-            region_composition.groupby(phenotype_col[:-1])["cell_count"]
+            region_composition.groupby(phenotype_col[:-1], observed=False)["cell_count"]
             .sum()
             .reset_index()
             .rename(columns={"cell_count": "total_count"})

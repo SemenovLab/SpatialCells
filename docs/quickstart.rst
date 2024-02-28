@@ -23,7 +23,7 @@ A conda environment can be created with the following yaml file:
     conda env create --name spatialcells --file=conda.yaml
     pip install .
 
-The conda.yml is specified as follows:
+The conda.yaml is specified as follows:
 
 .. literalinclude:: ../conda.yaml
   :language: yaml

@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "SpatialCells"
-version = "0.9.5"
+version = "1.0.1"
 description = "Spatial Analysis for Single-Cell Data"
 
 license = "MIT"

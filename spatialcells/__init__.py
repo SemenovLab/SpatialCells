@@ -1,8 +1,8 @@
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import version, PackageNotFoundError
 
 try:
-    __version__ = get_distribution("spatialcells").version
-except DistributionNotFound:
+    __version__ = version("spatialcells")
+except PackageNotFoundError:
     __version__ = "(local)"
 
 

@@ -5,8 +5,7 @@
 #   pip install --no-deps scimap==2.3.6 smart_open
 
 # scimap pins numba 0.58 / llvmlite 0.41 / scipy 1.12 / pandas <2.2 / numpy <2,
-# which forces the rest of the stack to older versions; this file freezes that
-# compatible set. Use conda.yaml if you don't need tutorial 8.
+# which strictly forces the rest of the stack to certain older versions captured here.
 
 name: spatialcells-scimap
 
@@ -21,7 +20,7 @@ dependencies:
   - nbclient
 
   # Core runtime (pinned to scimap-compatible versions)
-  - shapely >=2.0       # hard: from_geojson/to_geojson are 2.x APIs
+  - shapely >=2.0
   - numpy <2
   - pandas <2.2
   - scipy =1.12.*
@@ -33,7 +32,7 @@ dependencies:
   - scanpy <1.11
   - anndata <0.11
 
-  # Optional: for joint analyses with other packages as featured in the tutorials
+  # Optional: for joint analyses with other packages (as was done in the tutorials)
   - squidpy =1.4.*
   - plotly
   - numba =0.58.*

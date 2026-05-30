@@ -3,8 +3,7 @@
 #   mamba activate spatialcells
 #   pip install --no-deps .
 
-# Use conda-scimap.yaml instead if you need tutorial 8 (scimap joint analysis)
-# — scimap's hard pins force an older stack across the whole env.
+# Use conda-scimap.yaml instead if you need scimap in the same env as well.
 
 name: spatialcells
 
@@ -19,7 +18,7 @@ dependencies:
   - nbclient
 
   # Core runtime
-  - shapely >=2.0       # hard: from_geojson/to_geojson are 2.x APIs
+  - shapely >=2.0 
   - numpy
   - pandas
   - scipy
@@ -31,6 +30,6 @@ dependencies:
   - scanpy
   - anndata
 
-  # Optional: for joint analyses with other packages as featured in the tutorials
+  # Optional: for joint analyses with other packages (as was done in the tutorials)
   - squidpy
   - plotly

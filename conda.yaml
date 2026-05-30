@@ -1,8 +1,10 @@
 # Setup:
 #   mamba env create -f conda.yaml
 #   mamba activate spatialcells
-#   pip install --no-deps .                 # the spatialcells package itself
-#   pip install --no-deps scimap==2.3.6 smart_open   # only if you want tutorial 8
+#   pip install --no-deps .
+
+# Use conda-scimap.yaml instead if you need tutorial 8 (scimap joint analysis)
+# — scimap's hard pins force an older stack across the whole env.
 
 name: spatialcells
 
@@ -10,7 +12,7 @@ channels:
   - conda-forge
 
 dependencies:
-  - python >=3.10,<3.12
+  - python >=3.10,<3.13
   - pip
   - ipykernel
   - nbconvert
@@ -18,23 +20,17 @@ dependencies:
 
   # Core runtime
   - shapely >=2.0       # hard: from_geojson/to_geojson are 2.x APIs
-  - numpy <2
-  - pandas <2.2
-  - scipy =1.12.*
-  - scikit-learn >=1.6
-  - matplotlib <3.9
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
   - seaborn
   - tqdm
   - leidenalg
-  - scanpy <1.11
-  - anndata <0.11
+  - scanpy
+  - anndata
 
   # Optional: for joint analyses with other packages as featured in the tutorials
-  - squidpy =1.4.*
+  - squidpy
   - plotly
-  - numba =0.58.*
-  - llvmlite =0.41.*
-  - dask >=2023.11,<2024
-  - dask-image <2024
-  - zarr >=2.11,<3
-  - setuptools <81

@@ -30,6 +30,7 @@ def getSlidingWindowsComposition(
         obs = adata.obs
     else:
         obs = adata.obs[adata.obs[region_col].isin(region_subset)]
+    obs = obs.dropna(subset=["X_centroid", "Y_centroid"])
     if obs.empty:
         return pd.DataFrame()
 

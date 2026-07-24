@@ -1,0 +1,43 @@
+# Setup:
+#   mamba env create -f conda-scimap.yaml
+#   mamba activate spatialcells-scimap
+#   pip install --no-deps .
+#   pip install --no-deps scimap==2.3.6 smart_open
+
+# scimap pins numba 0.58 / llvmlite 0.41 / scipy 1.12 / pandas <2.2 / numpy <2,
+# which strictly forces the rest of the stack to certain older versions captured here.
+
+name: spatialcells-scimap
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python >=3.10,<3.12
+  - pip
+  - ipykernel
+  - nbconvert
+  - nbclient
+
+  # Core runtime (pinned to scimap-compatible versions)
+  - shapely >=2.0
+  - numpy <2
+  - pandas <2.2
+  - scipy =1.12.*
+  - scikit-learn >=1.6
+  - matplotlib <3.9
+  - seaborn
+  - tqdm
+  - leidenalg
+  - scanpy <1.11
+  - anndata <0.11
+
+  # Optional: for joint analyses with other packages (as was done in the tutorials)
+  - squidpy =1.4.*
+  - plotly
+  - numba =0.58.*
+  - llvmlite =0.41.*
+  - dask >=2023.11,<2024
+  - dask-image <2024
+  - zarr >=2.11,<3
+  - setuptools <81

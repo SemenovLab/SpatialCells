@@ -1,3 +1,4 @@
+import numpy as np
 import shapely
 from shapely.geometry import Polygon, MultiPolygon
 from shapely.validation import make_valid
@@ -29,21 +30,22 @@ def getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=F
     xy = anndata.obs[anndata.obs[communitycolumn].isin(communityIndexList)][
         ["X_centroid", "Y_centroid"]
     ].to_numpy()
+    # slightly nudge the input points so they lie strictly inside.
+    eps = max(float(np.ptp(xy, axis=0).max()), 1.0) * 1e-9
     edge_components = getAlphaShapes(xy, alpha)
     polygons = [Polygon(edge[:, 0, :]).buffer(0) for edge in edge_components]
     boundary = MultiPolygon(polygons)
-    # make sure the boundary is valid and points of interest are inside
-    boundary = make_valid(boundary).buffer(alpha / 100)
+    boundary = make_valid(boundary).buffer(eps)
     if boundary.geom_type == "Polygon":
         boundary = MultiPolygon([boundary])
 
-    # Ensure that holes do not intersect each other or the boundary
     new_boundary = []
     for poly in boundary.geoms:
         holes = poly.interiors
         hole_polygons = [Polygon(hole) for hole in holes]
-        # set limit to shrink holes tangent to the boundary
-        hole_limit = Polygon(poly.exterior).buffer(-alpha / 100)
+        # shrink the limit by eps avoid the edge case of holes (internal polygons)
+        # being exactly tangential to the exterior, leading to an invalid polygon. 
+        hole_limit = Polygon(poly.exterior).buffer(-eps)
         hole_multipoly = shapely.unary_union(hole_polygons) & hole_limit
         if hole_multipoly.geom_type == "Polygon":
             hole_multipoly = MultiPolygon([hole_multipoly])
@@ -51,6 +53,8 @@ def getBoundary(anndata, communitycolumn, communityIndexList, alpha=100, debug=F
         new_poly = Polygon(poly.exterior, new_holes_polygons)
         new_boundary.append(new_poly)
     boundary = make_valid(MultiPolygon(new_boundary))
+    if boundary.geom_type == "Polygon":
+        boundary = MultiPolygon([boundary])
 
     if debug:
         return boundary, polygons, edge_components
